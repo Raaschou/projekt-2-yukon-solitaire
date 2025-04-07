@@ -1,19 +1,24 @@
 #include <stdio.h>
+#define TOTAL_CARDS 52;
 
-void printBoard();
-struct card {
+
+typedef struct card Card;
+struct cardObject {
     char suit;
     int rank;
-    int *next;
+    Card *next;
 };
-void constructDeck(int suit[], int rank[]);
+
+void constructDeck(char suit[], int rank[]);
+void printBoard();
+
 
 int main(void) {
     //This might be better done elsewhere or maybe as a char to better
     // represent suits, jacks, queens and kings?
 
     // 1=C, 2=D, 3=H, 4=S
-    int suit[] = {1,2,3,4};
+    char suit[] = {'C','D','H','S'};
 
     int rank[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 
@@ -50,14 +55,15 @@ void printBoard() {
     }
 }
 
-void constructDeck(int suit, int rank) {
+void constructDeck(char suit[], int rank[]) {
     int suits = 4;
     int ranks = 13;
 
-    for (int i = 0; i < suits; suit++) {
+    for (int i = 0; i < suits; i++) {
         for (int j = 0; j < ranks; j++) {
-
+            printf("%c%d    ", suit[i], rank[j]);
         }
+        printf("\n");
     }
-
+    printf("\n");
 }
