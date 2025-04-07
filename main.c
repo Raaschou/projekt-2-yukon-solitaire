@@ -1,17 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
 #define TOTAL_CARDS 52;
 
 
-typedef struct card Card;
+typedef struct cardObject Card;
+//Linked list structure for cards
 struct cardObject {
     char suit;
     int rank;
     Card *next;
 };
 
-void constructDeck(char suit[], int rank[]);
+void createDeck(char suit[], int rank[]);
 void printBoard();
-
+Card createCards(char suit, int rank);
 
 int main(void) {
     //This might be better done elsewhere or maybe as a char to better
@@ -19,12 +21,17 @@ int main(void) {
 
     // 1=C, 2=D, 3=H, 4=S
     char suit[] = {'C','D','H','S'};
-
     int rank[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 
-    constructDeck(suit, rank);
+    Card *deck[52];
+    //Not working, need to understand pointers for linked lists
+    *deck = createDeck(suit, rank);
 
     printBoard();
+    for (int i = 0; i < 52; i++) {
+        free(deck[i]);
+    }
+    free(Card);
     return 0;
 }
 
@@ -54,16 +61,26 @@ void printBoard() {
         printf("\n");
     }
 }
-
-void constructDeck(char suit[], int rank[]) {
+//Doesn't do anything other than printing all cards
+//Maybe better to create deck directly in createCards?
+//Probably just need to get pointers and addresses right
+Card createDeck(char suit[], int rank[]) {
     int suits = 4;
     int ranks = 13;
+    Card *deck[52];
 
     for (int i = 0; i < suits; i++) {
         for (int j = 0; j < ranks; j++) {
-            printf("%c%d    ", suit[i], rank[j]);
+            createCards(suit[i], rank[j]);
         }
         printf("\n");
     }
     printf("\n");
+    return deck;
+}
+
+Card createCards(char suit, int rank) {
+    Card *newCard = (Card *)malloc(sizeof(Card));
+    newCard->suit = suit;
+    newCard->rank = rank;
 }
