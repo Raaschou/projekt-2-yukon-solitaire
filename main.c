@@ -30,6 +30,8 @@ int main(void) {
     *deck = createDeck(suit, rank, deck);
 
     printBoard(deck);
+    //Frees memory allocated in createCards, not sure why the malloc call says memory leaks
+    //Manual testing shows it being freed
     for (int i = 0; i < 52; i++) {
         free(deck[i]);
     }
