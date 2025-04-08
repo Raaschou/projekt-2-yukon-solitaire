@@ -12,9 +12,9 @@ struct cardObject {
 };
 
 
-void printBoard();
+void printBoard(Card *deck);
 Card createCards(char suit, int rank);
-Card *createDeck(char suit[], int rank[]);
+Card *createDeck(char suit[], int rank[], Card *deck[]);
 void createLinkedLinkedList(Card *deck);
 
 int main(void) {
@@ -27,9 +27,9 @@ int main(void) {
 
     Card *deck[52];
     //Not working, need to understand pointers for linked lists
-    *deck = createDeck(suit, rank);
+    *deck = createDeck(suit, rank, deck);
 
-    printBoard();
+    printBoard(*deck);
     for (int i = 0; i < 52; i++) {
         free(deck[i]);
     }
@@ -40,7 +40,7 @@ int main(void) {
 //Early version of a function to print the board
 // When variable height is implemented, the standard should be 10,
 // and increasing to the max height of a column
-void printBoard() {
+void printBoard(Card *deck) {
     for (int columnName = 1; columnName < 8; columnName++) {
         printf("C%d", columnName);
         if (columnName < 7) {
@@ -53,9 +53,9 @@ void printBoard() {
     for (int row = 0; row < 9; row++) {
         for (int col = 0; col < 7; col++) {
             if (col < 6) {
-                printf("[]     ");
+                printf("%c%d     ", deck->suit, deck->rank);
             } else {
-                printf("[]");
+                printf("%c%d", deck->suit, deck->rank);
             }
 
         }
@@ -65,15 +65,15 @@ void printBoard() {
 //Doesn't do anything other than printing all cards
 //Maybe better to create deck directly in createCards?
 //Probably just need to get pointers and addresses right
-Card *createDeck(char suit[], int rank[]) {
+Card *createDeck(char suit[], int rank[], Card *deck[]) {
     int suits = 4;
     int ranks = 13;
     int k = 0;
-    Card deck[52];
+
 
     for (int i = 0; i < suits; i++) {
         for (int j = 0; j < ranks; j++) {
-           deck[k] = createCards(suit[i], rank[j]);
+           *deck[k] = createCards(suit[i], rank[j]);
             k++;
         }
     }
@@ -85,6 +85,7 @@ Card createCards(char suit, int rank) {
     Card *newCard = (Card *)malloc(sizeof(Card));
     newCard->suit = suit;
     newCard->rank = rank;
+    return *newCard;
 }
 
 //Should create linked list with size of the input part of the deck
