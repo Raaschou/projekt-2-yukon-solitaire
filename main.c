@@ -13,7 +13,7 @@ struct cardObject {
 
 
 void printBoard(Card *deck);
-Card createCards(char suit, int rank);
+Card *createCards(char suit, int rank);
 Card *createDeck(char suit[], int rank[], Card *deck[]);
 void createLinkedLinkedList(Card *deck);
 
@@ -73,19 +73,19 @@ Card *createDeck(char suit[], int rank[], Card *deck[]) {
 
     for (int i = 0; i < suits; i++) {
         for (int j = 0; j < ranks; j++) {
-           *deck[k] = createCards(suit[i], rank[j]);
+           deck[k] = createCards(suit[i], rank[j]);
             k++;
         }
     }
     printf("Returning deck\n");
-    return deck;
+    return *deck;
 }
 
-Card createCards(char suit, int rank) {
-    Card *newCard = (Card *)malloc(sizeof(Card));
+Card *createCards(char suit, int rank) {
+    Card *newCard = malloc(sizeof(Card));
     newCard->suit = suit;
     newCard->rank = rank;
-    return *newCard;
+    return newCard;
 }
 
 //Should create linked list with size of the input part of the deck
