@@ -11,9 +11,11 @@ struct cardObject {
     Card *next;
 };
 
-void createDeck(char suit[], int rank[]);
+
 void printBoard();
 Card createCards(char suit, int rank);
+Card *createDeck(char suit[], int rank[]);
+void createLinkedLinkedList(Card *deck);
 
 int main(void) {
     //This might be better done elsewhere or maybe as a char to better
@@ -31,7 +33,6 @@ int main(void) {
     for (int i = 0; i < 52; i++) {
         free(deck[i]);
     }
-    free(Card);
     return 0;
 }
 
@@ -64,18 +65,19 @@ void printBoard() {
 //Doesn't do anything other than printing all cards
 //Maybe better to create deck directly in createCards?
 //Probably just need to get pointers and addresses right
-Card createDeck(char suit[], int rank[]) {
+Card *createDeck(char suit[], int rank[]) {
     int suits = 4;
     int ranks = 13;
-    Card *deck[52];
+    int k = 0;
+    Card deck[52];
 
     for (int i = 0; i < suits; i++) {
         for (int j = 0; j < ranks; j++) {
-            createCards(suit[i], rank[j]);
+           deck[k] = createCards(suit[i], rank[j]);
+            k++;
         }
-        printf("\n");
     }
-    printf("\n");
+    printf("Returning deck\n");
     return deck;
 }
 
@@ -83,4 +85,14 @@ Card createCards(char suit, int rank) {
     Card *newCard = (Card *)malloc(sizeof(Card));
     newCard->suit = suit;
     newCard->rank = rank;
+}
+
+//Should create linked list with size of the input part of the deck
+void createLinkedList(Card *deck) {
+    Card *head = &deck[0];
+
+    //Alternative to sizeof?
+    for (int i = 1; i < sizeof(*deck); i++) {
+        deck->next = &deck[i];
+    }
 }
