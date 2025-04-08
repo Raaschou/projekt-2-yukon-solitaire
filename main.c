@@ -12,10 +12,10 @@ struct cardObject {
 };
 
 
-void printBoard(Card *deck);
+void printBoard(Card *deck[]);
 Card *createCards(char suit, int rank);
 Card *createDeck(char suit[], int rank[], Card *deck[]);
-void createLinkedLinkedList(Card *deck);
+void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
     //This might be better done elsewhere or maybe as a char to better
@@ -29,7 +29,7 @@ int main(void) {
     //Not working, need to understand pointers for linked lists
     *deck = createDeck(suit, rank, deck);
 
-    printBoard(*deck);
+    printBoard(deck);
     for (int i = 0; i < 52; i++) {
         free(deck[i]);
     }
@@ -40,24 +40,26 @@ int main(void) {
 //Early version of a function to print the board
 // When variable height is implemented, the standard should be 10,
 // and increasing to the max height of a column
-void printBoard(Card *deck) {
+void printBoard(Card *deck[]) {
+    int k = 0;
     for (int columnName = 1; columnName < 8; columnName++) {
         printf("C%d", columnName);
         if (columnName < 7) {
-            // 5 spaces
-            printf("     ");
+            //\t is the equivalent of tab, makes alignment easier compared to pure spaces.
+            printf("\t");
         }
     }
     printf("\n");
-
+    //Print all
     for (int row = 0; row < 9; row++) {
-        for (int col = 0; col < 7; col++) {
+        // "&& k < 52" makes sure program exits as expected
+        for (int col = 0; col < 7 && k < 52; col++) {
             if (col < 6) {
-                printf("%c%d     ", deck->suit, deck->rank);
+                printf("%c%d\t", deck[k]->suit, deck[k]->rank);
             } else {
-                printf("%c%d", deck->suit, deck->rank);
+                printf("%c%d", deck[k]->suit, deck[k]->rank);
             }
-
+        k++;
         }
         printf("\n");
     }
