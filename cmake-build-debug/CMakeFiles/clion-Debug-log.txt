@@ -1,10 +1,4 @@
-"C:\Program Files\JetBrains\CLion 2024.3.4\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2024.3.4/bin/ninja/win/x64/ninja.exe" -G Ninja -S C:\Users\marcu\CLionProjects\projekt-2-yukon-solitaire -B C:\Users\marcu\CLionProjects\projekt-2-yukon-solitaire\cmake-build-debug
--- The C compiler identification is GNU 13.1.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: C:/Program Files/JetBrains/CLion 2024.3.4/bin/mingw/bin/gcc.exe - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (1.5s)
--- Generating done (0.1s)
--- Build files have been written to: C:/Users/marcu/CLionProjects/projekt-2-yukon-solitaire/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DPKG_CONFIG_EXECUTABLE=/opt/homebrew/bin/pkg-config -G "Unix Makefiles" -S /Users/chris/CLionProjects/projekt-2-yukon-solitaire -B /Users/chris/CLionProjects/projekt-2-yukon-solitaire/cmake-build-debug
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/chris/CLionProjects/projekt-2-yukon-solitaire/cmake-build-debug

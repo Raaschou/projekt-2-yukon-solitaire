@@ -1,9 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define TOTAL_CARDS 52;
+#include <SDL3/SDL.h>
+#include <stdio.h>
+
+#include <SDL3/SDL.h>
+#include <stdio.h>
 
 
-typedef struct cardObject Card;
+
+typedef struct cardObject Card; // header fil?
 //Linked list structure for cards
 struct cardObject {
     char suit;
@@ -14,7 +20,7 @@ struct cardObject {
 
 void printBoard(Card *deck[]);
 Card *createCards(char suit, int rank);
-Card *createDeck(char suit[], int rank[], Card *deck[]);
+Card *createDeck(char suit[], int rank[], Card *deck[]); // hvorfor * Card *deck[]
 void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
@@ -27,7 +33,7 @@ int main(void) {
 
     Card *deck[52];
     //Not working, need to understand pointers for linked lists
-    *deck = createDeck(suit, rank, deck);
+     *deck = createDeck(suit, rank, deck);
 
     printBoard(deck);
     //Frees memory allocated in createCards, not sure why the malloc call says memory leaks
@@ -45,7 +51,7 @@ int main(void) {
 void printBoard(Card *deck[]) {
     int k = 0;
     for (int columnName = 1; columnName < 8; columnName++) {
-        printf("C%d", columnName);
+        printf("x%d", columnName);
         if (columnName < 7) {
             //\t is the equivalent of tab, makes alignment easier compared to pure spaces.
             printf("\t");
@@ -101,3 +107,58 @@ void createLinkedList(Card *deck) {
         deck->next = &deck[i];
     }
 }
+
+
+
+// int main(void) {
+//     // Init SDL (kun video)
+//     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+//         SDL_Log("SDL_Init fejl: %s", SDL_GetError());
+//         return 1;
+//     }
+//
+//     // Opret vindue
+//     SDL_Window *window = SDL_CreateWindow("Mit SDL3-vindue", 800, 600, 0);
+//     if (!window) {
+//         SDL_Log("Fejl ved oprettelse af vindue: %s", SDL_GetError());
+//         SDL_Quit();
+//         return 1;
+//     }
+//
+//     // Opret renderer
+//     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
+//     if (!renderer) {
+//         SDL_Log("Fejl ved oprettelse af renderer: %s", SDL_GetError());
+//         SDL_DestroyWindow(window);
+//         SDL_Quit();
+//         return 1;
+//     }
+//
+//     // Event loop
+//     SDL_Event event;
+//     int kører = 1;
+//
+//     while (kører) {
+//         while (SDL_PollEvent(&event)) {
+//             if (event.type == SDL_EVENT_QUIT) {
+//                 kører = 0;
+//             }
+//         }
+//
+//         // Baggrundsfarve (RGB + Alpha)
+//         SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+//         SDL_RenderClear(renderer);
+//
+//         // Tegn evt. her...
+//
+//         SDL_RenderPresent(renderer);
+//         SDL_Delay(16); // Ca. 60 FPS
+//     }
+//
+//     // Oprydning
+//     SDL_DestroyRenderer(renderer);
+//     SDL_DestroyWindow(window);
+//     SDL_Quit();
+//
+//     return 0;
+// }
