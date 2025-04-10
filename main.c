@@ -19,7 +19,7 @@ void printBoard(Card *deck[]);
 Card *createCards(char suit, int rank);
 Card *createDeck(char suit[], int rank[], Card *deck[]); // hvorfor * Card *deck[]
 void createLinkedList(Card *deck[]);
-
+void createLinkedlist(Card *lumns[],Card *deck);
 
 int main(void) {
     //This might be better done elsewhere or maybe as a char to better
@@ -36,7 +36,17 @@ int main(void) {
     printBoard(deck);
     // STARTUP
     //Create columns of linked list
+    int intialLength[] = {1,6,7,8,9,10,11};
+    Card *lumns[7]= {NULL};
+    void createLinkedlist(Card *lumns[],Card *deck)
 
+
+    // *head = deck[0]
+    // for (int i = 0; i < IL[k] ; i++){
+    // deck[i]->next = deck[i+1]
+
+    //
+    //}
 
 
     // Linked list = [H6 -> D5 -> D8 -> H7 -> C9]
