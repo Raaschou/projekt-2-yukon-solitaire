@@ -12,11 +12,14 @@ struct cardObject {
     Card *next;
 };
 
+Card *head = NULL;
+Card *current = NULL;
 
 void printBoard(Card *deck[]);
 Card *createCards(char suit, int rank);
 Card *createDeck(char suit[], int rank[], Card *deck[]); // hvorfor * Card *deck[]
-void createLinkedLinkedList(Card *deck[]);
+void createLinkedList(Card *deck[]);
+
 
 int main(void) {
     //This might be better done elsewhere or maybe as a char to better
@@ -31,6 +34,15 @@ int main(void) {
     createDeck(suit, rank, deck);
 
     printBoard(deck);
+    // STARTUP
+    //Create columns of linked list
+
+
+
+    // Linked list = [H6 -> D5 -> D8 -> H7 -> C9]
+    createLinkedList(deck);
+    printf("%c%d ",deck[30]->next->suit, deck[30]->next->rank);
+
     //Frees memory allocated in createCards, not sure why the malloc call says memory leaks
     //Manual testing shows it being freed
     for (int i = 0; i < 52; i++) {
@@ -47,6 +59,7 @@ void printBoard(Card *deck[]) {
     int k = 0;
     for (int columnName = 1; columnName < 8; columnName++) {
         printf("x%d", columnName);
+
         if (columnName < 7) {
             //\t is the equivalent of tab, makes alignment easier compared to pure spaces.
             printf("\t");
@@ -94,66 +107,11 @@ Card *createCards(char suit, int rank) {
 }
 
 //Should create linked list with size of the input part of the deck
-void createLinkedList(Card *deck) {
-    Card *head = &deck[0];
+void createLinkedList(Card *deck[]) {
+    head = deck[0];
 
     //Alternative to sizeof?
-    for (int i = 1; i < sizeof(*deck); i++) {
-        deck->next = &deck[i];
+    for (int i = 1; i < 51; i++) {
+        deck[i]->next = deck[i+1];
     }
 }
-
-
-
-// int main(void) {
-//     // Init SDL (kun video)
-//     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-//         SDL_Log("SDL_Init fejl: %s", SDL_GetError());
-//         return 1;
-//     }
-//
-//     // Opret vindue
-//     SDL_Window *window = SDL_CreateWindow("Mit SDL3-vindue", 800, 600, 0);
-//     if (!window) {
-//         SDL_Log("Fejl ved oprettelse af vindue: %s", SDL_GetError());
-//         SDL_Quit();
-//         return 1;
-//     }
-//
-//     // Opret renderer
-//     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
-//     if (!renderer) {
-//         SDL_Log("Fejl ved oprettelse af renderer: %s", SDL_GetError());
-//         SDL_DestroyWindow(window);
-//         SDL_Quit();
-//         return 1;
-//     }
-//
-//     // Event loop
-//     SDL_Event event;
-//     int kører = 1;
-//
-//     while (kører) {
-//         while (SDL_PollEvent(&event)) {
-//             if (event.type == SDL_EVENT_QUIT) {
-//                 kører = 0;
-//             }
-//         }
-//
-//         // Baggrundsfarve (RGB + Alpha)
-//         SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
-//         SDL_RenderClear(renderer);
-//
-//         // Tegn evt. her...
-//
-//         SDL_RenderPresent(renderer);
-//         SDL_Delay(16); // Ca. 60 FPS
-//     }
-//
-//     // Oprydning
-//     SDL_DestroyRenderer(renderer);
-//     SDL_DestroyWindow(window);
-//     SDL_Quit();
-//
-//     return 0;
-// }
