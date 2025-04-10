@@ -1,3 +1,0 @@
-/Users/chris/CLionProjects/projekt-2-yukon-solitaire/cmake-build-debug/CMakeFiles/projekt_2_yukon_solitaire.dir
-/Users/chris/CLionProjects/projekt-2-yukon-solitaire/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/chris/CLionProjects/projekt-2-yukon-solitaire/cmake-build-debug/CMakeFiles/rebuild_cache.dir

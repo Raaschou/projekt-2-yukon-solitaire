@@ -8,9 +8,9 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(SDL3 REQUIRED sdl3)
 
 # Inkluder og link SDL3
-include_directories(${SDL3_INCLUDE_DIRS})
+#[[include_directories(${SDL3_INCLUDE_DIRS})
 link_directories(${SDL3_LIBRARY_DIRS})
-add_definitions(${SDL3_CFLAGS_OTHER})
+add_definitions(${SDL3_CFLAGS_OTHER})]]
 
 # Dit projekt + sourcefiler
 add_executable(projekt_2_yukon_solitaire

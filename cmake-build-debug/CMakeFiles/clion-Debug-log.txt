@@ -1,4 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DPKG_CONFIG_EXECUTABLE=/opt/homebrew/bin/pkg-config -G "Unix Makefiles" -S /Users/chris/CLionProjects/projekt-2-yukon-solitaire -B /Users/chris/CLionProjects/projekt-2-yukon-solitaire/cmake-build-debug
--- Configuring done (0.0s)
--- Generating done (0.0s)
--- Build files have been written to: /Users/chris/CLionProjects/projekt-2-yukon-solitaire/cmake-build-debug

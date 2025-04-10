@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define TOTAL_CARDS 52;
+#define TOTAL_CARDS 52
 #include <SDL3/SDL.h>
 #include <stdio.h>
 
