@@ -1,11 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define TOTAL_CARDS 52
-#include <SDL3/SDL.h>
-#include <stdio.h>
-
-#include <SDL3/SDL.h>
-#include <stdio.h>
 
 
 
@@ -33,7 +28,7 @@ int main(void) {
 
     Card *deck[52];
     //Not working, need to understand pointers for linked lists
-     *deck = createDeck(suit, rank, deck);
+    createDeck(suit, rank, deck);
 
     printBoard(deck);
     //Frees memory allocated in createCards, not sure why the malloc call says memory leaks
