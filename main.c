@@ -12,14 +12,19 @@ struct cardObject {
     Card *next;
 };
 
+unsigned int count = 0;
+int size = 0;
+int iL[] = {1,6,7,8,9,10,11};
+
+
 Card *head = NULL;
 Card *current = NULL;
 
 void printBoard(Card *deck[]);
 Card *createCards(char suit, int rank);
 Card *createDeck(char suit[], int rank[], Card *deck[]); // hvorfor * Card *deck[]
-void createLinkedList(Card *deck[]);
-void createLinkedlist(Card *lumns[],Card *deck);
+// void createLinkedList(Card *deck[]);
+void createLinkedlist(Card columns[], Card *deck[]);
 
 int main(void) {
     //This might be better done elsewhere or maybe as a char to better
@@ -32,26 +37,14 @@ int main(void) {
     Card *deck[52];
     //Not working, need to understand pointers for linked lists
     createDeck(suit, rank, deck);
-
+    Card *columns[7]= {NULL};
     printBoard(deck);
-    // STARTUP
-    //Create columns of linked list
-    int intialLength[] = {1,6,7,8,9,10,11};
-    Card *lumns[7]= {NULL};
-    void createLinkedlist(Card *lumns[],Card *deck)
 
-
-    // *head = deck[0]
-    // for (int i = 0; i < IL[k] ; i++){
-    // deck[i]->next = deck[i+1]
-
-    //
-    //}
-
-
+    createLinkedlist(columns, deck);
+    printf("%c", columns[1]->next->suit);
     // Linked list = [H6 -> D5 -> D8 -> H7 -> C9]
-    createLinkedList(deck);
-    printf("%c%d ",deck[30]->next->suit, deck[30]->next->rank);
+    // createLinkedList(deck);
+    //printf("%c%d ",deck[30]->next->suit, deck[30]->next->rank);
 
     //Frees memory allocated in createCards, not sure why the malloc call says memory leaks
     //Manual testing shows it being freed
@@ -59,6 +52,19 @@ int main(void) {
         free(deck[i]);
     }
     return 0;
+}
+// print første board med linked lists
+
+void createLinkedlist(Card columns[], Card *deck[]){
+    while(count != 52) {
+       for(int i = 0; i <7; i++) {
+           size = sizeof(columns[i])/ sizeof(columns[0]);
+           if (size <= iL[i]) {
+               columns[i].next = deck[count];
+               count++;
+           }
+       }
+    }
 }
 
 
@@ -117,11 +123,11 @@ Card *createCards(char suit, int rank) {
 }
 
 //Should create linked list with size of the input part of the deck
-void createLinkedList(Card *deck[]) {
-    head = deck[0];
-
-    //Alternative to sizeof?
-    for (int i = 1; i < 51; i++) {
-        deck[i]->next = deck[i+1];
-    }
-}
+// void createLinkedList(Card *deck[]) {
+//     head = deck[0];
+//
+//     //Alternative to sizeof?
+//     for (int i = 1; i < 51; i++) {
+//         deck[i]->next = deck[i+1];
+//     }
+// }
