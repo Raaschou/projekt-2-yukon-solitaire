@@ -16,9 +16,33 @@ endif()
 # Dit projekt + sourcefiler
 add_executable(projekt_2_yukon_solitaire
         main.c
-        LOL/Kort.c
-        LOL/Regler.c
-        main.h
+        Board.c
+        Include/main.h
+        Include/Board.h
+        Source/Deck.c
+        Include/Deck.h
+        Source/Game.c
+        Include/Game.h
+        Source/Card.c
+        Include/Card.h
+        Source/Foundations.c
+        Include/Foundations.h
+        Source/Commands.c
+        Include/Commands.h
+        Source/FileIO.c
+        Include/FileIO.h
+        Source/Shuffle.c
+        Include/Shuffle.h
+        Source/Utils.c
+        Include/Utils.h
+        Source/NewMain.c
+        Include/NewMain.h
+        Source/NewBoard.c
+        Include/NewBoard.h
+        Source/LinkedLists.c
+        Include/LinkedLists.h
+        Source/Columns.c
+        Include/Columns.h
 )
 
 # Link SDL3 med dit projekt

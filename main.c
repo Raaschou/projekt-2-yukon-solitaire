@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define TOTAL_CARDS 52
-
+#include "Source/Board.h"
+#include "Board.c"
+#include <stdbool.h>
 
 
 typedef struct cardObject Card; // header fil?
@@ -21,6 +23,8 @@ void createLinkedLinkedList(Card *deck[]);
 int main(void) {
     //This might be better done elsewhere or maybe as a char to better
     // represent suits, jacks, queens and kings?
+
+    printInitialBoard();
 
     // 1=C, 2=D, 3=H, 4=S
     char suit[] = {'C','D','H','S'};
@@ -102,7 +106,6 @@ void createLinkedList(Card *deck) {
         deck->next = &deck[i];
     }
 }
-
 
 
 // int main(void) {
