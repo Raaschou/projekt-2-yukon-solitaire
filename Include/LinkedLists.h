@@ -10,6 +10,7 @@
 typedef struct CardNode {
     Card card;
     struct CardNode *next;
+    struct CardNode *prev;
 } CardNode;
 
 typedef struct {
@@ -17,10 +18,10 @@ typedef struct {
     CardNode *tail;
     int size;
 } LinkedList;
+bool nodeInList(CardNode *node, LinkedList *list);
+void list(LinkedList *list);
+void addCard(LinkedList *list, Card card);
+void moveStack(CardNode *startNode, LinkedList *from, LinkedList *to);
 
-void init_list(LinkedList *list);
-void append_card(LinkedList *list, Card card);
-CardNode* pop_card(LinkedList *list);
-void free_list(LinkedList *list);
 
 #endif

@@ -4,13 +4,25 @@
 
 #include "../Include/Deck.h"
 #include "../Include/Card.h"
+#include "../Include/LinkedLists.h"
 
-// TODO: Opret og tilføj alle 52 kort til deck'et
-void init_deck(LinkedList *deck) {
-    // TODO: Loop over alle suits og ranks
-}
+void startDeck(LinkedList *deck) {
+    if (!deck) return;
 
-// TODO: Ryd deck og genskab original rækkefølge
-void reset_deck(LinkedList *deck) {
-    // TODO
+    char suits[] = {'C', 'D', 'H', 'S'};
+
+    for (int s = 0; s < 4; s++) {
+        for (int r = 1; r <= 13; r++) {
+            // gav lidt problemer;(
+            // Card *newCard = createCard(suits[s], r);
+            // addCard(deck, *newCard);
+
+            Card newCard;
+            newCard.suit = suits[s];
+            newCard.rank = r;
+            newCard.faceUp = 1;
+
+            addCard(deck, newCard);
+        }
+    }
 }

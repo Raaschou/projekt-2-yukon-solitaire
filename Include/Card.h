@@ -4,13 +4,13 @@
 #ifndef CARD_H
 #define CARD_H
 
-typedef enum { HEARTS, CLUBS, DIAMONDS, SPADES } Suit;
+
 typedef struct {
-    char rank; // '1'-'9', 't', 'j', 'q', 'k'
-    Suit suit;
+    int rank; // '1'-'9', 't', 'j', 'q', 'k'
+    char suit;
     int faceUp; // 1 = oppe, 0 = nedad
 } Card;
+Card *createCard(char suit, int rank);
 
-void print_card(const Card *card);
 
 #endif

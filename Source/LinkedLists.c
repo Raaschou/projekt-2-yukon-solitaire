@@ -5,23 +5,74 @@
 #include "../Include/LinkedLists.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 
-// TODO: Initier tom liste
-void init_list(LinkedList *list) {
-    // TODO
+void list(LinkedList *list) {
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
 }
 
-// TODO: Tilføj kort til slutningen
-void append_card(LinkedList *list, Card card) {
-    // TODO
+void addCard(LinkedList *list, Card card) {
+    CardNode *newNode = malloc(sizeof(CardNode));
+    if (!newNode) return;
+
+    newNode->card = card;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (list->head == NULL) {
+        list->head = newNode;
+        list->tail = newNode;
+    } else {
+        list->tail->next = newNode;
+        newNode->prev = list->tail;
+        list->tail = newNode;
+    }
+
+    list->size++;
 }
 
-// TODO: Fjern kort fra slutningen
-CardNode* pop_card(LinkedList *list) {
-    // TODO
+bool nodeInList(CardNode *node, LinkedList *list) {
+    if (!node || !list || !list->head) return false;
+
+    CardNode *current = list->head;
+    while (current != NULL) {
+        if (current == node) return true;
+        current = current->next;
+    }
+    return false;
+}
+void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
+    if (!startNode || !oldList || !newList) return;
+    if (!nodeInList(startNode, oldList)) return;
+
+    CardNode *newTail = startNode->prev;
+
+    if (newTail) {
+        newTail->next = NULL;
+    } else {
+        oldList->head = NULL;
+    }
+    oldList->tail = newTail;
+    startNode->prev = newList->tail;
+
+    if (newList->tail) {
+        newList->tail->next = startNode;
+    } else {
+        newList->head = startNode;
+    }
+
+    CardNode *p = startNode;
+    int moved = 1;
+    while (p->next != NULL) {
+        p = p->next;
+        moved++;
+    }
+    p->next = NULL;
+    newList->tail = p;
+
+    oldList->size -= moved;
+    newList->size += moved;
 }
 
-// TODO: Frigør hukommelse
-void free_list(LinkedList *list) {
-    // TODO
-}
