@@ -5,25 +5,25 @@
 #include "../Include/Foundations.h"
 
 // TODO: Initialiser alle 4 foundations som tomme linked lists
-void init_foundations(LinkedList foundations[4]) {
+void foundations(LinkedList columns[4]) {
     for (int i = 0; i < 4; i++) {
-        init_list(&foundations[i]);
+        list(&columns[i]);
     }
 }
 
 // TODO: Forsøg at lægge kort på foundation. Returnér 1 hvis succes.
-int move_to_foundation(LinkedList *foundation, Card card) {
+int moveToFoundation(LinkedList *foundation, Card card) {
     // TODO: Brug is_valid_foundation_move til at afgøre
     return 0;
 }
 
 // TODO: Tjek om kort må lægges i denne foundation
-int is_valid_foundation_move(const LinkedList *foundation, const Card *card) {
+int validMove(const LinkedList *foundation, const Card *card) {
     // TODO: Samme suit og stigende rank
     return 1;
 }
 
 // TODO: Udskriv alle 4 foundations
-void print_foundations(LinkedList foundations[4]) {
+void printFoundations(LinkedList foundations[4]) {
     // TODO
 }

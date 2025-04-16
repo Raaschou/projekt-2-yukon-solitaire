@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #define TOTAL_CARDS 52
 
-#include "Include/Card.h"
 
 #include <stdbool.h>
 
@@ -28,6 +27,7 @@
 
 int main(void) {
     testCreateCard();
+
     /*Card *c = createCard('S',12);
     printf("Card -> Rank: %d, Suit: %c\n", c->rank, c->suit);
     free(c);*/

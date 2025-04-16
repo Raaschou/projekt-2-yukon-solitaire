@@ -3,6 +3,7 @@
 //
 
 #include "../Include/Columns.h"
+#include "../Include/Deck.h"
 
 void columns(LinkedList columns[7]) {
     for (int i = 0; i < 7; i++) {
@@ -10,20 +11,13 @@ void columns(LinkedList columns[7]) {
     }
 }
 
-void moveBetweenColumns(CardNode *node,LinkedList *from, LinkedList *to) {
-    validMove(from, to);
-    moveStack(node, from, to);
-}
-void foundations(LinkedList columns[7]) {
-    for (int i = 0; i < 7; i++) {
-        list(&columns[i]);
-    }
-}
 
 void moveBetweenColumns(CardNode *node,LinkedList *from, LinkedList *to) {
     validMove(from, to);
     moveStack(node, from, to);
 }
+
+
 
 // TODO: Udskriv kolonner i pænt format
 void printColumns(LinkedList columns[11]) {
