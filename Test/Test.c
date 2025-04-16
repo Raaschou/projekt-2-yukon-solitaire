@@ -14,7 +14,7 @@ void testCreateCard() {
     Card *card = createCard(suit, cardNumber);
 
 
-    printf(card, cardNumber, suit);
+    // printf(card, cardNumber, suit);
 
     if (card == NULL) {
         printf("Card not initialised\n");

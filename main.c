@@ -8,7 +8,9 @@
 
 #include "Include/LinkedLists.h"
 
-#include "Test/Test.h"
+#include "Source/Card.c"
+
+#include "Test/Test.c"
 
 // typedef struct cardObject Card; // header fil?
 // //Linked list structure for cards
