@@ -21,3 +21,4 @@ Card *createCard(char suit, int rank) {
     return newCard;
 }
 
+

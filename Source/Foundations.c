@@ -3,6 +3,7 @@
 //
 
 #include "../Include/Foundations.h"
+#include "../Include/Deck.h"
 
 // TODO: Initialiser alle 4 foundations som tomme linked lists
 void foundations(LinkedList columns[4]) {
@@ -11,16 +12,15 @@ void foundations(LinkedList columns[4]) {
     }
 }
 
-// TODO: Forsøg at lægge kort på foundation. Returnér 1 hvis succes.
-int moveToFoundation(LinkedList *foundation, Card card) {
-    // TODO: Brug is_valid_foundation_move til at afgøre
-    return 0;
+void moveToFoundation(CardNode *node,LinkedList *from, LinkedList *to) {
+    validMove(from, to);
+    moveStack(node, from, to);
 }
 
 // TODO: Tjek om kort må lægges i denne foundation
-int validMove(const LinkedList *foundation, const Card *card) {
-    // TODO: Samme suit og stigende rank
-    return 1;
+bool validMove(CardNode *source, CardNode *target) {
+
+    return true;
 }
 
 // TODO: Udskriv alle 4 foundations

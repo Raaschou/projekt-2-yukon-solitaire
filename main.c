@@ -5,11 +5,14 @@
 
 #include <stdbool.h>
 
-#include "Include/LinkedLists.h"
+
 
 #include "Source/Card.c"
+#include "Source/Deck.c"
+#include "Source/LinkedLists.c"
 
 #include "Test/Test.c"
+#include "Include/Deck.h"
 
 // typedef struct cardObject Card; // header fil?
 // //Linked list structure for cards
@@ -26,7 +29,22 @@
 // void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
-    testCreateCard();
+
+    LinkedList newDeck;
+    list(&newDeck);
+    startDeck(&newDeck);
+    printList(&newDeck);
+    randomShuffle(&newDeck);
+    printf("Shuffling deck\n");
+    printList(&newDeck);
+    splitShuffle(&newDeck, 35);
+    printf("Shuffling deck again\n");
+    printList(&newDeck);
+
+    // Deck firstDeck = startDeck();
+    // printf(firstDeck);
+    // firstDeck.splitShuffle();
+    // printf(firstDeck);
 
     /*Card *c = createCard('S',12);
     printf("Card -> Rank: %d, Suit: %c\n", c->rank, c->suit);

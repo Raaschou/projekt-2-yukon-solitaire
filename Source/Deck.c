@@ -74,18 +74,20 @@ void splitShuffle(LinkedList *deck, int cutSize) {
     copyCardsFromList(deck, cards);
     clearList(deck);
 
-    int leftIndex = -1;
+    int leftIndex = 0;
     int rightIndex = cutSize;
 
     while (leftIndex < cutSize && rightIndex < 52) {
-        addCard(deck, cards[++leftIndex]);
+        addCard(deck, cards[leftIndex++]);
         addCard(deck, cards[rightIndex++]);
     }
 
     while (leftIndex < cutSize) {
-        addCard(deck, cards[++leftIndex]);
+        addCard(deck, cards[leftIndex++]);
     }
     while (rightIndex < 52) {
         addCard(deck, cards[rightIndex++]);
     }
 }
+
+

@@ -20,7 +20,7 @@ void moveBetweenColumns(CardNode *node,LinkedList *from, LinkedList *to) {
 
 
 // TODO: Udskriv kolonner i pænt format
-void printColumns(LinkedList columns[11]) {
+void printColumns(LinkedList columns[7]) {
 
       for (int i = 0; i < 7; i++) {
 

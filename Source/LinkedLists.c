@@ -74,4 +74,12 @@ void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
     oldList->size -= moved;
     newList->size += moved;
 }
+void printList(LinkedList *list) {
+    CardNode *current = list->head;
+    while (current) {
+        printf("%d%c ", current->card.rank, current->card.suit);
+        current = current->next;
+    }
+    printf("\n");
+}
 
