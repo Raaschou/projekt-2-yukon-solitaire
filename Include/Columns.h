@@ -7,16 +7,9 @@
 
 #include "LinkedLists.h"
 
-// Initialiser 7 kolonner
-void init_columns(LinkedList columns[7]);
-
-// Flyt kort fra én kolonne til en anden
+void columns(LinkedList columns[7]);
 int move_between_columns(LinkedList *from, LinkedList *to, int count);
-
-// Print alle kolonner
 void print_columns(LinkedList columns[7]);
-
-// Valider om flyt er gyldigt (f.eks. skiftende farver, faldende rank)
-int is_valid_column_move(CardNode *source, CardNode *target);
+int is_validmove(CardNode *source, CardNode *target);
 
 #endif

@@ -8,19 +8,17 @@
 #include "../Include/LinkedLists.h"
 
 void startDeck(LinkedList *deck) {
-    if (!deck) return;
-
     char suits[] = {'C', 'D', 'H', 'S'};
 
-    for (int s = 0; s < 4; s++) {
-        for (int r = 1; r <= 13; r++) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 1; j <= 13; j++) {
             // gav lidt problemer;(
-            // Card *newCard = createCard(suits[s], r);
+            // Card *newCard = createCard(suits[i], j);
             // addCard(deck, *newCard);
 
             Card newCard;
-            newCard.suit = suits[s];
-            newCard.rank = r;
+            newCard.suit = suits[i];
+            newCard.rank = j;
             newCard.faceUp = 1;
 
             addCard(deck, newCard);
@@ -35,11 +33,10 @@ void copyCardsFromList(LinkedList *deck, Card card[]) {
         card[i++] = current->card;
         current = current->next;
     }
+
 }
 
 void clearList(LinkedList *deck) {
-    if (!deck) return;
-
     CardNode *current = deck->head;
     while (current) {
         CardNode *next = current->next;
@@ -52,10 +49,11 @@ void clearList(LinkedList *deck) {
 }
 
 void randomShuffle(LinkedList *deck) {
-    if (!deck || deck->size != 52) return;
+    if (deck->size != 52) return;
 
     Card cards[52];
     copyCardsFromList(deck, cards);
+
 
     for (int i = 51; i > 0; i--) {
         int j = rand() % (i + 1);
@@ -71,8 +69,8 @@ void randomShuffle(LinkedList *deck) {
     }
 }
 
-void split_shuffle(LinkedList *deck, int cutSize) {
-    if (!deck || cutSize <= 0 || cutSize >= deck->size) return;
+void splitShuffle(LinkedList *deck, int cutSize) {
+    if (cutSize <= 0 || cutSize >= deck->size) return;
 
     Card cards[52];
     copyCardsFromList(deck, cards);

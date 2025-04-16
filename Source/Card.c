@@ -3,8 +3,7 @@
 //
 
 
-#include <stdio.h>
-#include <string.h>
+
 #include "../Include/Card.h"
 
 // Suits og ranks til opbygning af deck

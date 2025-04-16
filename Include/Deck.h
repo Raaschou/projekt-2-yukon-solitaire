@@ -7,4 +7,8 @@
 #include "../Include/Card.h"
 #include "../Include/LinkedLists.h"
 void startDeck(LinkedList *deck);
+void copyCardsFromList(LinkedList *deck, Card card[]);
+void clearList(LinkedList *deck);
+void randomShuffle(LinkedList *deck);
+void splitShuffle(LinkedList *deck, int cutSize);
 #endif //DECK_H

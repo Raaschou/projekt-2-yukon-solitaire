@@ -4,7 +4,8 @@
 
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
-
+#include <stdlib.h>
+#include <stdbool.h>
 #include "Card.h"
 
 typedef struct CardNode {
