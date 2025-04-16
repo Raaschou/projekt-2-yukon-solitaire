@@ -4,26 +4,37 @@
 
 #include "../Include/Columns.h"
 
-
-// TODO: Initialiser alle 7 kolonner som tomme linked lists
 void columns(LinkedList columns[7]) {
     for (int i = 0; i < 7; i++) {
-        columns(&columns[i]);
+        list(&columns[i]);
     }
 }
 
-// TODO: Flyt `count` kort fra én kolonne til en anden, hvis gyldigt
-int moveBetweenColumns(LinkedList *from, LinkedList *to, int count) {
-    // TODO: Tjek validitet, flyt kortene, returnér 1 ved succes, 0 ellers
-    return 0;
+void moveBetweenColumns(CardNode *node,LinkedList *from, LinkedList *to) {
+    validMove(from, to);
+    moveStack(node, from, to);
+}
+void foundations(LinkedList columns[7]) {
+    for (int i = 0; i < 7; i++) {
+        list(&columns[i]);
+    }
+}
+
+void moveBetweenColumns(CardNode *node,LinkedList *from, LinkedList *to) {
+    validMove(from, to);
+    moveStack(node, from, to);
 }
 
 // TODO: Udskriv kolonner i pænt format
-void printColumns(LinkedList columns[7]) {
+void printColumns(LinkedList columns[11]) {
+
+      for (int i = 0; i < 7; i++) {
+
+      }
 }
 
 // TODO: Tjek regler for om flyt er gyldigt (alternating color, descending)
 bool validMove(CardNode *source, CardNode *target) {
     // TODO
-    return 1;
+    return true;
 }
