@@ -34,10 +34,10 @@ int main(void) {
     list(&newDeck);
     startDeck(&newDeck);
     printList(&newDeck);
-    randomShuffle(&newDeck);
-    printf("Shuffling deck\n");
-    printList(&newDeck);
-    splitShuffle(&newDeck, 35);
+    // randomShuffle(&newDeck);
+    // printf(" ran Shuffling deck\n");
+    // printList(&newDeck);
+    splitShuffle(&newDeck, 26);
     printf("Shuffling deck again\n");
     printList(&newDeck);
 
