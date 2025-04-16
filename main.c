@@ -4,13 +4,11 @@
 
 #include "Include/Card.h"
 
-
-#include "Source/Card.c"
-
 #include <stdbool.h>
 
 #include "Include/LinkedLists.h"
 
+#include "Test/Test.h"
 
 // typedef struct cardObject Card; // header fil?
 // //Linked list structure for cards
@@ -27,11 +25,10 @@
 // void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
-    Card *c = createCard('S',12);
+    testCreateCard();
+    /*Card *c = createCard('S',12);
     printf("Card -> Rank: %d, Suit: %c\n", c->rank, c->suit);
-    free(c);
-
-
+    free(c);*/
 }
 //     //This might be better done elsewhere or maybe as a char to better
 //     // represent suits, jacks, queens and kings?

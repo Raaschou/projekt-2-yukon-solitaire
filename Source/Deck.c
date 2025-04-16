@@ -1,8 +1,6 @@
 //
 // Created by August Frandsen on 15/04/2025.
 //
-#include "stdlib.h"
-#include "time.h"
 #include "../Include/Deck.h"
 #include "../Include/Card.h"
 #include "../Include/LinkedLists.h"

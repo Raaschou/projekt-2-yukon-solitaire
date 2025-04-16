@@ -6,6 +6,9 @@
 #define DECK_H
 #include "../Include/Card.h"
 #include "../Include/LinkedLists.h"
+#include "stdlib.h"
+#include "time.h"
+
 void startDeck(LinkedList *deck);
 void copyCardsFromList(LinkedList *deck, Card card[]);
 void clearList(LinkedList *deck);

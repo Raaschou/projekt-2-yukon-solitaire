@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
+
 typedef struct {
     int rank; // '1'-'9', 't', 'j', 'q', 'k'
     char suit;

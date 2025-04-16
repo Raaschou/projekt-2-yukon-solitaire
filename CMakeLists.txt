@@ -31,8 +31,6 @@ add_executable(projekt_2_yukon_solitaire
         Include/Commands.h
         Source/FileIO.c
         Include/FileIO.h
-        Source/Shuffle.c
-        Include/Shuffle.h
         Source/Utils.c
         Include/Utils.h
         Source/NewMain.c
@@ -43,6 +41,8 @@ add_executable(projekt_2_yukon_solitaire
         Include/LinkedLists.h
         Source/Columns.c
         Include/Columns.h
+        Test/Test.c
+        Test/Test.h
 )
 
 # Link SDL3 med dit projekt
