@@ -8,7 +8,7 @@
 #include "LinkedLists.h"
 
 void columns(LinkedList columns[7]);
-void moveBetweenColumns(LinkedList *from, LinkedList *to, int count);
+void moveBetweenColumns(CardNode *node,LinkedList *from, LinkedList *to);
 void printColumns(LinkedList columns[7]);
 bool validMove(CardNode *source, CardNode *target);
 

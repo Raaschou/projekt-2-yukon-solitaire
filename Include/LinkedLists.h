@@ -23,7 +23,8 @@ bool nodeInList(CardNode *node, LinkedList *list);
 void list(LinkedList *list);
 void addCard(LinkedList *list, Card card);
 void moveStack(CardNode *startNode, LinkedList *from, LinkedList *to);
-void printList(LinkedList *list);
+void printCard(CardNode *node, LinkedList *list);
+
 
 
 #endif

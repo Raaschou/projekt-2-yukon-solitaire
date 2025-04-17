@@ -10,7 +10,8 @@
 #include "Source/Card.c"
 #include "Source/Deck.c"
 #include "Source/LinkedLists.c"
-
+#include "Source/NewBoard.c"
+#include "Source/Columns.c"
 #include "Test/Test.c"
 #include "Include/Deck.h"
 
@@ -29,17 +30,22 @@
 // void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
+    srand(time(NULL));
 
     LinkedList newDeck;
     list(&newDeck);
     startDeck(&newDeck);
-    printList(&newDeck);
-    // randomShuffle(&newDeck);
-    // printf(" ran Shuffling deck\n");
-    // printList(&newDeck);
-    splitShuffle(&newDeck, 26);
-    printf("Shuffling deck again\n");
-    printList(&newDeck);
+
+    LinkedList newColumns[7];
+    columns(newColumns);
+    dealToColumns(&newDeck, newColumns);
+
+    LinkedList foundations[4];
+    for (int i = 0; i < 4; i++) {
+        list(&foundations[i]);
+    }
+    printBoard(newColumns, foundations, "INIT", "OK");
+
 
     // Deck firstDeck = startDeck();
     // printf(firstDeck);

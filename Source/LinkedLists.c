@@ -5,7 +5,6 @@
 #include "../Include/LinkedLists.h"
 
 
-
 void list(LinkedList *list) {
     list->head = NULL;
     list->tail = NULL;
@@ -42,6 +41,7 @@ bool nodeInList(CardNode *node, LinkedList *list) {
     }
     return false;
 }
+
 void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
     if (!startNode || !oldList || !newList) return;
     if (!nodeInList(startNode, oldList)) return;
@@ -74,12 +74,31 @@ void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
     oldList->size -= moved;
     newList->size += moved;
 }
-void printList(LinkedList *list) {
-    CardNode *current = list->head;
-    while (current) {
-        printf("%d%c ", current->card.rank, current->card.suit);
-        current = current->next;
+
+void printCard(CardNode *node, LinkedList *list) {
+    if (!node || !list || !nodeInList(node, list)) {
+        printf("  \t");
+        return;
     }
-    printf("\n");
+
+    if (node->card.faceUp) {
+        switch (node->card.rank) {
+            case 1: printf("A%c\t", node->card.suit);
+                break;
+            case 10: printf("T%c\t", node->card.suit);
+                break;
+            case 11: printf("J%c\t", node->card.suit);
+                break;
+            case 12: printf("Q%c\t", node->card.suit);
+                break;
+            case 13: printf("K%c\t", node->card.suit);
+                break;
+            default: printf("%d%c\t", node->card.rank, node->card.suit);
+        }
+    } else {
+        printf("[]\t");
+    }
 }
+
+
 

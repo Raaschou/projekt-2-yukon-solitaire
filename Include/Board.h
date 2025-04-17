@@ -3,6 +3,8 @@
 
 #include "LinkedLists.h"
 #include "Card.h"
+#include <stdio.h>
+
 
 typedef struct {
     LinkedList deck;

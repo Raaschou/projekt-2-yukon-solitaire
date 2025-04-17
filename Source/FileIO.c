@@ -6,13 +6,13 @@
 
 
 // TODO: Indlæs board fra tekstfil
-int load_board_from_file(Board *board, const char *filename) {
+int loadFile(Board *board, const char *filename) {
     // TODO
     return 0;
 }
 
 // TODO: Gem board til tekstfil
-int save_board_to_file(const Board *board, const char *filename) {
+int saveFile(const Board *board, const char *filename) {
     // TODO
     return 0;
 }

@@ -13,17 +13,22 @@ void foundations(LinkedList columns[4]) {
 }
 
 void moveToFoundation(CardNode *node,LinkedList *from, LinkedList *to) {
-    validMove(from, to);
-    moveStack(node, from, to);
+    if (validMove(from, to)) {
+        moveStack(node, from, to);
+    } else {
+        //message ="Cant Move this card to foundation";
+    }
 }
+
 
 // TODO: Tjek om kort må lægges i denne foundation
 bool validMove(CardNode *source, CardNode *target) {
+    if (!source) return false;
 
-    return true;
-}
+    if (!target) {
+        return source->card.rank == 1; // Start med Ace
+    }
 
-// TODO: Udskriv alle 4 foundations
-void printFoundations(LinkedList foundations[4]) {
-    // TODO
+    return (source->card.suit == target->card.suit &&
+            source->card.rank == target->card.rank + 1);
 }

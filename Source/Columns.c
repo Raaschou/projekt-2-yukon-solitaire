@@ -4,6 +4,7 @@
 
 #include "../Include/Columns.h"
 #include "../Include/Deck.h"
+#include "../Include/Foundations.h"
 
 void columns(LinkedList columns[7]) {
     for (int i = 0; i < 7; i++) {
@@ -17,18 +18,31 @@ void moveBetweenColumns(CardNode *node,LinkedList *from, LinkedList *to) {
     moveStack(node, from, to);
 }
 
+void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
+    int layout[7] = {1, 6, 7, 8, 9, 10, 11}; // Antal kort per kolonne
+    int faceDownCount = 21;
 
-
-// TODO: Udskriv kolonner i pænt format
-void printColumns(LinkedList columns[7]) {
-
-      for (int i = 0; i < 7; i++) {
-
-      }
+    for (int i = 0; i < 7; i++) {
+        for (int j = 0; j < layout[i]; j++) {
+            CardNode *node = deck->tail;
+            moveStack(node, deck, &columns[i]);
+            if (faceDownCount > 0) {
+                node->card.faceUp = 0;
+                faceDownCount--;
+            } else {
+                node->card.faceUp = 1;
+            }
+        }
+    }
 }
 
-// TODO: Tjek regler for om flyt er gyldigt (alternating color, descending)
 bool validMove(CardNode *source, CardNode *target) {
-    // TODO
-    return true;
+    if (!source || !target) return false;
+
+    int srcRank = source->card.rank;
+    int tgtRank = target->card.rank;
+    char srcSuit = source->card.suit;
+    char tgtSuit = target->card.suit;
+
+    return (srcRank +1 == tgtRank && srcSuit != tgtSuit);
 }
