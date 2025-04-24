@@ -47,5 +47,5 @@ void printBoard(LinkedList columns[7], LinkedList foundations[4], const char *la
     // Print statusfelt
     printf("\nLAST Command: %s\n", lastCommand ? lastCommand : "");
     printf("Message: %s\n", message ? message : "");
-    printf("INPUT > ");
+    printf("INPUT >  ");
 }
