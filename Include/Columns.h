@@ -6,10 +6,11 @@
 #define COLUMNS_H
 
 #include "LinkedLists.h"
+#include <stdbool.h>
 
 void columns(LinkedList columns[7]);
 void moveBetweenColumns(CardNode *node,LinkedList *from, LinkedList *to);
 void dealToColumns(LinkedList *deck, LinkedList columns[7]);
-bool validMove(CardNode *source, CardNode *target);
+bool validMoveC(CardNode *source, CardNode *target);
 
 #endif

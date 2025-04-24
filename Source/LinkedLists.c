@@ -3,6 +3,9 @@
 //
 
 #include "../Include/LinkedLists.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 
 void list(LinkedList *list) {

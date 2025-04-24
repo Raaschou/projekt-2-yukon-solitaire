@@ -3,8 +3,7 @@
 //
 #ifndef CARD_H
 #define CARD_H
-#include <stdio.h>
-#include <string.h>
+
 
 
 typedef struct {

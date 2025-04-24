@@ -5,13 +5,14 @@
 #ifndef FOUNDATIONS_H
 #define FOUNDATIONS_H
 
-#include "LinkedLists.h"
+#include "../Include/LinkedLists.h"
 #include "../Include/Deck.h"
+#include <stdbool.h>
 
 void foundations(LinkedList foundations[4]);
 
 void moveToFoundation(CardNode *node,LinkedList *from, LinkedList *to);
 
-bool validMove(CardNode *source, CardNode *target);
+bool validMoveF(CardNode *source, CardNode *target);
 
 #endif

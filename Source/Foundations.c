@@ -3,7 +3,7 @@
 //
 
 #include "../Include/Foundations.h"
-
+#include <stdbool.h>
 
 // TODO: Initialiser alle 4 foundations som tomme linked lists
 void foundations(LinkedList columns[4]) {
@@ -12,8 +12,10 @@ void foundations(LinkedList columns[4]) {
     }
 }
 
+
+
 void moveToFoundation(CardNode *node,LinkedList *from, LinkedList *to) {
-    if (validMove(from, to)) {
+    if (validMoveF(node, to->tail)) {
         moveStack(node, from, to);
     } else {
         //message ="Cant Move this card to foundation";
@@ -22,11 +24,11 @@ void moveToFoundation(CardNode *node,LinkedList *from, LinkedList *to) {
 
 
 // TODO: Tjek om kort må lægges i denne foundation
-bool validMove(CardNode *source, CardNode *target) {
+bool validMoveF(CardNode *source, CardNode *target) {
     if (!source) return false;
 
     if (!target) {
-        return source->card.rank == 1; // Start med Ace
+        return source->card.rank == 1; // Start me Ace
     }
 
     return (source->card.suit == target->card.suit &&

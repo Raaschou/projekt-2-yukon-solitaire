@@ -15,8 +15,8 @@ if(APPLE)
 endif()
 # Dit projekt + sourcefiler
 add_executable(projekt_2_yukon_solitaire
-        Source/main.c
-        Include/main.h
+        Source/Main.c
+        Include/Main.h
         Source/Deck.c
         Include/Deck.h
         Source/Game.c

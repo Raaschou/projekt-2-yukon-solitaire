@@ -5,6 +5,9 @@
 
 
 #include "../Include/Card.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 
 // Suits og ranks til opbygning af deck
 char suits[] = {'C', 'D', 'H', 'S'};

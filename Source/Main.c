@@ -4,16 +4,11 @@
 
 
 #include <stdbool.h>
+#include "../Include/Main.h"
 
 
 
-#include "Card.c"
-#include "Deck.c"
-#include "LinkedLists.c"
-#include "Board.c"
-#include "Columns.c"
-#include "../Test/Test.c"
-#include "../Include/Deck.h"
+
 
 // typedef struct cardObject Card; // header fil?
 // //Linked list structure for cards
@@ -30,17 +25,17 @@
 // void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
+    Board board = {0};  // Initialiser hele board med 0/nullptr
 
-    LinkedList columns[7] = {0};
-    LinkedList foundations[4] = {0};
-
-    const char *lastCommand = "";
-    const char *message = "";
-
-
-    printBoard(columns, foundations, "lastCommand", "message");
+    const char *lastCommand = "LOL";
+    const char *message = "LOL";
 
     srand(time(NULL));
+
+    printBoard(&board, lastCommand, message);  // Brug &board, da funktionen tager en pointer
+
+    return 0;
+}
     //
     // LinkedList newDeck;
     // list(&newDeck);
@@ -65,7 +60,7 @@ int main(void) {
     /*Card *c = createCard('S',12);
     printf("Card -> Rank: %d, Suit: %c\n", c->rank, c->suit);
     free(c);*/
-}
+
 //     //This might be better done elsewhere or maybe as a char to better
 //     // represent suits, jacks, queens and kings?
 //
