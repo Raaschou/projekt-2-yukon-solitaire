@@ -2,8 +2,6 @@
 // Created by August Frandsen on 15/04/2025.
 //
 #include "../Include/Deck.h"
-#include "../Include/Card.h"
-#include "../Include/LinkedLists.h"
 
 void startDeck(LinkedList *deck) {
     char suits[] = {'C', 'D', 'H', 'S'};
@@ -47,6 +45,7 @@ void clearList(LinkedList *deck) {
 }
 
 void randomShuffle(LinkedList *deck) {
+    srand(time(NULL));
     if (deck->size != 52) return;
 
     Card cards[52];

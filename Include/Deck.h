@@ -6,6 +6,7 @@
 #define DECK_H
 #include "../Include/Card.h"
 #include "../Include/LinkedLists.h"
+#include "../Include/Deck.h"
 #include "stdlib.h"
 #include "time.h"
 

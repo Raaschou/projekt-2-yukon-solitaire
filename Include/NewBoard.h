@@ -8,5 +8,6 @@
 #include "Card.h"
 #include <stdio.h>
 
+void printBoard(LinkedList columns[7], LinkedList foundations[4], const char *lastCommand, const char *message);
 
 #endif //NEWBOARD_H

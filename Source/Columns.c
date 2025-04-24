@@ -3,8 +3,6 @@
 //
 
 #include "../Include/Columns.h"
-#include "../Include/Deck.h"
-#include "../Include/Foundations.h"
 
 void columns(LinkedList columns[7]) {
     for (int i = 0; i < 7; i++) {

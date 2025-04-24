@@ -3,7 +3,7 @@
 //
 
 #include "../Include/Foundations.h"
-#include "../Include/Deck.h"
+
 
 // TODO: Initialiser alle 4 foundations som tomme linked lists
 void foundations(LinkedList columns[4]) {

@@ -8,7 +8,7 @@
 
 
 void printBoard(LinkedList columns[7], LinkedList foundations[4], const char *lastCommand, const char *message) {
-    int maxHeight = 0;
+    int maxHeight = 7;
     for (int i = 0; i < 7; i++) {
         if (columns[i].size > maxHeight)
             maxHeight = columns[i].size;
@@ -30,6 +30,16 @@ void printBoard(LinkedList columns[7], LinkedList foundations[4], const char *la
             printCard(current, &columns[col]);
 
            // mangler foundations.
+        }
+        printf("\t\t");
+
+        if (row < 8 && row % 2 == 0) {
+            if (foundations[row].head== NULL) {
+                printf("[] F%d",(row+2)/2);
+            }else {
+                CardNode *currentFound = foundations[row].tail;
+                printCard(currentFound, &foundations[row]);
+            }
         }
         printf("\n");
     }

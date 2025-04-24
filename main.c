@@ -30,21 +30,31 @@
 // void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
+
+    LinkedList columns[7] = {0};
+    LinkedList foundations[4] = {0};
+
+    const char *lastCommand = "";
+    const char *message = "";
+
+
+    printBoard(columns, foundations, "lastCommand", "message");
+
     srand(time(NULL));
-
-    LinkedList newDeck;
-    list(&newDeck);
-    startDeck(&newDeck);
-
-    LinkedList newColumns[7];
-    columns(newColumns);
-    dealToColumns(&newDeck, newColumns);
-
-    LinkedList foundations[4];
-    for (int i = 0; i < 4; i++) {
-        list(&foundations[i]);
-    }
-    printBoard(newColumns, foundations, "INIT", "OK");
+    //
+    // LinkedList newDeck;
+    // list(&newDeck);
+    // startDeck(&newDeck);
+    //
+    // LinkedList newColumns[7];
+    // columns(newColumns);
+    // dealToColumns(&newDeck, newColumns);
+    //
+    // LinkedList foundations[4];
+    // for (int i = 0; i < 4; i++) {
+    //     list(&foundations[i]);
+    // }
+    // printBoard(newColumns, foundations, "INIT", "OK");
 
 
     // Deck firstDeck = startDeck();

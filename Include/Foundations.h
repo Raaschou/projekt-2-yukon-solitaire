@@ -6,13 +6,12 @@
 #define FOUNDATIONS_H
 
 #include "LinkedLists.h"
+#include "../Include/Deck.h"
 
 void foundations(LinkedList foundations[4]);
 
 void moveToFoundation(CardNode *node,LinkedList *from, LinkedList *to);
 
 bool validMove(CardNode *source, CardNode *target);
-
-void printFoundations(LinkedList foundations[4]);
 
 #endif

@@ -7,7 +7,7 @@
 
 #include "Board.h"
 
-void start_startup_phase(Board *board);
-void start_play_phase(Board *board);
+void startupPhase(Board *board);
+void playPhase(Board *board);
 
 #endif
