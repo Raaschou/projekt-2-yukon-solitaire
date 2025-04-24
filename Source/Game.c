@@ -6,7 +6,7 @@
 
 // TODO: Implementér startup-phase logik (load/save/shuffle)
 void startupPhase(Board *board) {
-    // TODO: Parse og håndter kommandoer i startup phase
+
 }
 
 // TODO: Implementér play-phase logik (flyt kort, validering)

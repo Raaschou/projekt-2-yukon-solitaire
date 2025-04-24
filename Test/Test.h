@@ -12,7 +12,7 @@
 #include "../Include/Game.h"
 #include "../Include/LinkedLists.h"
 #include "../Include/Board.h"
-#include "../Include/NewMain.h"
+#include "../Include/Main.h"
 #include "../Include/Utils.h"
 
 
