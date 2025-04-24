@@ -7,13 +7,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
+// linked list// vi har en size som kan hjælpe os. bruges fx. i Board.C
 void list(LinkedList *list) {
     list->head = NULL;
     list->tail = NULL;
     list->size = 0;
 }
-
+// tilføjer et kort til en Linkedlist
 void addCard(LinkedList *list, Card card) {
     CardNode *newNode = malloc(sizeof(CardNode));
     if (!newNode) return;
@@ -34,6 +34,7 @@ void addCard(LinkedList *list, Card card) {
     list->size++;
 }
 
+//tjekke om det kort vi giver faktisk er i den liste.
 bool nodeInList(CardNode *node, LinkedList *list) {
     if (!node || !list || !list->head) return false;
 
@@ -44,7 +45,7 @@ bool nodeInList(CardNode *node, LinkedList *list) {
     }
     return false;
 }
-
+// rykker stacken 1 til mange kort.
 void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
     if (!startNode || !oldList || !newList) return;
     if (!nodeInList(startNode, oldList)) return;
@@ -78,6 +79,7 @@ void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
     newList->size += moved;
 }
 
+// printer et kort fra en liste
 void printCard(CardNode *node, LinkedList *list) {
     if (!node || !list || !nodeInList(node, list)) {
         printf("  \t");

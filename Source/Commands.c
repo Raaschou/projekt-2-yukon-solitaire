@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "../Include/Board.h"
-
+// tjek h fil for mere info.
 void executeCommand(GamePhase phase, void *command, char *message) {
     if (phase == STARTUP) {
         StartupCommand cmd = *(StartupCommand*)command;

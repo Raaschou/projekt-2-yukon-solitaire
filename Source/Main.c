@@ -25,6 +25,10 @@
 // void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
+
+    // TODO Skal initialisere loopet der skal køre inde i Game.
+    // Tænker umiddelbart phase sættes til StartPhase og derefter "launcher" game.c
+    // Der derefter håndterer logikken
     Board board = {0};  // Initialiser hele board med 0/nullptr
 
     const char *lastCommand = "LOL";

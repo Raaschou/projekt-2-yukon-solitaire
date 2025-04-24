@@ -3,6 +3,7 @@
 //
 #include "../Include/Deck.h"
 
+// laver første deck 1-52
 void startDeck(LinkedList *deck) {
     char suits[] = {'C', 'D', 'H', 'S'};
 
@@ -22,6 +23,7 @@ void startDeck(LinkedList *deck) {
     }
 }
 
+//hjælpe funktion der kopiere alle kort fra linkedlist til et array, bruges i de to shuffels.
 void copyCardsFromList(LinkedList *deck, Card card[]) {
     CardNode *current = deck->head;
     int i = 0;
@@ -32,6 +34,7 @@ void copyCardsFromList(LinkedList *deck, Card card[]) {
 
 }
 
+// rydder vores hjælpe array, så vi ikke bruger unødig plads
 void clearList(LinkedList *deck) {
     CardNode *current = deck->head;
     while (current) {
@@ -44,6 +47,7 @@ void clearList(LinkedList *deck) {
     deck->size = 0;
 }
 
+// den shufler random ved hjælp af yates shuffel
 void randomShuffle(LinkedList *deck) {
     srand(time(NULL));
     if (deck->size != 52) return;
@@ -51,7 +55,7 @@ void randomShuffle(LinkedList *deck) {
     Card cards[52];
     copyCardsFromList(deck, cards);
 
-
+// yates shuffle
     for (int i = 51; i > 0; i--) {
         int j = rand() % (i + 1);
         Card temp = cards[i];
@@ -66,6 +70,8 @@ void randomShuffle(LinkedList *deck) {
     }
 }
 
+// shuffler baseret på hvor man cutter decket.
+// hvis der ikke bliver givet en cutsize, skal den tage et random tal mellem 1-51 // opgave kriterie starter fra venstre
 void splitShuffle(LinkedList *deck, int cutSize) {
     if (cutSize <= 0 || cutSize >= deck->size) return;
 

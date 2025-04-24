@@ -9,8 +9,12 @@
 
 #include "../Include/Board.h"
 
+//Bør printe boardet
+// håber den kan bruges til alt
 void printBoard(Board *board, const char *lastCommand, const char *message) {
     int maxHeight = 7;
+    // den her funktion tjekker højden på alle vores columns
+    // pga foundations skal den minimum være 7
     for (int i = 0; i < 7; i++) {
         if (board->columns[i].size > maxHeight)
             maxHeight = board->columns[i].size;
@@ -18,6 +22,7 @@ void printBoard(Board *board, const char *lastCommand, const char *message) {
 
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
 
+    // printer de 7 colums.
     for (int row = 0; row < maxHeight; row++) {
         for (int col = 0; col < 7; col++) {
             CardNode *current = board->columns[col].head;
@@ -32,7 +37,7 @@ void printBoard(Board *board, const char *lastCommand, const char *message) {
         }
 
         printf("\t\t");
-
+        // printer de 4 foundations
         if (row < 8 && row % 2 == 0) {
             if (board->foundations[row/2].head== NULL) {
                 printf("[] F%d",(row+2)/2);
@@ -45,7 +50,8 @@ void printBoard(Board *board, const char *lastCommand, const char *message) {
     }
 
     // Print statusfelt
-    printf("\nLAST Command: %s\n", lastCommand ? lastCommand : "");
+    // tjekker om der er parameter ellers tom
+    printf("\nLast Command: %s\n", lastCommand ? lastCommand : "");
     printf("Message: %s\n", message ? message : "");
     printf("INPUT >  ");
 }

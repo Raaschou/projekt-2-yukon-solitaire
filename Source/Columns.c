@@ -12,7 +12,7 @@ void columns(LinkedList columns[7]) {
 }
 
 
-
+// rykker fra en list til en anden bruge Bool validmove til at tjekke om det er gyldigt
 void moveBetweenColumns(CardNode *node, LinkedList *from, LinkedList *to) {
     if (validMoveC(node, to->tail)) {
         moveStack(node, from, to);
@@ -21,6 +21,9 @@ void moveBetweenColumns(CardNode *node, LinkedList *from, LinkedList *to) {
     }
 }
 
+// deler kortne ud, så det matcher hvordan spillet skal spilles.
+//TODO sikre os de to faser, lige nu er den sat til Playphase
+// der er i øvrigt en lille fejl lige nu
 void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
     int layout[7] = {1, 6, 7, 8, 9, 10, 11}; // Antal kort per kolonne
     int faceDownCount = 21;
