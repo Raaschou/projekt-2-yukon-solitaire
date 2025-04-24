@@ -11,7 +11,7 @@
 #include "../Include/Foundations.h"
 #include "../Include/Game.h"
 #include "../Include/LinkedLists.h"
-#include "../Include/NewBoard.h"
+#include "../Include/Board.h"
 #include "../Include/NewMain.h"
 #include "../Include/Utils.h"
 

@@ -7,13 +7,13 @@
 
 
 
-#include "Source/Card.c"
-#include "Source/Deck.c"
-#include "Source/LinkedLists.c"
-#include "Source/NewBoard.c"
-#include "Source/Columns.c"
-#include "Test/Test.c"
-#include "Include/Deck.h"
+#include "Card.c"
+#include "Deck.c"
+#include "LinkedLists.c"
+#include "Board.c"
+#include "Columns.c"
+#include "../Test/Test.c"
+#include "../Include/Deck.h"
 
 // typedef struct cardObject Card; // header fil?
 // //Linked list structure for cards

@@ -15,10 +15,8 @@ if(APPLE)
 endif()
 # Dit projekt + sourcefiler
 add_executable(projekt_2_yukon_solitaire
-        main.c
-        Board.c
+        Source/main.c
         Include/main.h
-        Include/Board.h
         Source/Deck.c
         Include/Deck.h
         Source/Game.c
@@ -33,10 +31,7 @@ add_executable(projekt_2_yukon_solitaire
         Include/FileIO.h
         Source/Utils.c
         Include/Utils.h
-        Source/NewMain.c
-        Include/NewMain.h
-        Source/NewBoard.c
-        Include/NewBoard.h
+        Source/Board.c
         Source/LinkedLists.c
         Include/LinkedLists.h
         Source/Columns.c

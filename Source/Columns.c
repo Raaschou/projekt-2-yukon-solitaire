@@ -34,6 +34,7 @@ void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
     }
 }
 
+//Tjekker om det kort vi prøver at rykke matcher kriterierne i forhold til at rykke til ny
 bool validMove(CardNode *source, CardNode *target) {
     if (!source || !target) return false;
 
