@@ -3,13 +3,54 @@
 //
 
 #include "../Include/Game.h"
+#include "../Include/Board.h"
+#include "../Include/Commands.h"
+#include <stdio.h>
+#include <string.h>
 
-// TODO: Implementér startup-phase logik (load/save/shuffle)
-void startupPhase(Board *board) {
 
+void gameLoop(Board *board) {
+    GamePhase phase = STARTUP;
+    int running = 1;
+
+    while (running) {
+        printBoard(board, "last command", "status message");
+
+        if (phase == STARTUP) {
+            phase = startupPhase(board, phase);
+        } else if (phase == PLAY) {
+            phase = playPhase(board, phase);
+        }
+    }
 }
 
-// TODO: Implementér play-phase logik (flyt kort, validering)
-void playPhase(Board *board) {
-    // TODO: Main game loop for play phase
+// Define phase functions to return GamePhase
+GamePhase startupPhase(Board *board, GamePhase currentPhase) {
+    char input[100];
+    printf("Enter startup command: ");
+    scanf("%s", input);
+
+    if (strcmp(input, "LD") == 0) {
+        // handle load
+    } else if (strcmp(input, "P") == 0) {
+        return PLAY;
+    } else {
+        printf("Invalid command!\n");
+    }
+    return currentPhase;
+}
+
+GamePhase playPhase(Board *board, GamePhase currentPhase) {
+    char input[100];
+    printf("Enter play command: ");
+    scanf("%s", input);
+
+    if (strcmp(input, "MOVES") == 0) {
+        // handle move
+    } else if (strcmp(input, "Q") == 0) {
+        return STARTUP;
+    } else {
+        printf("Invalid command!\n");
+    }
+    return currentPhase;
 }

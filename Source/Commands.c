@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../Include/Board.h"
+#include "../Include/game.h"
 // tjek h fil for mere info.
 void executeCommand(GamePhase phase, void *command, char *message) {
     if (phase == STARTUP) {

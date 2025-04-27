@@ -7,7 +7,13 @@
 
 #include "Board.h"
 
-void startupPhase(Board *board);
-void playPhase(Board *board);
+typedef enum {
+    STARTUP,
+    PLAY
+} GamePhase;
+
+void gameLoop(Board *board);
+GamePhase startupPhase(Board *board, GamePhase currentPhase);
+GamePhase playPhase(Board *board, GamePhase currentPhase);
 
 #endif

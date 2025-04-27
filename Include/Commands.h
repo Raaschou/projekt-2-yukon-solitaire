@@ -1,6 +1,8 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
+#include "Game.h"
+
 // Kommandoer i startfasen af spillet – 'P' starter spilfasen
 typedef enum {
     LD,  // Load deck
@@ -23,10 +25,7 @@ typedef enum {
 } PlayCommand;
 
 // Enum til at repræsentere spillets faser
-typedef enum {
-    STARTUP,
-    PLAY
-} GamePhase;
+
 
 // Funktion til at udføre kommandoer baseret på fase
 void executeCommand(GamePhase phase, void *command, char *message);

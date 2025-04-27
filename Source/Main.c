@@ -31,8 +31,8 @@ int main(void) {
     // Der derefter håndterer logikken
     Board board = {0};  // Initialiser hele board med 0/nullptr
 
-    const char *lastCommand = "LOL";
-    const char *message = "LOL";
+    const char *lastCommand = "";
+    const char *message = "";
 
     srand(time(NULL));
 
