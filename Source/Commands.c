@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "../Include/game.h"
+
 // tjek h fil for mere info.
 void executeCommand(GamePhase phase, void *command, char *message) {
     if (phase == STARTUP) {
@@ -13,8 +14,7 @@ void executeCommand(GamePhase phase, void *command, char *message) {
                 strcpy(message, "Indlæser deck...");
             break;
             case SW:
-                // Set all cards face to 1.
-                strcpy(message, "Viser deck...");
+                strcpy(message, "viser deck...");
             break;
             case SI:
                 // skal kalde split, på deck

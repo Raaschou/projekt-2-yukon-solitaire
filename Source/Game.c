@@ -24,14 +24,13 @@ void gameLoop(Board *board) {
     }
 }
 
-// Define phase functions to return GamePhase
+// forskellige faser
 GamePhase startupPhase(Board *board, GamePhase currentPhase) {
     char input[100];
     printf("Enter startup command: ");
     scanf("%s", input);
 
     if (strcmp(input, "LD") == 0) {
-        // handle load
     } else if (strcmp(input, "P") == 0) {
         return PLAY;
     } else {
@@ -46,7 +45,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase) {
     scanf("%s", input);
 
     if (strcmp(input, "MOVES") == 0) {
-        // handle move
+
     } else if (strcmp(input, "Q") == 0) {
         return STARTUP;
     } else {

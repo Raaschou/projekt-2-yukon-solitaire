@@ -7,6 +7,7 @@
 
 #include "Board.h"
 
+//tilføjet ENUM på faser herinde i stedet for commands
 typedef enum {
     STARTUP,
     PLAY
