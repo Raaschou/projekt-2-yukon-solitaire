@@ -5,7 +5,7 @@
 #include "../Include/game.h"
 
 // tjek h fil for mere info.
-void executeCommand(GamePhase phase, void *command, char *message) {
+void executeCommand(GamePhase phase, void *command, char *message, LinkedList *deck) {
     if (phase == STARTUP) {
         StartupCommand cmd = *(StartupCommand*)command;
         switch (cmd) {
@@ -14,7 +14,25 @@ void executeCommand(GamePhase phase, void *command, char *message) {
                 strcpy(message, "Indlæser deck...");
             break;
             case SW:
-                strcpy(message, "viser deck...");
+                if (deck == NULL || deck->size == 0) {
+                    strcpy(message, "Der er intet Deck indlæst ven :'(");
+                } else {
+                    // Turn all cards face up and display them
+                    CardNode *current = deck->head;
+                    while (current != NULL) {
+                        // Set card to face up
+                        current->card.faceUp = 1;
+
+                        // Print the card to the terminal
+                        char suit = current->card.suit;
+                        int rank = current->card.rank;
+                        printf("%d%c ", rank, suit);  // Format: 5D for 5 of Diamonds
+
+                        current = current->next;
+                    }
+                    printf("\n");
+                    strcpy(message, "OK");
+                }
             break;
             case SI:
                 // skal kalde split, på deck
