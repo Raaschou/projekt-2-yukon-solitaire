@@ -15,4 +15,5 @@ void copyCardsFromList(LinkedList *deck, Card card[]);
 void clearList(LinkedList *deck);
 void randomShuffle(LinkedList *deck);
 void splitShuffle(LinkedList *deck, int cutSize);
+int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52]);
 #endif //DECK_H
