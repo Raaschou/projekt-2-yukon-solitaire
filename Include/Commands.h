@@ -11,7 +11,8 @@ typedef enum {
     SR,  // Shuffle random
     SD,  // Save deck
     QQ,  // Quit program
-    P    // Start play phase
+    P,   // Start play phase
+    INVALIDS
 } StartupCommand;
 
 // Kommandoer i spilfasen – 'Q' går tilbage til startfasen
@@ -21,11 +22,16 @@ typedef enum {
     U,      // Undo
     R,      // Redo
     S,      // Save game
-    L       // Load game
+    L,      // Load game
+    INVALIDP
 } PlayCommand;
 
 // Enum til at repræsentere spillets faser
 
+StartupCommand parseStartupCommand(const char *input);
+PlayCommand parsePlayCommand(const char *input);
+
+// #endif
 
 // Funktion til at udføre kommandoer baseret på fase
 void executeCommand(GamePhase phase, void *command, char *message);

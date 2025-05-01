@@ -16,7 +16,7 @@ void startDeck(LinkedList *deck) {
             Card newCard;
             newCard.suit = suits[i];
             newCard.rank = j;
-            newCard.faceUp = 1;
+            newCard.faceUp = 0;
 
             addCard(deck, newCard);
         }

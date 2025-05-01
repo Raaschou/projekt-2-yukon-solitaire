@@ -7,6 +7,8 @@
 #include "../Include/Commands.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
 
 
 void gameLoop(Board *board) {
@@ -27,29 +29,72 @@ void gameLoop(Board *board) {
 // forskellige faser
 GamePhase startupPhase(Board *board, GamePhase currentPhase) {
     char input[100];
-    printf("Enter startup command: ");
     scanf("%s", input);
 
-    if (strcmp(input, "LD") == 0) {
-    } else if (strcmp(input, "P") == 0) {
-        return PLAY;
-    } else {
-        printf("Invalid command!\n");
+    StartupCommand cmd = parseStartupCommand(input);
+
+    switch (cmd) {
+        case LD:
+            // fx: loadDeck(board);
+                printf("Loading deck...\n");
+        break;
+        case SW:
+            printf("Show deck\n");
+        break;
+        case SI:
+            printf("Split deck\n");
+        break;
+        case SR:
+            printf("Shuffle deck randomly\n");
+        break;
+        case SD:
+            printf("Save deck\n");
+        break;
+        case QQ:
+            printf("Quitting game.\n");
+        exit(0);
+        case P:
+            return PLAY;
+        default:
+            printf("Invalid command!\n");
+        break;
     }
     return currentPhase;
 }
-
 GamePhase playPhase(Board *board, GamePhase currentPhase) {
     char input[100];
-    printf("Enter play command: ");
     scanf("%s", input);
 
-    if (strcmp(input, "MOVES") == 0) {
+    PlayCommand cmd = parsePlayCommand(input);
 
-    } else if (strcmp(input, "Q") == 0) {
-        return STARTUP;
-    } else {
-        printf("Invalid command!\n");
+    switch (cmd) {
+        case Q:
+                printf("Loading deck...\n");
+        break;
+        case MOVES:
+            printf("Show deck\n");
+        break;
+        case U:
+            printf("Split deck\n");
+        break;
+        case R:
+            printf("Shuffle deck randomly\n");
+        break;
+        case S:
+            printf("Save deck\n");
+        break;
+        case L:
+            printf("Quitting game.\n");
+        case INVALIDP:
+            return PLAY;
     }
     return currentPhase;
 }
+
+
+//
+// #include <stdio.h>
+// #include <string.h>
+// #include "../Include/game.h"
+// #include "../Include/Commands.h"
+//

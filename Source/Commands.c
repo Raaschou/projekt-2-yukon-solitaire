@@ -1,38 +1,43 @@
 #include "../Include/Commands.h"
+#include "../Include/Deck.h"
+#include "../Include/LinkedLists.h"
+#include "../Include/Board.h"
+// #include "../Include/Board.h"
+// #include "../Include/Board.h"
 #include <stdio.h>
 #include <string.h>
 
-#include "../Include/game.h"
+
 
 // tjek h fil for mere info.
-void executeCommand(GamePhase phase, void *command, char *message, LinkedList *deck) {
+void executeCommand(GamePhase phase, void *command, char *message/*, LinkedList *deck*/) {
     if (phase == STARTUP) {
         StartupCommand cmd = *(StartupCommand*)command;
         switch (cmd) {
             case LD:
-                // load deck from file mangler impelementering
+                LinkedList *list = (LinkedList*)malloc(sizeof(LinkedList));
+                startDeck(list);
                 strcpy(message, "Indlæser deck...");
             break;
             case SW:
-                if (deck == NULL || deck->size == 0) {
-                    strcpy(message, "Der er intet Deck indlæst ven :'(");
-                } else {
-                    // Turn all cards face up and display them
-                    CardNode *current = deck->head;
-                    while (current != NULL) {
-                        // Set card to face up
-                        current->card.faceUp = 1;
+            //     if (deck == NULL || deck->size == 0) {
+            //         strcpy(message, "Der er intet Deck indlæst ven :'(");
+            //         return;
+            //     }
+            //
+            // CardNode *current = deck->head;
+            // while (current != NULL) {
+            //     Card *card = &current->card;
+            //     if (card->faceUp) {
+            //         printf("%d%c ", card->rank, card->suit);  // Format: 5D for 5 of Diamonds
+            //     } else {
+            //         printf("X%c ", card->suit);  // X for face down card
+            //     }
+            //     current = current->next;
+            // }
+            // printf("\n");
+            // strcpy(message, "OK");
 
-                        // Print the card to the terminal
-                        char suit = current->card.suit;
-                        int rank = current->card.rank;
-                        printf("%d%c ", rank, suit);  // Format: 5D for 5 of Diamonds
-
-                        current = current->next;
-                    }
-                    printf("\n");
-                    strcpy(message, "OK");
-                }
             break;
             case SI:
                 // skal kalde split, på deck
@@ -53,6 +58,9 @@ void executeCommand(GamePhase phase, void *command, char *message, LinkedList *d
             case P:
                 // skift fase
                 strcpy(message, "Skifter til spilfase...");
+            break;
+            case INVALIDS:
+                strcpy(message, "Ugyldig kommando i startfasen!");
             break;
             default:
                 strcpy(message, "Ugyldig kommando i startfasen!");
@@ -86,6 +94,9 @@ void executeCommand(GamePhase phase, void *command, char *message, LinkedList *d
                 // load saved state from file, not just a deck, but correct columns
                 strcpy(message, "Indlæser spil...");
             break;
+            case INVALIDP:
+                strcpy(message, "Ugyldig kommando i startfasen!");
+            break;
             default:
                 strcpy(message, "Ugyldig kommando i spilfasen!");
             break;
@@ -94,4 +105,25 @@ void executeCommand(GamePhase phase, void *command, char *message, LinkedList *d
     else {
         strcpy(message, "Ugyldig fase!");
     }
+}
+
+StartupCommand parseStartupCommand(const char *input) {
+    if (strcmp(input, "LD") == 0) return LD;
+    if (strcmp(input, "SW") == 0) return SW;
+    if (strcmp(input, "SI") == 0) return SI;
+    if (strcmp(input, "SR") == 0) return SR;
+    if (strcmp(input, "SD") == 0) return SD;
+    if (strcmp(input, "QQ") == 0) return QQ;
+    if (strcmp(input, "P") == 0) return P;
+    return INVALIDS;
+}
+
+PlayCommand parsePlayCommand(const char *input) {
+    if (strcmp(input, "Q") == 0) return Q;
+    if (strcmp(input, "MOVES") == 0) return MOVES;
+    if (strcmp(input, "U") == 0) return U;
+    if (strcmp(input, "R") == 0) return R;
+    if (strcmp(input, "S") == 0) return S;
+    if (strcmp(input, "L") == 0) return L;
+    return INVALIDP;  // Or define a CMD_INVALID for play if needed
 }
