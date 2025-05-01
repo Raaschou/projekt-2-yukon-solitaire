@@ -10,33 +10,43 @@
 
 
 
-void readDeckFromFile(LinkedList *deck, const char *filename) {
+int readDeckFromFile(const char *filename, LinkedList *deck, char *message) {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        perror("Could not open file");
-        return;
+        sprintf(message, "ERROR: Kunne ikke åbne '%s'.", filename);
+        return 0;
     }
 
-    char line[4];
+    char seen[52] = {0};
+    char line[8];
+    int lineNumber = 0;
+
     while (fgets(line, sizeof(line), file)) {
-        if (strlen(line) < 2) continue;
-
+        lineNumber++;
         Card card;
-        card.rank = line[0];
-        card.suit = line[1];
-        card.faceUp = 1;
-
+        if (!validateDeck(line, &card, lineNumber, seen, message)) {
+            fclose(file);
+            return 0;
+        }
         addCard(deck, card);
     }
 
     fclose(file);
+
+    if (deck->size != 52) {
+        sprintf(message, "ERROR: Forventede 52 kort, fandt %d.", deck->size);
+        return 0;
+    }
+
+    strcpy(message, "OK");
+    return 1;
 }
 
 // TODO: Gem board til tekstfil
-void writeDeckToFile(LinkedList *deck, const char *filename) {
+void writeDeckToFile(LinkedList *deck, const char *filename,char *message) {
     FILE *file = fopen(filename, "w");
     if (!file) {
-        perror("Could not open file");
+        sprintf(message,"Could not open file");
         return;
     }
 

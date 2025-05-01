@@ -7,8 +7,9 @@
 
 
 #include "LinkedLists.h"
+#include "Deck.h"
 
-void readDeckFromFile(LinkedList *deck, const char *filename);
+int readDeckFromFile(const char *filename, LinkedList *deck, char *message);
 void writeDeckToFile(LinkedList *deck, const char *filename);
 
 

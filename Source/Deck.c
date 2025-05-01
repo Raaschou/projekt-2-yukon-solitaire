@@ -95,9 +95,9 @@ void splitShuffle(LinkedList *deck, int cutSize) {
         addCard(deck, cards[rightIndex--]);
     }
 }
-int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52]) {
-    if (strlen(line) < 2) {
-        printf("ERROR: Tom eller kort linje på linje %d.\n", lineNum);
+int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52],char *message) {
+    if (strlen(line) != 2 ) {
+       sprintf(message,"ERROR: Tom eller kort linje på linje %d.\n", lineNum);
         return 0;
     }
 
@@ -114,7 +114,7 @@ int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52]) {
         case 'K': r = 12; break;
         case '2'...'9': r = rank - '2' + 1; break;
         default:
-            printf("ERROR: Ugyldig rank '%c' på linje %d.\n", rank, lineNum);
+            sprintf(message,"ERROR: Ugyldig rank '%c' på linje %d.\n", rank, lineNum);
         return 0;
     }
 
@@ -126,13 +126,13 @@ int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52]) {
         case 'H': s = 2; break;
         case 'S': s = 3; break;
         default:
-            printf("ERROR: Ugyldig kulør '%c' på linje %d.\n", suit, lineNum);
+            sprintf(message,"ERROR: Ugyldig kulør '%c' på linje %d.\n", suit, lineNum);
         return 0;
     }
 
     int index = s * 13 + r;
     if (seen[index]) {
-        printf("ERROR: Dubletkort '%c%c' på linje %d.\n", rank, suit, lineNum);
+        sprintf(message,"ERROR: Dubletkort '%c%c' på linje %d.\n", rank, suit, lineNum);
         return 0;
     }
 
