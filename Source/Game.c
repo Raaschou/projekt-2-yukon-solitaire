@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-
+// vi skal
 
 
 void gameLoop(Board *board) {
@@ -69,9 +69,8 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
            return STARTUP;
         }
 
-        // LD, Load deck
-        // SW,Show deck
 
+        // SW,Show deck
     } else if (strcmp(input, "SW") == 0) {
         CardNode *current = board->deck.head;
         while (current) {
@@ -80,23 +79,39 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         }
         strcpy(lastCommand,"SW");
         strcpy(message,"Kort er nu vist");
-
+return STARTUP;
         //SI, Split
     } else if (strcmp(input, "SI") == 0) {
-        strcpy(lastCommand,"SI");
-        strcpy(message,"Splitter deck (ikke implementeret endnu)\n");
+        char *endptr;
+        long cutPoint = strtol(arg, &endptr, 10);
+        strcpy(lastCommand, "SI");
 
-        //SR, Shuffle random
+        if (endptr == arg || *endptr != '\0') {
+            strcpy(message, "Ugyldigt input – skriv et tal.");
+        } else if (cutPoint <= 0 || cutPoint >= board->deck.size) {
+            strcpy(message, "Ugyldigt splitpunkt.");
+        } else {
+            splitShuffle(&board->deck, (int)cutPoint);
+            strcpy(message, "Deck splittet og blandet.");
+        }
+
+        return STARTUP;
+        // SR, = randomShuffle
     } else if (strcmp(input, "SR") == 0) {
+        randomShuffle(&board->deck);
         strcpy(lastCommand,"SR");
         strcpy(message,"Shuffle random (ikke implementeret endnu)\n");
 
         //SD, Save deck
     } else if (strcmp(input, "SD") == 0) {
-        strcpy(lastCommand,"SD");
-        strcpy(message,"Gemmer deck (ikke implementeret endnu)\n");
+        strcpy(lastCommand, "SD");
+        char *filename = arg;
+        while (*filename == ' ') filename++;
+        if (strlen(filename) == 0) filename = "cards.txt";
 
-        //QQ, Quit program
+        writeDeckToFile(&board->deck, filename, message);
+        return STARTUP;
+
     } else if (strcmp(input, "QQ") == 0) {
         printf("Forlader spil - Tak for i dag!.\n");
         exit(0);
@@ -115,7 +130,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 
         return PLAY;
     } else {
-         strcpy(lastCommand,"SI");
+         strcpy(lastCommand,"Invalid");
          strcpy(message,"Ugyldig kommando i startup-phase.\n");
     }
     return currentPhase;
