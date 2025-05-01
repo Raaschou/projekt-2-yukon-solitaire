@@ -10,7 +10,7 @@
 #include "Deck.h"
 
 int readDeckFromFile(const char *filename, LinkedList *deck, char *message);
-void writeDeckToFile(LinkedList *deck, const char *filename);
+void writeDeckToFile(LinkedList *deck, const char *filename,char *message);
 
 
 #endif
