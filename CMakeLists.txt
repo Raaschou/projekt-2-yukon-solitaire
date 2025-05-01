@@ -13,6 +13,8 @@ if(APPLE)
     link_directories(${SDL3_LIBRARY_DIRS})
     add_definitions(${SDL3_CFLAGS_OTHER})
 endif()
+
+#her skal vi lave en evt test
 # Dit projekt + sourcefiler
 add_executable(projekt_2_yukon_solitaire
         Source/Main.c

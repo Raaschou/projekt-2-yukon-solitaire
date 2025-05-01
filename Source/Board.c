@@ -22,17 +22,14 @@ void printBoard(Board *board, const char *lastCommand, const char *message) {
 
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
 
-    // printer de 7 colums.
     for (int row = 0; row < maxHeight; row++) {
         for (int col = 0; col < 7; col++) {
             CardNode *current = board->columns[col].head;
             int index = 0;
-
             while (current && index < row) {
                 current = current->next;
                 index++;
             }
-
             printCard(current, &board->columns[col]);
         }
 

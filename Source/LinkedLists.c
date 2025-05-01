@@ -13,6 +13,7 @@ void list(LinkedList *list) {
     list->tail = NULL;
     list->size = 0;
 }
+
 // tilføjer et kort til en Linkedlist
 void addCard(LinkedList *list, Card card) {
     CardNode *newNode = malloc(sizeof(CardNode));
@@ -45,6 +46,7 @@ bool nodeInList(CardNode *node, LinkedList *list) {
     }
     return false;
 }
+
 // rykker stacken 1 til mange kort.
 void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
     if (!startNode || !oldList || !newList) return;
@@ -105,5 +107,29 @@ void printCard(CardNode *node, LinkedList *list) {
     }
 }
 
+void moveSingleCard(LinkedList *from, LinkedList *to) {
+    if (!from || !from->head) return;
 
+    CardNode *card = from->head;
 
+    // Fjern fra 'from'
+    if (card->next)
+        card->next->prev = NULL;
+    else
+        from->tail = NULL;
+
+    from->head = card->next;
+    from->size--;
+
+    // Tilføj til 'to' i slutningen
+    card->prev = to->tail;
+    card->next = NULL;
+
+    if (to->tail)
+        to->tail->next = card;
+    else
+        to->head = card;
+
+    to->tail = card;
+    to->size++;
+}

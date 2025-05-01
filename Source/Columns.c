@@ -4,6 +4,7 @@
 
 #include "../Include/Columns.h"
 #include <stdbool.h>
+#include <stddef.h>
 
 void columns(LinkedList columns[7]) {
     for (int i = 0; i < 7; i++) {
@@ -25,18 +26,26 @@ void moveBetweenColumns(CardNode *node, LinkedList *from, LinkedList *to) {
 //TODO sikre os de to faser, lige nu er den sat til Playphase
 // der er i øvrigt en lille fejl lige nu
 void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
-    int layout[7] = {1, 6, 7, 8, 9, 10, 11}; // Antal kort per kolonne
-    int faceDownCount = 21;
+    int layout[7]        = {1, 6, 7, 8, 9, 10, 11};  // max antal kort pr kolonne
+    int faceDownCount[7] = {0, 1, 2, 3, 4, 5, 6};    // antal skjulte kort
 
-    for (int i = 0; i < 7; i++) {
-        for (int j = 0; j < layout[i]; j++) {
-            CardNode *node = deck->tail;             // ← henter aktuelt sidste kort
-            moveStack(node, deck, &columns[i]);      // ← flytter det
-            if (faceDownCount > 0) {
-                columns[i].tail->card.faceUp = 0;     // ← den nye tail i kolonnen
-                faceDownCount--;
-            } else {
-                columns[i].tail->card.faceUp = 1;
+
+    int done = 0;
+    while (!done) {
+        done = 1;
+
+        for (int i = 0; i < 7; i++) {
+            if (0 < layout[i]) {
+                moveSingleCard(deck, &columns[i]);
+                layout[i]--;
+                done = 0;
+
+                if (faceDownCount[i] > 0) {
+                    columns[i].tail->card.faceUp = 1;
+                    faceDownCount[i]--;
+                } else {
+                    columns[i].tail->card.faceUp = 1;
+                }
             }
         }
     }
