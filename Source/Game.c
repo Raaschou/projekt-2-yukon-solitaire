@@ -38,9 +38,12 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase) {
 
     switch (cmd) {
         case LD:
+            clearList(&board->deck);
+        for (int i = 0; i < 7; i++) clearList(&board->columns[i]);
+        for (int i = 0; i < 4; i++) clearList(&board->foundations[i]);
             executeCommand(currentPhase, &cmd, &message, &board->deck);
         dealToColumns(&board->deck, board->columns);
-        clearList(&board->columns);
+
 
         printf("%s\n", message);
 
