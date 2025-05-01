@@ -27,8 +27,6 @@ add_executable(projekt_2_yukon_solitaire
         Include/Card.h
         Source/Foundations.c
         Include/Foundations.h
-        Source/Commands.c
-        Include/Commands.h
         Source/FileIO.c
         Include/FileIO.h
         Source/Utils.c

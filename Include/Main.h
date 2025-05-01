@@ -6,7 +6,6 @@
 #include "../Include/Board.h"
 #include "../Include/Card.h"
 #include "../Include/Columns.h"
-#include "../Include/Commands.h"
 #include "../Include/Deck.h"
 #include "../Include/FileIO.h"
 #include "../Include/Game.h"

@@ -5,7 +5,6 @@
 #define TEST_H
 #include "../Include/Card.h"
 #include "../Include/Columns.h"
-#include "../Include/Commands.h"
 #include "../Include/Deck.h"
 #include "../Include/FileIO.h"
 #include "../Include/Foundations.h"
