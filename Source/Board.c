@@ -32,11 +32,13 @@ void printBoardPlayPhase(Board *board, const char *lastCommand, const char *mess
         printf("\t\t");
         // printer de 4 foundations
         if (row < 8 && row % 2 == 0) {
-            if (board->foundations[row/2].head== NULL) {
-                printf("[] F%d",(row+2)/2);
+            int f = row / 2;
+            if (board->foundations[f].head== NULL) {
+                printf("[] F%d",f+1);
             }else {
-                CardNode *currentFound = board->foundations[row].tail;
-                printCard(currentFound, &board->foundations[row]);
+                CardNode *currentFound = board->foundations[f].tail;
+                printCard(currentFound, &board->foundations[f]);
+                printf("F%d",f +1);
             }
         }
         printf("\n");
