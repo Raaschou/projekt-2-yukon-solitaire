@@ -3,14 +3,11 @@
 //
 
 #include "../Include/Game.h"
-#include "../Include/Board.h"
-#include "../Include/Deck.h"
-#include "../Include/FileIO.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include "../Include/Columns.h"
+
 
 
 void gameLoop(Board *board) {
@@ -19,14 +16,18 @@ void gameLoop(Board *board) {
 
     char lastCommand[100] = "";
     char message[100] = "";
+    printBoardStartUpPhase(board, lastCommand, message);
 
     while (running) {
-        printBoardStartUpPhase(board, lastCommand, message);
+
 
         if (phase == STARTUP) {
+
             phase = startupPhase(board, phase, lastCommand, message);
+            printBoardStartUpPhase(board, lastCommand, message);
         } else if (phase == PLAY) {
             phase = playPhase(board, phase, lastCommand, message);
+            printBoardPlayPhase(board, lastCommand, message);
         }
     }
 }
@@ -56,8 +57,10 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 
 
         if (success) {
-            return currentPhase;
+           return STARTUP;
         }
+
+
     } else if (strcmp(input, "SW") == 0) {
 
 

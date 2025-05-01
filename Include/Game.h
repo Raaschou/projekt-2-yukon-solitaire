@@ -4,8 +4,10 @@
 
 #ifndef GAME_H
 #define GAME_H
+#include "../Include/Board.h"
+#include "../Include/Deck.h"
+#include "../Include/FileIO.h"
 
-#include "Board.h"
 
 //tilføjet ENUM på faser herinde i stedet for commands
 typedef enum {
