@@ -42,7 +42,7 @@ int readDeckFromFile(const char *filename, LinkedList *deck, char *message) {
     return 1;
 }
 
-// TODO: Gem board til tekstfil
+
 void writeDeckToFile(LinkedList *deck, const char *filename,char *message) {
     FILE *file = fopen(filename, "w");
     if (!file) {
