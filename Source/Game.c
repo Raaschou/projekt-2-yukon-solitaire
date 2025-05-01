@@ -5,6 +5,7 @@
 #include "../Include/Game.h"
 #include "../Include/Board.h"
 #include "../Include/Deck.h"
+#include "../Include/FileIO.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -32,17 +33,47 @@ void gameLoop(Board *board) {
 GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
 
     char input[100];
-    scanf("%s", input);
+    char arg[100] = "";
+    scanf("%s%99[^\n]", input, arg);
 
     if (strcmp(input, "LD") == 0) {
+
+        char *filename = arg;
+
         clearList(&board->deck);
-        for (int i = 0; i < 7; i++) clearList(&board->columns[i]);
-        for (int i = 0; i < 4; i++) clearList(&board->foundations[i]);
-        startDeck(&board->deck);
-        strcpy(message, "Indlæser et deck");
-        strcpy(lastCommand, input);
-        dealToColumns(&board->deck, board->columns);
-        printf("%s %s\n", message, lastCommand);
+
+        if (strlen(filename) == 0) {
+            list(&board->deck);
+            strcpy(message, "OK");
+        } else {
+            if (!readDeckFromFile(filename, &board->deck, message)) {
+                // message already set with error
+            }
+        }
+
+        strcpy(lastCommand, "LD");
+        // char *filename = arg;
+        // while (*filename == ' ') filename++;
+        //
+        //
+        // clearList(&board->deck);
+        // if (strlen(filename) == 0) {
+        //     startDeck(&board->deck);
+        //     strcpy(message, "OK");
+        // } else {
+        //     if (!readDeckFromFile(filename, &board->deck, message)) {
+        //         // fejlbesked sættes allerede i message af funktionen
+        //     }
+        // }
+        // strcpy(lastCommand, input);
+        // clearList(&board->deck);
+        // for (int i = 0; i < 7; i++) clearList(&board->columns[i]);
+        // for (int i = 0; i < 4; i++) clearList(&board->foundations[i]);
+        // startDeck(&board->deck);
+        // strcpy(message, "Indlæser et deck");
+        // strcpy(lastCommand, input);
+        // dealToColumns(&board->deck, board->columns);
+        // printf("%s %s\n", message, lastCommand);
     } else if (strcmp(input, "SW") == 0) {
         if (board->deck.head == NULL) {
             strcpy(message, "Fejl: Der er ikke indlæst et deck endnu.");
@@ -71,14 +102,14 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         printf("Forlader spil - Tak for i dag!.\n");
         exit(0);
     } else if (strcmp(input, "P") == 0) {
-        // dealToColumns(&board->deck, board->columns);
-        // // vend øverste kort i hver kolonne
-        // for (int i = 0; i < 7; i++) {
-        //     if (board->columns[i].tail != NULL) {
-        //         board->columns[i].tail->card.faceUp = 1;
-        //     }
-        // }
-        // printf("Starter spil...\n");
+        clearList(&board->deck);
+        for (int i = 0; i < 7; i++) clearList(&board->columns[i]);
+        for (int i = 0; i < 4; i++) clearList(&board->foundations[i]);
+        startDeck(&board->deck);
+        strcpy(message, "Indlæser et deck");
+        strcpy(lastCommand, input);
+        dealToColumns(&board->deck, board->columns);
+        printf("%s %s\n", message, lastCommand);
         return PLAY;
     } else {
         printf("Ugyldig kommando i startup-phase.\n");
