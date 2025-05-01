@@ -94,8 +94,11 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         printf("Forlader spil - Tak for i dag!.\n");
         exit(0);
     } else if (strcmp(input, "P") == 0) {
-
-
+        if (board->deck.size == 0) {
+            strcpy(message, "Der er ikke loadet et deck!");
+            strcpy(lastCommand, input);
+            return currentPhase;
+        }
         dealToColumns(&board->deck, board->columns);
         clearList(&board->deck);
         strcpy(lastCommand,"P");
