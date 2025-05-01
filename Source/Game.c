@@ -5,10 +5,12 @@
 #include "../Include/Game.h"
 #include "../Include/Board.h"
 #include "../Include/Commands.h"
+#include "../Include/Deck.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
+#include "../Include/Columns.h"
 
 
 void gameLoop(Board *board) {
@@ -29,14 +31,17 @@ void gameLoop(Board *board) {
 // forskellige faser
 GamePhase startupPhase(Board *board, GamePhase currentPhase) {
     char input[100];
+    char message[100];
     scanf("%s", input);
 
     StartupCommand cmd = parseStartupCommand(input);
 
     switch (cmd) {
         case LD:
-            // fx: loadDeck(board);
-                printf("Loading deck...\n");
+            executeCommand(currentPhase, &cmd, &message, &board->deck);
+            dealToColumns(&board->deck, board->columns);
+        printf("%s\n", message);
+
         break;
         case SW:
             printf("Show deck\n");

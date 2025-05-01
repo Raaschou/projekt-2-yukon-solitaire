@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 typedef struct {
+    LinkedList deck;
     LinkedList columns[7];
     LinkedList foundations[4];
 } Board;

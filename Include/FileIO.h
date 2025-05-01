@@ -5,9 +5,11 @@
 #ifndef FILEIO_H
 #define FILEIO_H
 
-#include "Board.h"
 
-int load_board_from_file(Board *board, const char *filename);
-int save_board_to_file(const Board *board, const char *filename);
+#include "LinkedLists.h"
+
+void readDeckFromFile(LinkedList *deck, const char *filename);
+void writeDeckToFile(LinkedList *deck, const char *filename);
+
 
 #endif

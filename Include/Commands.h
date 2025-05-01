@@ -34,6 +34,6 @@ PlayCommand parsePlayCommand(const char *input);
 // #endif
 
 // Funktion til at udføre kommandoer baseret på fase
-void executeCommand(GamePhase phase, void *command, char *message);
+void executeCommand(GamePhase phase, void *command, char *message, LinkedList *deck);
 
 #endif // COMMANDS_H

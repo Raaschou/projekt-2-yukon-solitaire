@@ -10,13 +10,12 @@
 
 
 // tjek h fil for mere info.
-void executeCommand(GamePhase phase, void *command, char *message/*, LinkedList *deck*/) {
+void executeCommand(GamePhase phase, void *command, char *message, LinkedList *deck) {
     if (phase == STARTUP) {
         StartupCommand cmd = *(StartupCommand*)command;
         switch (cmd) {
             case LD:
-                LinkedList *list = (LinkedList*)malloc(sizeof(LinkedList));
-                startDeck(list);
+            startDeck(deck);
                 strcpy(message, "Indlæser deck...");
             break;
             case SW:

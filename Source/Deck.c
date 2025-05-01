@@ -9,9 +9,6 @@ void startDeck(LinkedList *deck) {
 
     for (int i = 0; i < 4; i++) {
         for (int j = 1; j <= 13; j++) {
-            // gav lidt problemer;(
-            // Card *newCard = createCard(suits[i], j);
-            // addCard(deck, *newCard);
 
             Card newCard;
             newCard.suit = suits[i];

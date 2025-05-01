@@ -30,13 +30,13 @@ void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
 
     for (int i = 0; i < 7; i++) {
         for (int j = 0; j < layout[i]; j++) {
-            CardNode *node = deck->tail;
-            moveStack(node, deck, &columns[i]);
+            CardNode *node = deck->tail;             // ← henter aktuelt sidste kort
+            moveStack(node, deck, &columns[i]);      // ← flytter det
             if (faceDownCount > 0) {
-                node->card.faceUp = 0;
+                columns[i].tail->card.faceUp = 0;     // ← den nye tail i kolonnen
                 faceDownCount--;
             } else {
-                node->card.faceUp = 1;
+                columns[i].tail->card.faceUp = 1;
             }
         }
     }
