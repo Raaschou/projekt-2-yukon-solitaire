@@ -26,6 +26,8 @@ bool nodeInList(CardNode *node, LinkedList *list);
 void moveStack(CardNode *startNode, LinkedList *from, LinkedList *to);
 void printCard(CardNode *node, LinkedList *list);
 void moveSingleCard(LinkedList *from, LinkedList *to);
+CardNode* findCardNode(LinkedList *list, int rank, char suit);
+void flipLastCardIfAny(LinkedList *list);
 
 
 

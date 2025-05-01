@@ -3,6 +3,11 @@
 //
 
 #include "../Include/Game.h"
+#include "../Include/Board.h"
+#include "../Include/Deck.h"
+#include "../Include/FileIO.h"
+#include "../Include/Foundations.h"
+#include "../Include/Columns.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -16,19 +21,17 @@ void gameLoop(Board *board) {
 
     char lastCommand[100] = "";
     char message[100] = "";
+
     printBoardStartUpPhase(board, lastCommand, message);
 
     while (running) {
 
-
         if (phase == STARTUP) {
-
             phase = startupPhase(board, phase, lastCommand, message);
             printBoardStartUpPhase(board, lastCommand, message);
         } else if (phase == PLAY) {
-            printBoardPlayPhase(board, lastCommand, message);
             phase = playPhase(board, phase, lastCommand, message);
-
+            printBoardPlayPhase(board, lastCommand, message);
         }
     }
 }
@@ -111,10 +114,134 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
         strcpy(lastCommand,"SI");
         strcpy(message,"Afslutter spilfase...\n");
         return STARTUP;
-    } else if (strcmp(input, "MOVES") == 0) {
-        strcpy(lastCommand,"SI");
-        strcpy(message,"Viser mulige træk...\n");
+    } else if (strstr(input, "->") != NULL) {
+        char from[100], to[100];
+        sscanf(input, "%[^-]->%s", from, to);
 
+        if (from[0] == 'C' && to[0] == 'F') {
+            int colIndex = from[1] - '1';     // fx 'C2' -> index 1
+            int fIndex = to[1] - '1';         // fx 'F1' -> index 0
+
+            if (colIndex < 0 || colIndex >= 7 || fIndex < 0 || fIndex >= 4) {
+                strcpy(message, "Ugyldigt kolonne!");
+                return currentPhase;
+            }
+
+            LinkedList *source = &board->columns[colIndex];
+            LinkedList *target = &board->foundations[fIndex];
+            CardNode *card = source->tail;
+
+            if (!card) {
+                strcpy(message, "Kolonnen er tom!");
+            } else if (validMoveF(card, target->tail)) {
+                moveToFoundation(card, source, target);
+                flipLastCardIfAny(source);
+                strcpy(message, "OK");
+            } else {
+                strcpy(message, "Ugyldigt træk!");
+            }
+            return currentPhase;
+        } else if (from[0] == 'C' && strchr(from, ':')) {
+            int fromCol = from[1] - '1';
+            int toCol = to[1] - '1';
+
+            if (fromCol < 0 || fromCol >= 7 || toCol < 0 || toCol >= 7) {
+                strcpy(message, "Ugyldig kolonne!");
+                return currentPhase;
+            }
+
+            char *colon = strchr(from, ':');
+            char *cardStr = colon + 1;
+
+            int rank = 0;
+            char suit;
+
+            // Forsøg først numerisk parsing
+            if (sscanf(cardStr, "%d%c", &rank, &suit) != 2) {
+                if (cardStr[0] == 'A') rank = 1;
+                else if (cardStr[0] == 'J') rank = 11;
+                else if (cardStr[0] == 'Q') rank = 12;
+                else if (cardStr[0] == 'K') rank = 13;
+                else {
+                    strcpy(message, "Ugyldigt kort!");
+                    return currentPhase;
+                }
+                suit = cardStr[1];
+            }
+
+            LinkedList *source = &board->columns[fromCol];
+            LinkedList *dest = &board->columns[toCol];
+
+            CardNode *node = findCardNode(source, rank, suit);
+
+            if (!node || !nodeInList(node, source)) {
+                strcpy(message, "Kortet er ikke i kolonnen!");
+            } else if (!node->card.faceUp) {
+                strcpy(message, "Kan ikke flytte [] kortene");
+            } else if (validMoveC(node, dest->tail)) {
+                moveBetweenColumns(node, source, dest);
+                flipLastCardIfAny(source);
+                strcpy(message, "OK");
+            } else {
+                strcpy(message, "Ugyldigt træk!");
+            }
+
+            return currentPhase;
+        } else if (from[0] == 'C' && to[0] == 'C') {
+            int fromCol = from[1] - '1';
+            int toCol = to[1] - '1';
+
+            if (fromCol < 0 || fromCol >= 7 || toCol < 0 || toCol >= 7) {
+                strcpy(message, "Ugyldig kolonne!");
+                return currentPhase;
+            }
+
+            LinkedList *source = &board->columns[fromCol];
+            LinkedList *dest = &board->columns[toCol];
+
+            CardNode *node = source->tail;
+
+            if (!node) {
+                strcpy(message, "Kolonnen er tom!");
+            } else if (!node->card.faceUp) {
+                strcpy(message, "Kan ikke flytte [] kortene");
+            } else if (validMoveC(node, dest->tail)) {
+                moveBetweenColumns(node, source, dest);
+                flipLastCardIfAny(source);
+                strcpy(message, "OK");
+            } else {
+                strcpy(message, "Ugyldigt træk!");
+            }
+
+            return currentPhase;
+        } else if (from[0] == 'F' && to[0] == 'C') {
+            int fromIndex = from[1] - '1';
+            int toIndex = to[1] - '1';
+
+            if (fromIndex < 0 || fromIndex >= 4 || toIndex < 0 || toIndex >= 7) {
+                strcpy(message, "Ugyldig foundation!");
+                return currentPhase;
+            }
+
+            LinkedList *source = &board->foundations[fromIndex];
+            LinkedList *dest = &board->columns[toIndex];
+
+            CardNode *node = source->tail;
+
+            if (!node) {
+                strcpy(message, "Foundation er tom!");
+            } else if (validMoveC(node, dest->tail)) {
+                moveBetweenColumns(node, source, dest);
+                strcpy(message, "OK");
+            } else {
+                strcpy(message, "Ugyldigt træk!");
+            }
+
+            return currentPhase;
+        }
+        strcpy(lastCommand, input);
+        printf("Du prøvede at flytte fra '%s' til '%s'\n", from, to);
+        strcpy(message, "Trækmodtagelse testet.");
     } else if (strcmp(input, "U") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Fortryder sidste træk...\n");
@@ -138,6 +265,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
 
     return currentPhase;
 }
+
 
 //
 // #include <stdio.h>

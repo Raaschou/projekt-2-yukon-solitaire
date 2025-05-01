@@ -133,3 +133,20 @@ void moveSingleCard(LinkedList *from, LinkedList *to) {
     to->tail = card;
     to->size++;
 }
+
+CardNode* findCardNode(LinkedList *list, int rank, char suit) {
+    CardNode *current = list->head;
+    while (current != NULL) {
+        if (current->card.rank == rank && current->card.suit == suit) {
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
+}
+
+void flipLastCardIfAny(LinkedList *list) {
+    if (list->tail && !list->tail->card.faceUp) {
+        list->tail->card.faceUp = 1;
+    }
+}
