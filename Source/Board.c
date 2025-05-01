@@ -91,6 +91,7 @@ if (board->deck.size!=0) {
             } else {
                 CardNode *fCard = board->foundations[f].tail;
                 printCard(fCard, &board->foundations[f]);
+                printf("F%d",f +1);
             }
         }
         printf("\n");
