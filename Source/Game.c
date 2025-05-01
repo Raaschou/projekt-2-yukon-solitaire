@@ -54,11 +54,10 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
             success = 1;
         }
 
-        if (success) {
-            printBoardStartUpPhase(board, lastCommand, message);
-        }
 
-        return currentPhase; // stadig i STARTUP
+        if (success) {
+            return currentPhase;
+        }
     } else if (strcmp(input, "SW") == 0) {
 
 

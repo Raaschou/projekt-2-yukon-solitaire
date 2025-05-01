@@ -29,6 +29,7 @@ int readDeckFromFile(const char *filename, LinkedList *deck, char *message) {
             return 0;
         }
         addCard(deck, card);
+        deck->tail->card.faceUp = 1;
     }
 
     fclose(file);

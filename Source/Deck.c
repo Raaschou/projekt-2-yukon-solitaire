@@ -107,12 +107,12 @@ int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52],cha
     // Ranks
     int r;
     switch (rank) {
-        case 'A': r = 0; break;
-        case 'T': r = 9; break;
-        case 'J': r = 10; break;
-        case 'Q': r = 11; break;
-        case 'K': r = 12; break;
-        case '2'...'9': r = rank - '2' + 1; break;
+        case 'A': r = 1; break;
+        case 'T': r = 10; break;
+        case 'J': r = 11; break;
+        case 'Q': r = 12; break;
+        case 'K': r = 13; break;
+        case '2'...'9': r = rank - '0'; break;  // '5' → 5
         default:
             sprintf(message,"ERROR: Ugyldig rank '%c' på linje %d.\n", rank, lineNum);
         return 0;
@@ -130,14 +130,14 @@ int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52],cha
         return 0;
     }
 
-    int index = s * 13 + r;
+    int index = s * 13 + (r-1);
     if (seen[index]) {
         sprintf(message,"ERROR: Dubletkort '%c%c' på linje %d.\n", rank, suit, lineNum);
         return 0;
     }
 
     seen[index] = 1;
-    outCard->rank = rank;
+    outCard->rank = r;
     outCard->suit = suit;
     outCard->faceUp = 0;
 
