@@ -14,6 +14,7 @@ typedef struct {
     LinkedList foundations[4];
 } Board;
 
-void printBoard(Board *board, const char *lastCommand, const char *message);
+void printBoardPlayPhase(Board *board, const char *lastCommand, const char *message);
+void printBoardStartUpPhase(Board *board, const char *lastCommand, const char *message);
 
 #endif //BOARD_H

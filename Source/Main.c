@@ -25,12 +25,22 @@
 // void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
+
+        FILE *f = fopen("testfile.txt", "r");
+        if (!f) {
+            printf("Filen findes IKKE!\n");
+        } else {
+            printf("Filen blev åbnet korrekt!\n");
+            fclose(f);
+        }
+        return 0;
+    }
     // Initialiser spillebrættet
-    Board board = {0};
-    srand((unsigned int)time(NULL));
-    gameLoop(&board);
-    return 0;
-}
+    // Board board = {0};
+    // srand((unsigned int)time(NULL));
+    // gameLoop(&board);
+
+
     //
     // LinkedList newDeck;
     // list(&newDeck);

@@ -11,7 +11,7 @@
 
 //Bør printe boardet
 // håber den kan bruges til alt
-void printBoard(Board *board, const char *lastCommand, const char *message) {
+void printBoardPlayPhase(Board *board, const char *lastCommand, const char *message) {
     int maxHeight = 7;
     // den her funktion tjekker højden på alle vores columns
     // pga foundations skal den minimum være 7
@@ -49,6 +49,22 @@ void printBoard(Board *board, const char *lastCommand, const char *message) {
     // Print statusfelt
     // tjekker om der er parameter ellers tom
     printf("\nLast Command: %s\n", lastCommand ? lastCommand : "");
+    printf("Message: %s\n", message ? message : "");
+    printf("INPUT >  ");
+}
+void printBoardStartUpPhase(Board *board, const char *lastCommand, const char *message) {
+    printf("Deck:\n\n");
+    printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
+    CardNode *current = board->deck.head;
+    int i = 0;
+    while (current) {
+        printf("[ ]\t"); // alle kort er skjulte i startup
+        current = current->next;
+        i++;
+        if (i % 7 == 0) printf("\n");
+    }
+
+    printf("\n\nLast Command: %s\n", lastCommand ? lastCommand : "");
     printf("Message: %s\n", message ? message : "");
     printf("INPUT >  ");
 }

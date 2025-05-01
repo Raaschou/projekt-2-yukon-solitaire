@@ -145,3 +145,4 @@ int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52],cha
 }
 
 
+
