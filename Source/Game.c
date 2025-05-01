@@ -33,19 +33,19 @@ void gameLoop(Board *board) {
 GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
     char input[100];
     char arg[100] = "";
-    scanf("%s%99[^\n]", input, arg);
+    char line[200];
+    fgets(line, sizeof(line), stdin);
+    sscanf(line, "%s%99[^\n]", input, arg);
 
     if (strcmp(input, "LD") == 0) {
         // Gem sidste kommando
         strcpy(lastCommand, "LD");
-
         // Fjern evt. førende mellemrum fra arg
         char *filename = arg;
         while (*filename == ' ') filename++;
 
         int success;
         if (strlen(filename) > 0) {
-            // Load fra fil
             success = readDeckFromFile(filename, &board->deck, message);
         } else {
             // Lav standarddeck
@@ -55,7 +55,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         }
 
         if (success) {
-            dealToColumns(&board->deck, board->columns);
+            printBoardStartUpPhase(board, lastCommand, message);
         }
 
         return currentPhase; // stadig i STARTUP

@@ -53,12 +53,11 @@ void printBoardPlayPhase(Board *board, const char *lastCommand, const char *mess
     printf("INPUT >  ");
 }
 void printBoardStartUpPhase(Board *board, const char *lastCommand, const char *message) {
-    printf("Deck:\n\n");
     printf("C1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
     CardNode *current = board->deck.head;
     int i = 0;
     while (current) {
-        printf("[ ]\t"); // alle kort er skjulte i startup
+        printCard(current,&board->deck); // alle kort er skjulte i startup
         current = current->next;
         i++;
         if (i % 7 == 0) printf("\n");

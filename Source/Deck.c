@@ -17,7 +17,7 @@ void startDeck(LinkedList *deck) {
             Card newCard;
             newCard.suit = suits[i];
             newCard.rank = j;
-            newCard.faceUp = 0;
+            newCard.faceUp = 1;
 
             addCard(deck, newCard);
         }
@@ -96,7 +96,7 @@ void splitShuffle(LinkedList *deck, int cutSize) {
     }
 }
 int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52],char *message) {
-    if (strlen(line) != 2 ) {
+    if (strlen(line) <2 ) {
        sprintf(message,"ERROR: Tom eller kort linje på linje %d.\n", lineNum);
         return 0;
     }
