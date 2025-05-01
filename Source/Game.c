@@ -62,6 +62,11 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 
 
     } else if (strcmp(input, "SW") == 0) {
+        CardNode *current = board->deck.head;
+        while (current) {
+            current->card.faceUp = 1;
+            current = current->next;
+        }
         strcpy(lastCommand,"SW");
         strcpy(message,"Kort er nu vist");
 
@@ -78,8 +83,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         strcpy(message,"Gemmer deck (ikke implementeret endnu)\n");
 
     } else if (strcmp(input, "QQ") == 0) {
-        strcpy(lastCommand,"QQ");
-        strcpy(message,"Forlader spil - Tak for i dag!.\n");
+        printf("Forlader spil - Tak for i dag!.\n");
         exit(0);
     } else if (strcmp(input, "P") == 0) {
     //     clearList(&board->deck);
