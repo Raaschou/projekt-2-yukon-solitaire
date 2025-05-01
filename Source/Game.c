@@ -39,7 +39,9 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase) {
     switch (cmd) {
         case LD:
             executeCommand(currentPhase, &cmd, &message, &board->deck);
-            dealToColumns(&board->deck, board->columns);
+        dealToColumns(&board->deck, board->columns);
+        clearList(&board->columns);
+
         printf("%s\n", message);
 
         break;

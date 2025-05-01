@@ -16,6 +16,7 @@ void executeCommand(GamePhase phase, void *command, char *message, LinkedList *d
         switch (cmd) {
             case LD:
             startDeck(deck);
+
                 strcpy(message, "Indlæser deck...");
             break;
             case SW:
