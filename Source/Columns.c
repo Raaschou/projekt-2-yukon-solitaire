@@ -22,9 +22,16 @@ void moveBetweenColumns(CardNode *node, LinkedList *from, LinkedList *to) {
     }
 }
 
-// deler kortne ud, så det matcher hvordan spillet skal spilles.
-//TODO sikre os de to faser, lige nu er den sat til Playphase
-// der er i øvrigt en lille fejl lige nu
+/**
+ * Fordeler kort fra deck til de 7 kolonner ved spilstart.
+ *
+ * Giver ét kort ad gangen til hver kolonne fra venstre mod højre,
+ * indtil hver kolonne har det ønskede antal kort.
+ * De første kort i hver kolonne vendes med billedsiden nedad.
+ *
+ * @param deck    Deck med 52 kort i korrekt rækkefølge (head → tail).
+ * @param columns Array af 7 kolonner (linked lists) som skal fyldes.
+ */
 void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
     int layout[7]        = {1, 6, 7, 8, 9, 10, 11};  // max antal kort pr kolonne
     int faceDownCount[7] = {0, 1, 2, 3, 4, 5, 6};    // antal skjulte kort
@@ -47,6 +54,7 @@ void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
                     columns[i].tail->card.faceUp = 1;
                 }
             }
+
         }
     }
 }
