@@ -45,6 +45,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 
     //TODO måske skulle man lave en tjek hvis der eksistere et deck allerede hvor man bekræfter at man vil overskride
 
+    // LD, Load deck
     if (strcmp(input, "LD") == 0) {
         clearList(&board->deck);
         // Gem sidste kommando
@@ -68,6 +69,8 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
            return STARTUP;
         }
 
+        // LD, Load deck
+        // SW,Show deck
 
     } else if (strcmp(input, "SW") == 0) {
         CardNode *current = board->deck.head;
@@ -78,21 +81,27 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         strcpy(lastCommand,"SW");
         strcpy(message,"Kort er nu vist");
 
+        //SI, Split
     } else if (strcmp(input, "SI") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Splitter deck (ikke implementeret endnu)\n");
 
+        //SR, Shuffle random
     } else if (strcmp(input, "SR") == 0) {
         strcpy(lastCommand,"SR");
         strcpy(message,"Shuffle random (ikke implementeret endnu)\n");
 
+        //SD, Save deck
     } else if (strcmp(input, "SD") == 0) {
         strcpy(lastCommand,"SD");
         strcpy(message,"Gemmer deck (ikke implementeret endnu)\n");
 
+        //QQ, Quit program
     } else if (strcmp(input, "QQ") == 0) {
         printf("Forlader spil - Tak for i dag!.\n");
         exit(0);
+
+        //P, Start play phase
     } else if (strcmp(input, "P") == 0) {
         if (board->deck.size == 0) {
             strcpy(message, "Der er ikke loadet et deck!");
@@ -115,11 +124,12 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
     char input[100];
     scanf("%s", input);
-
+    //Q, Quit play phase
     if (strcmp(input, "Q") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Afslutter spilfase...\n");
         return STARTUP;
+        //MOVES, Show legal moves
     } else if (strstr(input, "->") != NULL) {
         char from[100], to[100];
         sscanf(input, "%[^-]->%s", from, to);
@@ -248,18 +258,21 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
         strcpy(lastCommand, input);
         printf("Du prøvede at flytte fra '%s' til '%s'\n", from, to);
         strcpy(message, "Trækmodtagelse testet.");
+        //U, Undo
     } else if (strcmp(input, "U") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Fortryder sidste træk...\n");
-
+        //R, Redo
     } else if (strcmp(input, "R") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Gør træk om...\n");
-
+        //S, Save game
     } else if (strcmp(input, "S") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Gemmer spil...\n");
-
+        //
+        //L, Load game
+        //
     } else if (strcmp(input, "L") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Indlæser spil...\n");
@@ -281,21 +294,10 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
 //
 
 /*
-    LD,  // Load deck
-    SW,  // Show deck
-    SI,  // Split
-    SR,  // Shuffle random
-    SD,  // Save deck
-    QQ,  // Quit program
-    P    // Start play phase
+
 
 
 // Kommandoer i spilfasen – 'Q' går tilbage til startfasen
 
-    Q,      // Quit play phase
-    MOVES,  // Show legal moves
-    U,      // Undo
-    R,      // Redo
-    S,      // Save game
-    L       // Load game
+
 */
