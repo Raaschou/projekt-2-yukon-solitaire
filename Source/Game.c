@@ -175,6 +175,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
             // Forsøg først numerisk parsing
             if (sscanf(cardStr, "%d%c", &rank, &suit) != 2) {
                 if (cardStr[0] == 'A') rank = 1;
+                else if (cardStr[0] == 'T') rank = 10;
                 else if (cardStr[0] == 'J') rank = 11;
                 else if (cardStr[0] == 'Q') rank = 12;
                 else if (cardStr[0] == 'K') rank = 13;

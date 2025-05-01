@@ -62,15 +62,17 @@ void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
 //Tjekker om det kort vi prøver at rykke matcher kriterierne i forhold til at rykke til ny
 bool validMoveC(CardNode *source, CardNode *target) {
     if (!source) return false;
+
     if (!target) {
         return source->card.rank == 13;
     }
+
     int srcRank = source->card.rank;
     int tgtRank = target->card.rank;
-    char srcSuit = source->card.suit;
-    char tgtSuit = target->card.suit;
-    bool isSrcRed = (srcSuit == 'H' || srcSuit == 'D');
-    bool isTgtRed = (tgtSuit == 'H' || tgtSuit == 'D');
 
-    return (srcRank + 1 == tgtRank) && (isSrcRed != isTgtRed);
+    if (source->card.suit == target->card.suit) {
+        return false;
+    }
+
+    return (srcRank + 1 == tgtRank);
 }
