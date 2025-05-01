@@ -29,8 +29,9 @@ void gameLoop(Board *board) {
             phase = startupPhase(board, phase, lastCommand, message);
             printBoardStartUpPhase(board, lastCommand, message);
         } else if (phase == PLAY) {
-            phase = playPhase(board, phase, lastCommand, message);
             printBoardPlayPhase(board, lastCommand, message);
+            phase = playPhase(board, phase, lastCommand, message);
+
         }
     }
 }
