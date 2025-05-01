@@ -40,6 +40,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
     sscanf(line, "%s%99[^\n]", input, arg);
 
     if (strcmp(input, "LD") == 0) {
+        clearList(&board->deck);
         // Gem sidste kommando
         strcpy(lastCommand, "LD");
         // Fjern evt. førende mellemrum fra arg
@@ -90,6 +91,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 
 
         dealToColumns(&board->deck, board->columns);
+        clearList(&board->deck);
         strcpy(lastCommand,"P");
         strcpy(message,"Vi spiller!");
 
