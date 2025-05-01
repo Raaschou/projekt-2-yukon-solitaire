@@ -44,7 +44,19 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         dealToColumns(&board->deck, board->columns);
         printf("%s %s\n", message, lastCommand);
     } else if (strcmp(input, "SW") == 0) {
-        printf("Viser deck\n");
+        if (board->deck.head == NULL) {
+            strcpy(message, "Fejl: Der er ikke indlæst et deck endnu.");
+        } else {
+            CardNode *current = board->deck.head;
+            while (current != NULL) {
+                Card card = current->card;
+                printf("%d%c ", card.rank, card.suit);
+                current = current->next;
+            }
+            printf("\n");
+            strcpy(message, "OK");
+        }
+        strcpy(lastCommand, input);
 
     } else if (strcmp(input, "SI") == 0) {
         printf("Splitter deck (ikke implementeret endnu)\n");
@@ -81,7 +93,6 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
     if (strcmp(input, "Q") == 0) {
         printf("Afslutter spilfase...\n");
         return STARTUP;
-
     } else if (strcmp(input, "MOVES") == 0) {
         printf("Viser mulige træk...\n");
 
