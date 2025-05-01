@@ -21,7 +21,6 @@ void gameLoop(Board *board) {
 
     char lastCommand[100] = "";
     char message[100] = "";
-
     printBoardStartUpPhase(board, lastCommand, message);
 
     while (running) {
@@ -41,6 +40,8 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
     char line[200];
     fgets(line, sizeof(line), stdin);
     sscanf(line, "%s%99[^\n]", input, arg);
+
+    //TODO måske skulle man lave en tjek hvis der eksistere et deck allerede hvor man bekræfter at man vil overskride
 
     if (strcmp(input, "LD") == 0) {
         clearList(&board->deck);
