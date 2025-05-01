@@ -62,19 +62,24 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 
 
     } else if (strcmp(input, "SW") == 0) {
-
+        strcpy(lastCommand,"SW");
+        strcpy(message,"Kort er nu vist");
 
     } else if (strcmp(input, "SI") == 0) {
-        printf("Splitter deck (ikke implementeret endnu)\n");
+        strcpy(lastCommand,"SI");
+        strcpy(message,"Splitter deck (ikke implementeret endnu)\n");
 
     } else if (strcmp(input, "SR") == 0) {
-        printf("Shuffle random (ikke implementeret endnu)\n");
+        strcpy(lastCommand,"SR");
+        strcpy(message,"Shuffle random (ikke implementeret endnu)\n");
 
     } else if (strcmp(input, "SD") == 0) {
-        printf("Gemmer deck (ikke implementeret endnu)\n");
+        strcpy(lastCommand,"SD");
+        strcpy(message,"Gemmer deck (ikke implementeret endnu)\n");
 
     } else if (strcmp(input, "QQ") == 0) {
-        printf("Forlader spil - Tak for i dag!.\n");
+        strcpy(lastCommand,"QQ");
+        strcpy(message,"Forlader spil - Tak for i dag!.\n");
         exit(0);
     } else if (strcmp(input, "P") == 0) {
     //     clearList(&board->deck);
@@ -89,7 +94,8 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 
         return PLAY;
     } else {
-        printf("Ugyldig kommando i startup-phase.\n");
+         strcpy(lastCommand,"SI");
+         strcpy(message,"Ugyldig kommando i startup-phase.\n");
     }
     return currentPhase;
 }
@@ -99,25 +105,32 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
     scanf("%s", input);
 
     if (strcmp(input, "Q") == 0) {
-        printf("Afslutter spilfase...\n");
+        strcpy(lastCommand,"SI");
+        strcpy(message,"Afslutter spilfase...\n");
         return STARTUP;
     } else if (strcmp(input, "MOVES") == 0) {
-        printf("Viser mulige træk...\n");
+        strcpy(lastCommand,"SI");
+        strcpy(message,"Viser mulige træk...\n");
 
     } else if (strcmp(input, "U") == 0) {
-        printf("Fortryder sidste træk...\n");
+        strcpy(lastCommand,"SI");
+        strcpy(message,"Fortryder sidste træk...\n");
 
     } else if (strcmp(input, "R") == 0) {
-        printf("Gør træk om...\n");
+        strcpy(lastCommand,"SI");
+        strcpy(message,"Gør træk om...\n");
 
     } else if (strcmp(input, "S") == 0) {
-        printf("Gemmer spil...\n");
+        strcpy(lastCommand,"SI");
+        strcpy(message,"Gemmer spil...\n");
 
     } else if (strcmp(input, "L") == 0) {
-        printf("Indlæser spil...\n");
+        strcpy(lastCommand,"SI");
+        strcpy(message,"Indlæser spil...\n");
 
     } else {
-        printf("Ugyldig kommando i spilfase.\n");
+        strcpy(lastCommand,"Was not valid");
+        strcpy(message,"Ugyldig kommando i spilfase.\n");
     }
 
     return currentPhase;
