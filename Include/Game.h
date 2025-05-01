@@ -7,6 +7,7 @@
 #include "../Include/Board.h"
 #include "../Include/Deck.h"
 #include "../Include/FileIO.h"
+#include "../Include/Columns.h"
 
 
 //tilføjet ENUM på faser herinde i stedet for commands

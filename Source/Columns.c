@@ -48,7 +48,7 @@ void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
                 done = 0;
 
                 if (faceDownCount[i] > 0) {
-                    columns[i].tail->card.faceUp = 1;
+                    columns[i].tail->card.faceUp = 0;
                     faceDownCount[i]--;
                 } else {
                     columns[i].tail->card.faceUp = 1;

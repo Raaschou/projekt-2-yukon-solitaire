@@ -26,8 +26,9 @@ void gameLoop(Board *board) {
             phase = startupPhase(board, phase, lastCommand, message);
             printBoardStartUpPhase(board, lastCommand, message);
         } else if (phase == PLAY) {
-            phase = playPhase(board, phase, lastCommand, message);
             printBoardPlayPhase(board, lastCommand, message);
+            phase = playPhase(board, phase, lastCommand, message);
+
         }
     }
 }
@@ -86,15 +87,11 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         printf("Forlader spil - Tak for i dag!.\n");
         exit(0);
     } else if (strcmp(input, "P") == 0) {
-    //     clearList(&board->deck);
-    //     for (int i = 0; i < 7; i++) clearList(&board->columns[i]);
-    //     for (int i = 0; i < 4; i++) clearList(&board->foundations[i]);
-    //     startDeck(&board->deck);
-    //     strcpy(message, "Indlæser et deck");
-    //     strcpy(lastCommand, input);
-    //     dealToColumns(&board->deck, board->columns);
-    //     printf("%s %s\n", message, lastCommand);
 
+
+        dealToColumns(&board->deck, board->columns);
+        strcpy(lastCommand,"P");
+        strcpy(message,"Vi spiller!");
 
         return PLAY;
     } else {
