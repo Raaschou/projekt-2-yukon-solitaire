@@ -3,6 +3,9 @@
 //
 
 #include "../Include/Game.h"
+
+#include <ctype.h>
+
 #include "../Include/Board.h"
 #include "../Include/Deck.h"
 #include "../Include/FileIO.h"
@@ -15,39 +18,78 @@
 // vi skal
 
 
-void gameLoop(Board *board) {
+void gameLoop(Board *board, int useGUI) {
     GamePhase phase = STARTUP;
     int running = 1;
 
     char lastCommand[100] = "";
     char message[100] = "";
-    printBoardStartUpPhase(board, lastCommand, message);
 
     while (running) {
-
         if (phase == STARTUP) {
-            printBoardStartUpPhase(board, lastCommand, message);
-            phase = startupPhase(board, phase, lastCommand, message);
+
+
+            if (useGUI) {
+                // Her skal GUI'en sende en kommando-streng videre
+                // fx via en global buffer eller SDL-klik
+                // Eksempel (pseudo):
+                // const char *input = getInputFromGUI();
+                // phase = startupPhase(board, phase, input, lastCommand, message);
+            } else {
+
+                phase = playPhaseTerminal(board, phase, lastCommand, message);
+                printBoardStartUpPhase(board, lastCommand, message);
+            }
 
         } else if (phase == PLAY) {
-            printBoardPlayPhase(board, lastCommand, message);
-            phase = playPhase(board, phase, lastCommand, message);
 
+
+            if (useGUI) {
+                // const char *input = getInputFromGUI();
+                // phase = playPhase(board, phase, input, lastCommand, message);
+            } else {
+                phase = playPhaseTerminal(board, phase, lastCommand, message);
+                printBoardPlayPhase(board, lastCommand, message);
+            }
         }
     }
 }
-GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
+GamePhase playPhaseTerminal(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
     char input[100];
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0; // Fjern newline
+
+    if (currentPhase == PLAY) {
+        return playPhase(board, currentPhase, input, lastCommand, message);
+    } else if (currentPhase == STARTUP) {
+        return startupPhase(board, currentPhase, input, lastCommand, message);
+    }
+
+    strcpy(lastCommand, input);
+    strcpy(message, "Ukendt fase");
+    return currentPhase;
+}
+
+GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message) {
+    char cmd[100] = "";
     char arg[100] = "";
-    char line[200];
-    fgets(line, sizeof(line), stdin);
-    sscanf(line, "%s%99[^\n]", input, arg);
+    sscanf(input, "%s%99[^\n]", cmd, arg);
 
     //TODO måske skulle man lave en tjek hvis der eksistere et deck allerede hvor man bekræfter at man vil overskride
 
     // LD, Load deck
-    if (strcmp(input, "LD") == 0) {
-        clearList(&board->deck);
+    if (strcasecmp(input, "LD") == 0) {
+        if (board->deck.size != 0) {
+            strcpy(lastCommand,"LD men der er allerede et deck");
+            strcpy(message,"vil du overskride 1-ja, 2-nej");
+            printBoardStartUpPhase(board, lastCommand, message);
+
+        }else {
+            goto nytDeck;
+        }
+
+        nytDeck:
+            clearList(&board->deck);
         // Gem sidste kommando
         strcpy(lastCommand, "LD");
         // Fjern evt. førende mellemrum fra arg
@@ -66,12 +108,13 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
 
 
         if (success) {
-           return STARTUP;
+            return STARTUP;
         }
 
 
+
         // SW,Show deck
-    } else if (strcmp(input, "SW") == 0) {
+    } else if (strcasecmp(input, "SW") == 0) {
         CardNode *current = board->deck.head;
         while (current) {
             current->card.faceUp = 1;
@@ -81,7 +124,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, 
         strcpy(message,"Kort er nu vist");
 return STARTUP;
         //SI, Split
-    } else if (strcmp(input, "SI") == 0) {
+    } else if (strcasecmp(input, "SI") == 0) {
         char *endptr;
         long cutPoint = strtol(arg, &endptr, 10);
         strcpy(lastCommand, "SI");
@@ -97,13 +140,13 @@ return STARTUP;
 
         return STARTUP;
         // SR, = randomShuffle
-    } else if (strcmp(input, "SR") == 0) {
+    } else if (strcasecmp(input, "SR") == 0) {
         randomShuffle(&board->deck);
         strcpy(lastCommand,"SR");
         strcpy(message,"Shuffle random (ikke implementeret endnu)\n");
 
         //SD, Save deck
-    } else if (strcmp(input, "SD") == 0) {
+    } else if (strcasecmp(input, "SD") == 0) {
         strcpy(lastCommand, "SD");
         char *filename = arg;
         while (*filename == ' ') filename++;
@@ -112,12 +155,16 @@ return STARTUP;
         writeDeckToFile(&board->deck, filename, message);
         return STARTUP;
 
-    } else if (strcmp(input, "QQ") == 0) {
-        printf("Forlader spil - Tak for i dag!.\n");
+    } else if (strcasecmp(input, "QQ") == 0) {
+        strcpy(lastCommand,"QQ");
+        strcpy(message,"Forlader spil - Tak for i dag!.\n");
+        // Bare så det ser pænt ud.
+        printBoardStartUpPhase(board, lastCommand, message);
+
         exit(0);
 
         //P, Start play phase
-    } else if (strcmp(input, "P") == 0) {
+    } else if (strcasecmp(input, "P") == 0) {
         if (board->deck.size == 0) {
             strcpy(message, "Der er ikke loadet et deck!");
             strcpy(lastCommand, input);
@@ -136,11 +183,10 @@ return STARTUP;
     return currentPhase;
 }
 
-GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
-    char input[100];
-    scanf("%s", input);
+GamePhase playPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message) {
+
     //Q, Quit play phase
-    if (strcmp(input, "Q") == 0) {
+    if (strcasecmp(input, "Q") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Afslutter spilfase...\n");
         return STARTUP;
@@ -187,6 +233,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
             int rank = 0;
             char suit;
 
+            //TODO har lavet en getranking den virker måske her.
             // Forsøg først numerisk parsing
             if (sscanf(cardStr, "%d%c", &rank, &suit) != 2) {
                 if (cardStr[0] == 'A') rank = 1;
@@ -275,21 +322,21 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, cha
         printf("Du prøvede at flytte fra '%s' til '%s'\n", from, to);
         strcpy(message, "Trækmodtagelse testet.");
         //U, Undo
-    } else if (strcmp(input, "U") == 0) {
+    } else if (strcasecmp(input, "U") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Fortryder sidste træk...\n");
         //R, Redo
-    } else if (strcmp(input, "R") == 0) {
+    } else if (strcasecmp(input, "R") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Gør træk om...\n");
         //S, Save game
-    } else if (strcmp(input, "S") == 0) {
+    } else if (strcasecmp(input, "S") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Gemmer spil...\n");
         //
         //L, Load game
         //
-    } else if (strcmp(input, "L") == 0) {
+    } else if (strcasecmp(input, "L") == 0) {
         strcpy(lastCommand,"SI");
         strcpy(message,"Indlæser spil...\n");
 

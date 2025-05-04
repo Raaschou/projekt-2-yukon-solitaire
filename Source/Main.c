@@ -25,10 +25,30 @@
 // void createLinkedLinkedList(Card *deck[]);
 
 int main(void) {
-    // Initialiser spillebrættet
     Board board = {0};
-    srand((unsigned int)time(NULL));
-    gameLoop(&board);
+    int mode = 0;
+
+    printf("Vil du køre spillet i:\n");
+    printf("1 - Terminal\n");
+    printf("2 - GUI\n");
+    printf("Tryk 1 eller 2 for at fortsætte: ");
+    scanf("%d", &mode);
+
+    // terminal
+    if (mode == 1) {
+        printf("Du kan nu spille i terminalen");
+        gameLoop(&board, 0);
+
+    }
+    // GUI
+    else if (mode == 2) {
+        printf("Du kan nu spille i GUI");
+        gameLoop(&board, 1);
+
+    } else {
+        printf("Ugyldigt valg. Afslutter...\n");
+    }
+
     return 0;
 }
     //
