@@ -109,7 +109,7 @@ return STARTUP;
     } else if (strcmp(input, "SR") == 0) {
         randomShuffle(&board->deck);
         strcpy(lastCommand,"SR");
-        strcpy(message,"Shuffle random (ikke implementeret endnu)\n");
+        strcpy(message,"Shuffle random");
 
         //SD, Save deck
     } else if (strcmp(input, "SD") == 0) {
