@@ -31,7 +31,7 @@ void gameLoop(Board *board) {
 
         } else if (phase == PLAY) {
             printBoardPlayPhase(board, lastCommand, message);
-            phase = playPhase(board, phase, lastCommand, message);
+            phase = playPhase(board, phase, input, lastCommand, message);
 
         }
     }
@@ -135,7 +135,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
     return currentPhase;
 }
 
-GamePhase playPhase(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
+GamePhase playPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message) {
     char input[100];
     scanf("%s", input);
     //Q, Quit play phase
