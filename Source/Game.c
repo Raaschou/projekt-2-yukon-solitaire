@@ -136,8 +136,6 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
 }
 
 GamePhase playPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message) {
-    char input[100];
-    scanf("%s", input);
     //Q, Quit play phase
     if (strcmp(input, "Q") == 0) {
         strcpy(lastCommand,"SI");
