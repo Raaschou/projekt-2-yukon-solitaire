@@ -8,6 +8,7 @@
 #include <SDL3/SDL.h>
 #include "../Include/Board.h"
 #include "../Include/Game.h"
+extern SDL_Renderer *renderer;
 void initGUI();
 void shutdownGUI();
 void loadCardPictures(SDL_Renderer *renderer);

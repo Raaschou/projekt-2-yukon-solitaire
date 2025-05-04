@@ -20,7 +20,7 @@
 
 // vi skal
 
-SDL_Renderer *renderer;
+
 void gameLoop(Board *board, int useGUI) {
     GamePhase phase = STARTUP;
     int running = 1;
