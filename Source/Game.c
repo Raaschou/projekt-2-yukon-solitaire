@@ -14,10 +14,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
+#include "../GUI/GUI.h"
 
 // vi skal
 
-
+SDL_Renderer *renderer;
 void gameLoop(Board *board, int useGUI) {
     GamePhase phase = STARTUP;
     int running = 1;
@@ -25,29 +28,47 @@ void gameLoop(Board *board, int useGUI) {
     char lastCommand[100] = "";
     char message[100] = "";
 
+    SDL_Event event;
+    char guiInput[100] = ""; // Kommando via GUI
+
     while (running) {
-        if (phase == STARTUP) {
+        if (useGUI) {
+            drawBoard(renderer, board, phase, lastCommand, message);
+        }
 
 
-            if (useGUI) {
-                // Her skal GUI'en sende en kommando-streng videre
-                // fx via en global buffer eller SDL-klik
-                // Eksempel (pseudo):
-                // const char *input = getInputFromGUI();
-                // phase = startupPhase(board, phase, input, lastCommand, message);
-            } else {
+        if (useGUI) {
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_EVENT_QUIT) {
+                    running = 0;
+                }
 
-                phase = playPhaseTerminal(board, phase, lastCommand, message);
-                printBoardStartUpPhase(board, lastCommand, message);
+                if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+                    // TODO: lav klik → kommando
+                    // Midlertidigt test:
+                    strcpy(guiInput, "LD");  // fx load standarddeck
+                }
+
             }
 
-        } else if (phase == PLAY) {
+            if (strlen(guiInput) > 0) {
+                if (phase == STARTUP) {
+                    phase = startupPhase(board, phase, guiInput, lastCommand, message);
+                } else if (phase == PLAY) {
+                    phase = playPhase(board, phase, guiInput, lastCommand, message);
+                }
+                guiInput[0] = 0; // nulstil
+            }
 
+            SDL_Delay(16); // ca. 60 FPS
+        }
 
-            if (useGUI) {
-                // const char *input = getInputFromGUI();
-                // phase = playPhase(board, phase, input, lastCommand, message);
-            } else {
+        // Terminal-mode
+        else {
+            if (phase == STARTUP) {
+                phase = playPhaseTerminal(board, phase, lastCommand, message);
+                printBoardStartUpPhase(board, lastCommand, message);
+            } else if (phase == PLAY) {
                 phase = playPhaseTerminal(board, phase, lastCommand, message);
                 printBoardPlayPhase(board, lastCommand, message);
             }

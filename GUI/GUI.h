@@ -5,4 +5,11 @@
 #ifndef GUI_H
 #define GUI_H
 
-#endif //GUI_H
+#include <SDL3/SDL.h>
+#include "../Include/Board.h"
+#include "../Include/Game.h"
+
+void loadCardPictures(SDL_Renderer *renderer);
+void drawBoard(SDL_Renderer *renderer, Board *board, GamePhase phase, const char *lastCommand, const char *message);
+
+#endif

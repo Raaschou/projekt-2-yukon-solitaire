@@ -5,9 +5,11 @@
 
 #include <stdbool.h>
 #include "../Include/Main.h"
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
+#include "../GUI/GUI.h"
 
-
-
+#include <SDL3/SDL_video.h>
 
 
 // typedef struct cardObject Card; // header fil?
@@ -23,7 +25,8 @@
 // Card *createCards(char suit, int rank);
 // Card *createDeck(char suit[], int rank[], Card *deck[]); // hvorfor * Card *deck[]
 // void createLinkedLinkedList(Card *deck[]);
-
+SDL_Window *window = NULL;
+SDL_Renderer *renderer = NULL;;
 int main(void) {
     Board board = {0};
     int mode = 0;
@@ -43,6 +46,11 @@ int main(void) {
     // GUI
     else if (mode == 2) {
         printf("Du kan nu spille i GUI");
+        window = SDL_CreateWindow("Yukon Solitaire", 1024, 768, SDL_WINDOW_RESIZABLE);
+
+        renderer = SDL_CreateRenderer(window, NULL);
+
+        loadCardPictures(renderer);
         gameLoop(&board, 1);
 
     } else {

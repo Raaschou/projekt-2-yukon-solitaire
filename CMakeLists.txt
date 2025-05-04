@@ -41,6 +41,6 @@ add_executable(projekt_2_yukon_solitaire
         GUI/GUI.c
         GUI/GUI.h
 )
-
+target_include_directories(projekt_2_yukon_solitaire PRIVATE ${SDL3_INCLUDE_DIRS})
 # Link SDL3 med dit projekt
 target_link_libraries(projekt_2_yukon_solitaire ${SDL3_LIBRARIES})
