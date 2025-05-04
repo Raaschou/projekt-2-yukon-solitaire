@@ -1,81 +1,48 @@
 
 
 
-
 #include <stdio.h>
 #include <stdlib.h>
-#define TOTAL_CARDS 52
-
-
 #include <stdbool.h>
 #include "../Include/Main.h"
+#include "../Include/Game.h"
+#include "../GUI/GUI.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
-#include "../GUI/GUI.h"
-
 #include <SDL3/SDL_video.h>
 
-
-
-// typedef struct cardObject Card; // header fil?
-// //Linked list structure for cards
-// struct cardObject {
-//     char suit;
-//     int rank;
-//     Card *next;
-// };
-//
-//
-// void printBoard(Card *deck[]);
-// Card *createCards(char suit, int rank);
-// Card *createDeck(char suit[], int rank[], Card *deck[]); // hvorfor * Card *deck[]
-// void createLinkedLinkedList(Card *deck[]);
-SDL_Window *window = NULL;
-SDL_Renderer *renderer = NULL;;
 int main(void) {
+    Board board = {0};
+    int mode = 0;
 
-     Board board = {0};
-     int mode = 0;
+    printf("Vil du køre spillet i:\n");
+    printf("1 - Terminal\n");
+    printf("2 - GUI\n");
+    printf("Tryk 1 eller 2 for at fortsætte: ");
+    scanf("%d", &mode);
 
-     printf("Vil du køre spillet i:\n");
-     printf("1 - Terminal\n");
-     printf("2 - GUI\n");
-     printf("Tryk 1 eller 2 for at fortsætte: ");
-     scanf("%d", &mode);
+    // terminal
+    if (mode == 1) {
+        printf("Du kan nu spille i terminalen\n");
+        gameLoop(&board, 0);
+    }
+    // GUI
+    else if (mode == 2) {
+        printf("Du kan nu spille i GUI\n");
 
-     // terminal
-     if (mode == 1) {
-         printf("Du kan nu spille i terminalen");
-         gameLoop(&board, 0);
+        initGUI();  // Now handles window and renderer creation
+        loadCardPictures(renderer);
 
-     }
-     // GUI
-     else if (mode == 2) {
-         printf("Du kan nu spille i GUI\n");
+        gameLoop(&board, 1);
 
-         // ← SDL skal initialiseres først!
-         if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-             fprintf(stderr, "SDL init fejlede: %s\n", SDL_GetError());
-             return 1;
-         }
-
-         window = SDL_CreateWindow("Yukon Solitaire", 1024, 768, SDL_WINDOW_RESIZABLE);
-         renderer = SDL_CreateRenderer(window, NULL);
-
-         initGUI();  // Her virker TTF_Init() nu korrekt
-         loadCardPictures(renderer);
-
-         gameLoop(&board, 1);
-
-         shutdownGUI();
-         SDL_Quit(); // ← Luk SDL når du er færdig
-     }else {
-         printf("Ugyldigt valg. Afslutter...\n");
-     }
+        shutdownGUI();  // Now handles complete cleanup
+    } else {
+        printf("Ugyldigt valg. Afslutter.\n");
+    }
 
     return 0;
+}
 
- }
 
 
 

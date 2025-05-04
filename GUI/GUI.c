@@ -1,4 +1,3 @@
-// GUI.c – Yukon GUI med SDL3 og SDL3_ttf
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <stdio.h>
@@ -9,22 +8,11 @@
 #include "../Include/FileIO.h"
 #include "GUI.h"
 
-// === Globale konstanter ===
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
-#define CARD_WIDTH 60
-#define CARD_HEIGHT 90
-#define COLUMN_START_X 50
-#define COLUMN_START_Y 50
-#define COLUMN_SPACING 80
-#define CARD_VERTICAL_OFFSET 25
-#define FOUNDATION_X 800
-#define FOUNDATION_Y 50
-
-// === Globale variabler ===
-extern SDL_Renderer *renderer;
-static TTF_Font *font = NULL;
-SDL_Texture *cardTextures[14][4]; // rank: 1–13, suit: 0–3
+// === Global variable definitions ===
+SDL_Window *window = NULL;
+SDL_Renderer *renderer = NULL;
+TTF_Font *font = NULL;
+SDL_Texture *cardTextures[14][4] = {0}; // rank: 1–13, suit: 0–3
 SDL_Texture *cardBackTexture = NULL;
 
 // === Hjælpefunktioner ===
@@ -45,20 +33,59 @@ bool fileExists(const char *path) {
 
 // === Init & shutdown ===
 void initGUI() {
+    // Remove the dummy video driver setting
+    // setenv("SDL_VIDEODRIVER", "dummy", 1);  // This causes the problem!
+
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        fprintf(stderr, "SDL init fejlede: %s\n", SDL_GetError());
+        exit(1);
+    }
+
+    // Create window
+    window = SDL_CreateWindow("Yukon Solitaire",
+                              WINDOW_WIDTH, WINDOW_HEIGHT,
+                              SDL_WINDOW_RESIZABLE);
+    if (!window) {
+        fprintf(stderr, "Window creation fejlede: %s\n", SDL_GetError());
+        SDL_Quit();
+        exit(1);
+    }
+
+    // Create renderer
+
+    renderer = SDL_CreateRenderer(window, NULL);
+    if (!renderer) {
+        fprintf(stderr, "Renderer creation fejlede: %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        exit(1);
+    }
+
     if (TTF_Init() != 0) {
         fprintf(stderr, "TTF init fejlede: %s\n", SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         exit(1);
     }
 
     const char *fontPath = "Kort/Font/ttf/DejaVuSans.ttf";
     if (!fileExists(fontPath)) {
         fprintf(stderr, "Fontfil mangler: %s\n", fontPath);
+        TTF_Quit();
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         exit(1);
     }
 
     font = TTF_OpenFont(fontPath, 16);
     if (!font) {
         fprintf(stderr, "Kunne ikke åbne font: %s\n", SDL_GetError());
+        TTF_Quit();
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         exit(1);
     }
 }
@@ -68,7 +95,20 @@ void shutdownGUI() {
         TTF_CloseFont(font);
         font = NULL;
     }
+
     TTF_Quit();
+
+    if (renderer) {
+        SDL_DestroyRenderer(renderer);
+        renderer = NULL;
+    }
+
+    if (window) {
+        SDL_DestroyWindow(window);
+        window = NULL;
+    }
+
+    SDL_Quit();
 }
 
 // === Grafik ===

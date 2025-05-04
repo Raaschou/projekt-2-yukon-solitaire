@@ -3,22 +3,16 @@ project(projekt_2_yukon_solitaire C)
 
 set(CMAKE_C_STANDARD 23)
 
-# Find SDL3 via pkg-config
+# Brug pkg-config til både SDL3 og SDL3_ttf
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SDL3 REQUIRED sdl3)
+pkg_check_modules(SDL3_TTF REQUIRED sdl3-ttf)
 
-# Tilføj SDL3 include/lib fra pkg-config
-if(APPLE)
-    include_directories(${SDL3_INCLUDE_DIRS})
-    link_directories(${SDL3_LIBRARY_DIRS})
-    add_definitions(${SDL3_CFLAGS_OTHER})
-endif()
+# Inkluder directories og compile-flags
+include_directories(${SDL3_INCLUDE_DIRS} ${SDL3_TTF_INCLUDE_DIRS})
+link_directories(${SDL3_LIBRARY_DIRS} ${SDL3_TTF_LIBRARY_DIRS})
+add_definitions(${SDL3_CFLAGS_OTHER} ${SDL3_TTF_CFLAGS_OTHER})
 
-# Tilføj SDL3_ttf manuelt (uden pkg-config)
-include_directories(/opt/homebrew/include)
-link_directories(/opt/homebrew/lib)
-
-# Projektets kildefiler
 add_executable(projekt_2_yukon_solitaire
         Source/Main.c
         Include/Main.h
@@ -43,11 +37,10 @@ add_executable(projekt_2_yukon_solitaire
         Test/Test.h
         GUI/GUI.c
         GUI/GUI.h
+        Server/Server.c
+        Server/Server.h
 )
 
-# Inkluder SDL3 og SDL3_ttf
-target_include_directories(projekt_2_yukon_solitaire PRIVATE ${SDL3_INCLUDE_DIRS} /opt/homebrew/include)
-
-# Link SDL3 og SDL3_ttf
-target_link_libraries(projekt_2_yukon_solitaire ${SDL3_LIBRARIES} SDL3_ttf)
+# Korrekt link til SDL3 og SDL3_ttf via pkg-config
+target_link_libraries(projekt_2_yukon_solitaire ${SDL3_LIBRARIES} ${SDL3_TTF_LIBRARIES})
 
