@@ -1,27 +1,33 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.16)
 project(projekt_2_yukon_solitaire C)
 
 set(CMAKE_C_STANDARD 23)
 
-# SDL2 flags
-execute_process(COMMAND sdl2-config --cflags OUTPUT_VARIABLE SDL2_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process(COMMAND sdl2-config --libs OUTPUT_VARIABLE SDL2_LIBS OUTPUT_STRIP_TRAILING_WHITESPACE)
-separate_arguments(SDL2_CFLAGS)
-separate_arguments(SDL2_LIBS)
-
-# Find SDL3 via pkg-config
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SDL3 REQUIRED sdl3)
-
-# Inkluder og link SDL3
+# ---- Platform detection ----
 if(APPLE)
-    include_directories(${SDL3_INCLUDE_DIRS})
-    link_directories(${SDL3_LIBRARY_DIRS})
-    add_definitions(${SDL3_CFLAGS_OTHER})
+    message(STATUS "Building on macOS")
+
+    # Brug SDL2 installeret via Homebrew
+    include_directories(/opt/homebrew/include/SDL2)
+    link_directories(/opt/homebrew/lib)
+
+    set(SDL2_LIBS SDL2 SDL2_ttf)
+
+elseif(WIN32)
+    message(STATUS "Building on Windows")
+
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_ttf REQUIRED)
+
+    include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
+    link_directories(${SDL2_LIBRARY_DIRS} ${SDL2_TTF_LIBRARY_DIRS})
+
+    set(SDL2_LIBS ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARIES})
+else()
+    message(FATAL_ERROR "Unsupported platform")
 endif()
 
-#her skal vi lave en evt test
-# Dit projekt + sourcefiler
+# ---- Kildesystem ----
 add_executable(projekt_2_yukon_solitaire
         Source/Main.c
         Include/Main.h
@@ -42,14 +48,11 @@ add_executable(projekt_2_yukon_solitaire
         Include/LinkedLists.h
         Source/Columns.c
         Include/Columns.h
-        Test/Test.c
-        Test/Test.h
         Source/GUI.c
         Include/GUI.h
+        Test/Test.c
+        Test/Test.h
 )
 
-## Link SDL3 med dit projekt
-#target_link_libraries(projekt_2_yukon_solitaire ${SDL3_LIBRARIES})
-
-target_compile_options(projekt_2_yukon_solitaire PRIVATE ${SDL2_CFLAGS})
-target_link_libraries(projekt_2_yukon_solitaire PRIVATE ${SDL2_LIBS})
+# ---- Link SDL2 og TTF ----
+target_link_libraries(projekt_2_yukon_solitaire ${SDL2_LIBS})
