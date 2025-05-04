@@ -36,7 +36,7 @@ void initGUI() {
     // Remove the dummy video driver setting
     // setenv("SDL_VIDEODRIVER", "dummy", 1);  // This causes the problem!
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) == 0) {
         fprintf(stderr, "SDL init fejlede: %s\n", SDL_GetError());
         exit(1);
     }
@@ -61,7 +61,7 @@ void initGUI() {
         exit(1);
     }
 
-    if (TTF_Init() != 0) {
+    if (TTF_Init() == 0) {
         fprintf(stderr, "TTF init fejlede: %s\n", SDL_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
