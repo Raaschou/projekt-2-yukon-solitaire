@@ -54,11 +54,8 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
     char arg[100] = "";
     sscanf(input, "%s%99[^\n]", cmd, arg);
 
-    //TODO måske skulle man lave en tjek hvis der eksistere et deck allerede hvor man bekræfter at man vil overskride
-
-    // LD, Load deck
-    if (strcmp(input, "LD") == 0) {
-        clearList(&board->deck);
+        if (strcmp(input, "LD") == 0) {
+            clearList(&board->deck);
         // Gem sidste kommando
         strcpy(lastCommand, "LD");
         // Fjern evt. førende mellemrum fra arg
@@ -77,12 +74,12 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
 
 
         if (success) {
-           return STARTUP;
+            return STARTUP;
         }
 
-        // LD, Load deck
-        // SW,Show deck
 
+
+        // SW,Show deck
     } else if (strcmp(input, "SW") == 0) {
         CardNode *current = board->deck.head;
         while (current) {
@@ -91,25 +88,45 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
         }
         strcpy(lastCommand,"SW");
         strcpy(message,"Kort er nu vist");
-
+return STARTUP;
         //SI, Split
     } else if (strcmp(input, "SI") == 0) {
-        strcpy(lastCommand,"SI");
-        strcpy(message,"Splitter deck (ikke implementeret endnu)\n");
+        char *endptr;
+        long cutPoint = strtol(arg, &endptr, 10);
+        strcpy(lastCommand, "SI");
 
-        //SR, Shuffle random
+        if (endptr == arg || *endptr != '\0') {
+            strcpy(message, "Ugyldigt input – skriv et tal.");
+        } else if (cutPoint <= 0 || cutPoint >= board->deck.size) {
+            strcpy(message, "Ugyldigt splitpunkt.");
+        } else {
+            splitShuffle(&board->deck, (int)cutPoint);
+            strcpy(message, "Deck splittet og blandet.");
+        }
+
+        return STARTUP;
+        // SR, = randomShuffle
     } else if (strcmp(input, "SR") == 0) {
+        randomShuffle(&board->deck);
         strcpy(lastCommand,"SR");
         strcpy(message,"Shuffle random (ikke implementeret endnu)\n");
 
         //SD, Save deck
     } else if (strcmp(input, "SD") == 0) {
-        strcpy(lastCommand,"SD");
-        strcpy(message,"Gemmer deck (ikke implementeret endnu)\n");
+        strcpy(lastCommand, "SD");
+        char *filename = arg;
+        while (*filename == ' ') filename++;
+        if (strlen(filename) == 0) filename = "cards.txt";
 
-        //QQ, Quit program
+        writeDeckToFile(&board->deck, filename, message);
+        return STARTUP;
+
     } else if (strcmp(input, "QQ") == 0) {
-        printf("Forlader spil - Tak for i dag!.\n");
+        strcpy(lastCommand,"QQ");
+        strcpy(message,"Forlader spil - Tak for i dag!.\n");
+        // Bare så det ser pænt ud.
+        printBoardStartUpPhase(board, lastCommand, message);
+
         exit(0);
 
         //P, Start play phase
@@ -126,7 +143,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
 
         return PLAY;
     } else {
-         strcpy(lastCommand,"SI");
+         strcpy(lastCommand,"Invalid");
          strcpy(message,"Ugyldig kommando i startup-phase.\n");
     }
     return currentPhase;
