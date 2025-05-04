@@ -33,22 +33,15 @@ void gameLoop(Board *board, int useGUI) {
 
     while (running) {
         if (useGUI) {
-            drawBoard(renderer, board, phase, lastCommand, message);
-        }
-
-
-        if (useGUI) {
             while (SDL_PollEvent(&event)) {
                 if (event.type == SDL_EVENT_QUIT) {
                     running = 0;
                 }
 
                 if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
-                    // TODO: lav klik → kommando
-                    // Midlertidigt test:
-                    strcpy(guiInput, "LD");  // fx load standarddeck
+                    // TODO: klik = kommando
+                    strcpy(guiInput, "LD");
                 }
-
             }
 
             if (strlen(guiInput) > 0) {
@@ -60,7 +53,9 @@ void gameLoop(Board *board, int useGUI) {
                 guiInput[0] = 0; // nulstil
             }
 
-            SDL_Delay(16); // ca. 60 FPS
+            drawBoard(renderer, board, phase, lastCommand, message);  // ← kaldes til sidst
+
+            SDL_Delay(16);
         }
 
         // Terminal-mode

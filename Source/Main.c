@@ -12,6 +12,7 @@
 #include <SDL3/SDL_video.h>
 
 
+
 // typedef struct cardObject Card; // header fil?
 // //Linked list structure for cards
 // struct cardObject {
@@ -45,20 +46,25 @@ int main(void) {
     }
     // GUI
     else if (mode == 2) {
-        printf("Du kan nu spille i GUI");
-        window = SDL_CreateWindow("Yukon Solitaire", 1024, 768, SDL_WINDOW_RESIZABLE);
+        printf("Du kan nu spille i GUI\n");
 
+        window = SDL_CreateWindow("Yukon Solitaire", 1024, 768, SDL_WINDOW_RESIZABLE);
         renderer = SDL_CreateRenderer(window, NULL);
 
+        initGUI();  // ← Dette mangler du!
         loadCardPictures(renderer);
+
         gameLoop(&board, 1);
 
-    } else {
+        shutdownGUI();  // ← Husk at lukke TTF også
+    }else{
         printf("Ugyldigt valg. Afslutter...\n");
     }
-
     return 0;
 }
+
+
+
     //
     // LinkedList newDeck;
     // list(&newDeck);
