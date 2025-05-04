@@ -3,6 +3,12 @@ project(projekt_2_yukon_solitaire C)
 
 set(CMAKE_C_STANDARD 23)
 
+# SDL2 flags
+execute_process(COMMAND sdl2-config --cflags OUTPUT_VARIABLE SDL2_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND sdl2-config --libs OUTPUT_VARIABLE SDL2_LIBS OUTPUT_STRIP_TRAILING_WHITESPACE)
+separate_arguments(SDL2_CFLAGS)
+separate_arguments(SDL2_LIBS)
+
 # Find SDL3 via pkg-config
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SDL3 REQUIRED sdl3)
@@ -38,7 +44,12 @@ add_executable(projekt_2_yukon_solitaire
         Include/Columns.h
         Test/Test.c
         Test/Test.h
+        Source/GUI.c
+        Include/GUI.h
 )
 
-# Link SDL3 med dit projekt
-target_link_libraries(projekt_2_yukon_solitaire ${SDL3_LIBRARIES})
+## Link SDL3 med dit projekt
+#target_link_libraries(projekt_2_yukon_solitaire ${SDL3_LIBRARIES})
+
+target_compile_options(projekt_2_yukon_solitaire PRIVATE ${SDL2_CFLAGS})
+target_link_libraries(projekt_2_yukon_solitaire PRIVATE ${SDL2_LIBS})

@@ -26,6 +26,10 @@
 
 int main(void) {
     // Initialiser spillebrættet
+
+    runGUI(); // Starter SDL GUI
+    return 0;
+
     Board board = {0};
     srand((unsigned int)time(NULL));
     gameLoop(&board);

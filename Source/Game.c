@@ -21,7 +21,7 @@ void gameLoop(Board *board) {
 
     char lastCommand[100] = "";
     char message[100] = "";
-    printBoardStartUpPhase(board, lastCommand, message);
+    // printBoardStartUpPhase(board, lastCommand, message);
 
     while (running) {
 

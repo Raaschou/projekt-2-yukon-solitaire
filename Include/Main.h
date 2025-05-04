@@ -12,6 +12,7 @@
 #include "../Include/Foundations.h"
 #include "../Include/LinkedLists.h"
 #include "../Include/Utils.h"
+#include "../Include/GUI.h"
 
 #endif //MAIN_H
 //
