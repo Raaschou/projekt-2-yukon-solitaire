@@ -36,12 +36,26 @@ void gameLoop(Board *board) {
         }
     }
 }
-GamePhase startupPhase(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
+GamePhase playPhaseTerminal(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
     char input[100];
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0; // Fjern newline
+
+    if (currentPhase == PLAY) {
+        return playPhase(board, currentPhase, input, lastCommand, message);
+    } else if (currentPhase == STARTUP) {
+        return startupPhase(board, currentPhase, input, lastCommand, message);
+    }
+
+    strcpy(lastCommand, input);
+    strcpy(message, "Ukendt fase");
+    return currentPhase;
+}
+
+GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message) {
+    char cmd[100] = "";
     char arg[100] = "";
-    char line[200];
-    fgets(line, sizeof(line), stdin);
-    sscanf(line, "%s%99[^\n]", input, arg);
+    sscanf(input, "%s%99[^\n]", cmd, arg);
 
     //TODO måske skulle man lave en tjek hvis der eksistere et deck allerede hvor man bekræfter at man vil overskride
 
