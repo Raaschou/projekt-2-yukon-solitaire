@@ -22,8 +22,8 @@ void gameLoopGUI(Board *board);
 void drawButton(SDL_Renderer *renderer, Button *button, TTF_Font *font);
 void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font);
 void drawCard(SDL_Renderer *renderer, int x, int y, Card *card);
-void drawBoard(SDL_Renderer *renderer, Board *board, GamePhase phase, const char *message, TTF_Font *font);
+void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, const char *message);
 
-void drawEmptyBoard(SDL_Renderer *renderer);
+void drawBoardStartUpPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, const char *message);
 
 #endif
