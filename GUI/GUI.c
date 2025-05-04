@@ -214,8 +214,8 @@ void drawBoard(SDL_Renderer *renderer, Board *board, GamePhase phase, const char
     if (!lastCommand || strlen(lastCommand) == 0) lastCommand = "(ingen kommando)";
 
     // Knapper i bunden
-    drawButton(renderer, 20, 660, 150, 30);
-    drawText(renderer, "LAST CMD MESSAGE:", 30, 665);
+    drawButton(renderer, 20, 660, 400, 30);
+    drawText(renderer, "LAST CMD:", 30, 665);
 
     drawButton(renderer, 20, 700, 150, 40);
     drawText(renderer, "Switch Phase", 30, 710);
