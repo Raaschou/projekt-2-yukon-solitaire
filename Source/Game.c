@@ -3,6 +3,10 @@
 //
 
 #include "../Include/Game.h"
+#include "../Include/GUI.h"
+#include <SDL.h>
+#include <SDL_ttf.h>
+
 #include "../Include/Board.h"
 #include "../Include/Deck.h"
 #include "../Include/FileIO.h"
@@ -14,25 +18,18 @@
 
 
 
-
-void gameLoop(Board *board) {
+void gameLoopTerminal(Board *board) {
     GamePhase phase = STARTUP;
-    int running = 1;
-
     char lastCommand[100] = "";
     char message[100] = "";
-    // printBoardStartUpPhase(board, lastCommand, message);
 
-    while (running) {
-
+    while (1) {
         if (phase == STARTUP) {
             printBoardStartUpPhase(board, lastCommand, message);
-            phase = startupPhase(board, phase, lastCommand, message);
-
+            phase = playPhaseTerminal(board, phase, lastCommand, message);
         } else if (phase == PLAY) {
             printBoardPlayPhase(board, lastCommand, message);
-            phase = playPhase(board, phase, input, lastCommand, message);
-
+            phase = playPhaseTerminal(board, phase, lastCommand, message);
         }
     }
 }
