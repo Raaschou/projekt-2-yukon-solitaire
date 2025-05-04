@@ -38,8 +38,8 @@ add_executable(projekt_2_yukon_solitaire
         Include/Columns.h
         Test/Test.c
         Test/Test.h
-        GUI/GUI.c
-        GUI/GUI.h
+        GUI/Json.c
+        GUI/Json.h
 )
 
 # Link SDL3 med dit projekt

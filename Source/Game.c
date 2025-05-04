@@ -14,9 +14,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <sys/socket.h>
+#include "../GUI/Json.h"
+extern int clientFd;
 // vi skal
-
 
 void gameLoop(Board *board, int useGUI) {
     GamePhase phase = STARTUP;
@@ -24,32 +25,39 @@ void gameLoop(Board *board, int useGUI) {
 
     char lastCommand[100] = "";
     char message[100] = "";
+    char buffer[256];
 
     while (running) {
-        if (phase == STARTUP) {
+        if (useGUI == 2) {
+            int len = recv(clientFd, buffer, sizeof(buffer) - 1, 0);
+            if (len <= 0) {
+                printf("Forbindelse lukket.\n");
+                break;
+            }
+            buffer[len] = '\0';
+            buffer[strcspn(buffer, "\n")] = 0;
 
-
-            if (useGUI) {
-                // Her skal GUI'en sende en kommando-streng videre
-                // fx via en global buffer eller SDL-klik
-                // Eksempel (pseudo):
-                // const char *input = getInputFromGUI();
-                // phase = startupPhase(board, phase, input, lastCommand, message);
-            } else {
-
-                phase = playPhaseTerminal(board, phase, lastCommand, message);
-                printBoardStartUpPhase(board, lastCommand, message);
+            if (phase == STARTUP) {
+                phase = startupPhase(board, phase, buffer, lastCommand, message);
+            } else if (phase == PLAY) {
+                phase = playPhase(board, phase, buffer, lastCommand, message);
             }
 
-        } else if (phase == PLAY) {
+            // ✅ Lav JSON med board + message
+            char json[4096];
+            generateBoardJSON(board, message, json, sizeof(json));
 
-
-            if (useGUI) {
-                // const char *input = getInputFromGUI();
-                // phase = playPhase(board, phase, input, lastCommand, message);
-            } else {
+            send(clientFd, json, strlen(json), 0);
+            continue;
+        }
+        else if (useGUI == 1) {
+            // Terminal-mode
+            if (phase == STARTUP) {
                 phase = playPhaseTerminal(board, phase, lastCommand, message);
+                printBoardStartUpPhase(board, lastCommand, message);
+            } else if (phase == PLAY) {
                 printBoardPlayPhase(board, lastCommand, message);
+                phase = playPhaseTerminal(board, phase, lastCommand, message);
             }
         }
     }
@@ -70,66 +78,68 @@ GamePhase playPhaseTerminal(Board *board, GamePhase currentPhase, char *lastComm
     return currentPhase;
 }
 
-GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message) {
+GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, char *lastCommand, char *message) {
     char cmd[100] = "";
     char arg[100] = "";
-    sscanf(input, "%s%99[^\n]", cmd, arg);
 
-    //TODO måske skulle man lave en tjek hvis der eksistere et deck allerede hvor man bekræfter at man vil overskride
+    int scanned = sscanf(input, "%99s %99[^\n]", cmd, arg);
 
-    // LD, Load deck
-    if (strcasecmp(input, "LD") == 0) {
+    if (scanned < 1) {
+        strcpy(message, "Tom eller ugyldig kommando");
+        strcpy(lastCommand, "");
+        return currentPhase;
+    }
+
+    // Uppercase kommando
+    for (int i = 0; cmd[i]; i++) cmd[i] = toupper(cmd[i]);
+
+    char *filename = (scanned == 2) ? arg : NULL;
+
+    // LD = Load Deck
+    if (strcmp(cmd, "LD") == 0) {
         if (board->deck.size != 0) {
-            strcpy(lastCommand,"LD men der er allerede et deck");
-            strcpy(message,"vil du overskride 1-ja, 2-nej");
-            printBoardStartUpPhase(board, lastCommand, message);
-
-        }else {
-            goto nytDeck;
+            strcpy(lastCommand, "LD");
+            strcpy(message, "Der er allerede et deck – overskriver");
         }
 
-        nytDeck:
-            clearList(&board->deck);
-        // Gem sidste kommando
+        clearList(&board->deck);
         strcpy(lastCommand, "LD");
-        // Fjern evt. førende mellemrum fra arg
-        char *filename = arg;
-        while (*filename == ' ') filename++;
 
         int success;
-        if (strlen(filename) > 0) {
+        if (filename && strlen(filename) > 0) {
             success = readDeckFromFile(filename, &board->deck, message);
         } else {
-            // Lav standarddeck
             startDeck(&board->deck);
             strcpy(message, "OK");
             success = 1;
         }
 
+        return STARTUP;
+    }
 
-        if (success) {
-            return STARTUP;
-        }
-
-
-
-        // SW,Show deck
-    } else if (strcasecmp(input, "SW") == 0) {
+    // SW = Show deck
+    if (strcmp(cmd, "SW") == 0) {
         CardNode *current = board->deck.head;
         while (current) {
             current->card.faceUp = 1;
             current = current->next;
         }
-        strcpy(lastCommand,"SW");
-        strcpy(message,"Kort er nu vist");
-return STARTUP;
-        //SI, Split
-    } else if (strcasecmp(input, "SI") == 0) {
-        char *endptr;
-        long cutPoint = strtol(arg, &endptr, 10);
-        strcpy(lastCommand, "SI");
+        strcpy(lastCommand, "SW");
+        strcpy(message, "Kort er nu vist");
+        return STARTUP;
+    }
 
-        if (endptr == arg || *endptr != '\0') {
+    // SI = Split shuffle
+    if (strcmp(cmd, "SI") == 0) {
+        strcpy(lastCommand, "SI");
+        if (!filename) {
+            strcpy(message, "Mangler argument til SI");
+            return STARTUP;
+        }
+
+        char *endptr;
+        long cutPoint = strtol(filename, &endptr, 10);
+        if (endptr == filename || *endptr != '\0') {
             strcpy(message, "Ugyldigt input – skriv et tal.");
         } else if (cutPoint <= 0 || cutPoint >= board->deck.size) {
             strcpy(message, "Ugyldigt splitpunkt.");
@@ -137,51 +147,53 @@ return STARTUP;
             splitShuffle(&board->deck, (int)cutPoint);
             strcpy(message, "Deck splittet og blandet.");
         }
-
         return STARTUP;
-        // SR, = randomShuffle
-    } else if (strcasecmp(input, "SR") == 0) {
+    }
+
+    // SR = random shuffle (placeholder)
+    if (strcmp(cmd, "SR") == 0) {
         randomShuffle(&board->deck);
-        strcpy(lastCommand,"SR");
-        strcpy(message,"Shuffle random (ikke implementeret endnu)\n");
+        strcpy(lastCommand, "SR");
+        strcpy(message, "Shuffle random (ikke implementeret endnu)");
+        return STARTUP;
+    }
 
-        //SD, Save deck
-    } else if (strcasecmp(input, "SD") == 0) {
+    // SD = Save deck
+    if (strcmp(cmd, "SD") == 0) {
         strcpy(lastCommand, "SD");
-        char *filename = arg;
-        while (*filename == ' ') filename++;
-        if (strlen(filename) == 0) filename = "cards.txt";
-
+        if (!filename || strlen(filename) == 0) filename = "cards.txt";
         writeDeckToFile(&board->deck, filename, message);
         return STARTUP;
+    }
 
-    } else if (strcasecmp(input, "QQ") == 0) {
-        strcpy(lastCommand,"QQ");
-        strcpy(message,"Forlader spil - Tak for i dag!.\n");
-        // Bare så det ser pænt ud.
-        printBoardStartUpPhase(board, lastCommand, message);
-
+    // QQ = quit
+    if (strcmp(cmd, "QQ") == 0) {
+        strcpy(lastCommand, "QQ");
+        strcpy(message, "Farvel!");
         exit(0);
+    }
 
-        //P, Start play phase
-    } else if (strcasecmp(input, "P") == 0) {
+    // P = Start play phase
+    if (strcmp(cmd, "P") == 0) {
         if (board->deck.size == 0) {
             strcpy(message, "Der er ikke loadet et deck!");
-            strcpy(lastCommand, input);
+            strcpy(lastCommand, cmd);
             return currentPhase;
         }
+
         dealToColumns(&board->deck, board->columns);
         clearList(&board->deck);
-        strcpy(lastCommand,"P");
-        strcpy(message,"Vi spiller!");
-
+        strcpy(lastCommand, "P");
+        strcpy(message, "Vi spiller!");
         return PLAY;
-    } else {
-         strcpy(lastCommand,"Invalid");
-         strcpy(message,"Ugyldig kommando i startup-phase.\n");
     }
+
+    // Ukendt kommando
+    strcpy(lastCommand, cmd);
+    strcpy(message, "Ugyldig kommando i startup-phase.");
     return currentPhase;
 }
+
 
 GamePhase playPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message) {
 
