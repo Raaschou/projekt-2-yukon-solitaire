@@ -49,7 +49,7 @@ int selectedCol = -1;
 SDL_Texture *loadCardTexture(SDL_Renderer *renderer, const char *filename) {
     SDL_Surface *surf = SDL_LoadBMP(filename);
     if (!surf) {
-        printf("❌ Kunne ikke loade %s: %s\n", filename, SDL_GetError());
+        printf("Kunne ikke loade %s: %s\n", filename, SDL_GetError());
         return NULL;
     }
     SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
