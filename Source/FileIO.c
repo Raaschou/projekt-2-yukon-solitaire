@@ -62,3 +62,18 @@ void writeDeckToFile(LinkedList *deck, const char *filename, char *message) {
     fclose(file);
     sprintf(message, "Deck gemt til %s", filename);
 }
+const char* getRankString(int rank) {
+    switch (rank) {
+        case 1: return "A";
+        case 10: return "T";
+        case 11: return "J";
+        case 12: return "Q";
+        case 13: return "K";
+        default: {
+            static char buf[3];  // nok til "2" til "9"
+            //hvad er buf?? ik kig markus.
+            snprintf(buf, sizeof(buf), "%d", rank);
+            return buf;
+        }
+    }
+}
