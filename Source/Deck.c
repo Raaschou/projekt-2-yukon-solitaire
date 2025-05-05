@@ -2,6 +2,7 @@
 // Created by August Frandsen on 15/04/2025.
 //
 #include "../Include/Deck.h"
+#include "../Include/Board.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -9,6 +10,7 @@
 
 // laver første deck 1-52
 void startDeck(LinkedList *deck) {
+    initList(deck);
     char suits[] = {'C', 'D', 'H', 'S'};
 
     for (int i = 0; i < 4; i++) {

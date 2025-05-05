@@ -250,8 +250,12 @@ void gameLoopGUI(Board *board) {
 
     CardNode *selectedCard = NULL;
     int selectedCol = -1;
-
+    BoardStack undoStack, redoStack;
+    initStack(&undoStack);
+    initStack(&redoStack);
+    push(&undoStack, board);
     while (running) {
+
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 running = 0;
@@ -272,7 +276,7 @@ void gameLoopGUI(Board *board) {
                     for (int i = 1; i < NUM_PLAY_BUTTONS; i++) {
                         SDL_Rect r = playButtons[i].rect;
                         if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                            phase = playPhase(board, phase, playCmds[i], lastCommand, message);
+                            phase = playPhase(board, phase, playCmds[i], lastCommand, message,&undoStack,&redoStack);
                         }
                     }
 
@@ -296,6 +300,7 @@ void gameLoopGUI(Board *board) {
                                 } else {
                                     if (col != selectedCol &&
                                         validMoveC(selectedCard, board->columns[col].tail)) {
+                                        changeBoardStack(&undoStack, &redoStack, board);
                                         moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
                                         flipLastCardIfAny(&board->columns[selectedCol]);
                                         snprintf(message, 256, "Flyttede kortet.");

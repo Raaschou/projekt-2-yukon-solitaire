@@ -108,7 +108,7 @@ void printCard(CardNode *node, LinkedList *list) {
 }
 
 void moveSingleCard(LinkedList *from, LinkedList *to) {
-    if (!from || !from->head) return;
+    if (!from || !from->head||!to) return;
 
     CardNode *card = from->head;
 

@@ -23,6 +23,7 @@
 // }
 int main(void) {
     Board board = {0};
+
     int mode = 0;
 
     while (1) {

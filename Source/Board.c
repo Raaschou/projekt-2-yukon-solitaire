@@ -144,10 +144,8 @@ void push(BoardStack* stack, const Board* board) {
         return;
     }
 
-    // Frigør først eksisterende board i pladsen, hvis nødvendigt
+    initBoard(&stack->boards[stack->top]);
     freeBoard(&stack->boards[stack->top]);
-
-    // Kopiér det nye board
     copyBoard(&stack->boards[stack->top], board);
     stack->top++;
 }
@@ -204,4 +202,13 @@ void clearStack(BoardStack* stack) {
 void changeBoardStack(BoardStack *undo, BoardStack *redo, Board *board) {
     push(undo, board);
     clearStack(redo);
+}
+void initBoard(Board *board) {
+    initList(&board->deck);
+    for (int i = 0; i < 7; i++) {
+        initList(&board->columns[i]);
+    }
+    for (int i = 0; i < 4; i++) {
+        initList(&board->foundations[i]);
+    }
 }

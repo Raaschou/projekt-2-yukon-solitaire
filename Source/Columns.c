@@ -5,6 +5,8 @@
 #include "../Include/Columns.h"
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void columns(LinkedList columns[7]) {
     for (int i = 0; i < 7; i++) {
@@ -33,6 +35,10 @@ void moveBetweenColumns(CardNode *node, LinkedList *from, LinkedList *to) {
  * @param columns Array af 7 kolonner (linked lists) som skal fyldes.
  */
 void dealToColumns(LinkedList *deck, LinkedList columns[7]) {
+    if (!deck) {
+        printf("❌ deck er NULL!\n");
+        exit(1);
+    }
     int layout[7]        = {1, 6, 7, 8, 9, 10, 11};  // max antal kort pr kolonne
     int faceDownCount[7] = {0, 1, 2, 3, 4, 5, 6};    // antal skjulte kort
 
