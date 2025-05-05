@@ -50,6 +50,7 @@ GamePhase playPhaseTerminal(Board *board, GamePhase currentPhase, char *lastComm
     return currentPhase;
 }
 
+
 GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message) {
     char cmd[100] = "";
     char arg[100] = "";
@@ -145,7 +146,35 @@ return STARTUP;
     }
     return currentPhase;
 }
-
+/**
+ * @brief Håndterer én kommando i spilfasen (PLAY) i Yukon Solitaire.
+ *
+ * Denne funktion modtager et input som tekst (kommando), og forsøger at udføre et træk,
+ * en spilfunktion (undo/redo/save/load), eller skifte tilbage til startup-fasen.
+ * Den dækker både flytning mellem kolonner og foundations samt specialkommandoer.
+ *
+ * Understøttede kommandoer:
+ *   - "Q"       : Afslutter spilfasen og går tilbage til startup.
+ *   - "U"       : Fortryd sidste træk (placeholder).
+ *   - "R"       : Gør sidste fortrydelse om (placeholder).
+ *   - "S"       : Gem spillet (placeholder).
+ *   - "L"       : Indlæs spil (placeholder).
+ *   - "Cx->Cy"  : Flyt topkort fra kolonne til kolonne
+ *   - "Cx->Fy"  : Flyt topkort fra kolonne til foundation
+ *   - "Fx->Cy"  : Flyt topkort fra foundation til kolonne
+ *   - "Cx:KH->Cy": Flyt kortstakken fra kolonne til anden kolonne
+ *
+ * Bemærk:
+ *   - Kommandoer er case-insensitive.
+ *   - Meldinger og sidste kommando opdateres gennem `message` og `lastCommand`.
+ *
+ * @param board Pointer til spillets datastruktur.
+ * @param currentPhase Den aktuelle fase (PLAY).
+ * @param input Kommandoen indtastet af brugeren.
+ * @param lastCommand Buffer til at gemme den sidste gyldige kommando.
+ * @param message Buffer til status-/fejlmeddelelser efter behandlingen.
+ * @return Næste fase – typisk PLAY eller STARTUP.
+ */
 GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, char *lastCommand, char *message) {
     char localInput[100];
     strncpy(localInput, input, sizeof(localInput) - 1);
