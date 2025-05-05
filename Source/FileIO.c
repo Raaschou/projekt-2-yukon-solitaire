@@ -42,20 +42,37 @@ int readDeckFromFile(const char *filename, LinkedList *deck, char *message) {
     strcpy(message, "OK");
     return 1;
 }
+const char* getRankString(int rank) {
+    switch (rank) {
+        case 1: return "A";
+        case 10: return "T";
+        case 11: return "J";
+        case 12: return "Q";
+        case 13: return "K";
+        default: {
+            static char buf[3];  // nok til "2" til "9"
+            //hvad er buf?? ik kig markus.
+            snprintf(buf, sizeof(buf), "%d", rank);
+            return buf;
+        }
+    }
+}
 
-
-void writeDeckToFile(LinkedList *deck, const char *filename,char *message) {
+void writeDeckToFile(LinkedList *deck, const char *filename, char *message) {
     FILE *file = fopen(filename, "w");
     if (!file) {
-        sprintf(message,"Could not open file");
+        sprintf(message, "Kunne ikke åbne filen: %s", filename);
         return;
     }
 
-    CardNode *current = deck->head;
-    while (current) {
-        fprintf(file, "%c%c\n", current->card.rank, current->card.suit);
-        current = current->next;
+    CardNode *node = deck->head;
+    while (node) {
+        Card card = node->card;
+        const char *rankStr = getRankString(card.rank);
+        fprintf(file, "%s%c\n", rankStr, card.suit);
+        node = node->next;
     }
 
     fclose(file);
+    sprintf(message, "Deck gemt til %s", filename);
 }
