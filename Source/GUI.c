@@ -61,11 +61,11 @@ void loadAllCardTextures(SDL_Renderer *renderer) {
     for (int r = 0; r < 13; r++) {
         for (int s = 0; s < 4; s++) {
             char filename[64];
-            snprintf(filename, sizeof(filename), "Kort/bmp/%c%c.bmp", ranks[r], suits[s]);
+            snprintf(filename, sizeof(filename), "../Kort/bmp/%c%c.bmp", ranks[r], suits[s]);
             cardTextures[r][s] = loadCardTexture(renderer, filename);
         }
     }
-    backTexture = loadCardTexture(renderer, "Kort/bmp/back.bmp");
+    backTexture = loadCardTexture(renderer, "../Kort/bmp/back.bmp");
 }
 
 void freeCardTextures() {
@@ -244,8 +244,8 @@ void gameLoopGUI(Board *board) {
 
     SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600, 0);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    TTF_Font *font = TTF_OpenFont("Kort/Font/ttf/DejaVuSans.ttf", 16);
-
+    TTF_Font *font = TTF_OpenFont("../Kort/Font/ttf/DejaVuSans.ttf", 16);
+    printf("TTF_OpenFont error: %s\n", TTF_GetError());
     if (!font) {
         fprintf(stderr, "Font fejl: %s\n", TTF_GetError());
         exit(1);
