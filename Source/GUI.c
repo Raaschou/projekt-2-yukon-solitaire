@@ -9,8 +9,8 @@
 #include "../Include/Foundations.h"
 
 
-#define NUM_STARTUP_BUTTONS 7
-#define NUM_PLAY_BUTTONS 7
+#define NUM_STARTUP_BUTTONS 5 // ændre til 6 når load current game virker
+#define NUM_PLAY_BUTTONS 3 //- ændre til 4 når save current phase virker
 
 typedef struct {
     SDL_Rect rect;
@@ -26,18 +26,15 @@ Button startupButtons[NUM_STARTUP_BUTTONS] = {
     {{50, 550, 100, 40}, "Load"},
     {{160, 550, 100, 40}, "Shuffle R"},
     {{270, 550, 100, 40}, "Shuffle I"},
-    {{380, 550, 100, 40}, "Split"},
-    {{490, 550, 100, 40}, "Sort"},
-    {{600, 550, 100, 40}, "Show"},
-    {{710, 550, 100, 40}, "Play"}
+    {{380, 550, 100, 40}, "Show"},// man skal kunne give parameter for at den virker
+    {{490, 550, 100, 40}, "Play"}
 };
 
 Button playButtons[NUM_PLAY_BUTTONS] = {
-    {{50, 550, 150, 40}, "PlayPhase"},
-    {{210, 550, 150, 40}, "Shuffle R"},
-    {{370, 550, 150, 40}, "Shuffle S"},
-    {{530, 550, 150, 40}, "ShowCards"},
-    {{690, 550, 150, 40}, "LoadDeck"}
+    {{50, 550, 100, 40}, "Quit"},
+    {{160, 550, 100, 40}, "Undo"},
+    {{270, 550, 100, 40}, "Redo"},
+
 };
 
 SDL_Texture *cardTextures[13][4];
@@ -262,8 +259,8 @@ void gameLoopGUI(Board *board) {
     SDL_Event e;
     int running = 1;
 
-    const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD", "SR", "SI", "SH", "SO", "SW", "P"};
-    const char *playCmds[NUM_PLAY_BUTTONS] = {"", "SR", "SI", "SW", "LD", "U", "R"};
+    const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD", "SR", "SI", "SW", "P"};
+    const char *playCmds[NUM_PLAY_BUTTONS] = {"Q", "U", "R"};
 
     BoardStack undoStack, redoStack;
     initStack(&undoStack);
@@ -295,26 +292,8 @@ void gameLoopGUI(Board *board) {
                     // Tjek knapper, herunder Undo og Redo
                     for (int i = 0; i < NUM_PLAY_BUTTONS; i++) {
                         SDL_Rect r = playButtons[i].rect;
+
                         if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                            if (i == 5) {  // Undo button
-                                if (!isEmpty(&undoStack)) {
-                                    push(&redoStack, board);
-                                    freeBoard(board);
-                                    *board = pop(&undoStack);
-                                    strcpy(message, "Undo succesfuld.");
-                                } else {
-                                    strcpy(message, "Der er ingen handling at fortryde.");
-                                }
-                            } else if (i == 6) {  // Redo button
-                                if (!isEmpty(&redoStack)) {
-                                    push(&undoStack, board);
-                                    freeBoard(board);
-                                    *board = pop(&redoStack);
-                                    strcpy(message, "Redo succesfuld.");
-                                } else {
-                                    strcpy(message, "Der er ingen handling at gentage.");
-                                }
-                            } else {
                                 phase = playPhase(board, phase, playCmds[i], lastCommand, message, &undoStack, &redoStack);
                             }
                         }
@@ -358,11 +337,11 @@ void gameLoopGUI(Board *board) {
                                             flipLastCardIfAny(&board->columns[selectedCol]);
                                             snprintf(message, 256, "Flyttede kortet.");
                                             } else {
-                                                printf("❌ Ugyldigt træk\n");
+                                                printf("Ugyldigt træk\n");
                                                 snprintf(message, 256, "Ugyldigt træk.");
                                             }
                                     } else {
-                                        printf("❌ Samme kolonne – ugyldigt træk\n");
+                                        printf("Samme kolonne – ugyldigt træk\n");
                                         snprintf(message, 256, "Ugyldigt træk.");
                                     }
 
