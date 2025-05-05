@@ -4,9 +4,29 @@
 
 #include "../Include/Board.h"
 
+#include <stdlib.h>
 
+void freeList(LinkedList *list) {
+    CardNode *current = list->head;
+    while (current != NULL) {
+        CardNode *next = current->next;
+        free(current);
+        current = next;
+    }
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+}
 
-
+void freeBoard(Board *board) {
+    freeList(&board->deck);
+    for (int i = 0; i < 7; i++) {
+        freeList(&board->columns[i]);
+    }
+    for (int i = 0; i < 4; i++) {
+        freeList(&board->foundations[i]);
+    }
+}
 void printBoardPlayPhase(Board *board, const char *lastCommand, const char *message) {
     int maxHeight = 7;
     // den her funktion tjekker højden på alle vores columns
@@ -103,4 +123,81 @@ if (board->deck.size!=0) {
     printf("\nLast Command: %s\n", lastCommand ? lastCommand : "");
     printf("Message: %s\n", message ? message : "");
     printf("INPUT >  ");
+}
+
+
+void initStack(BoardStack* stack) {
+    stack->top = 0;
+}
+
+int isEmpty(BoardStack* stack) {
+    return stack->top == 0;
+}
+
+int isFull(BoardStack* stack) {
+    return stack->top >= MAX_HISTORY;
+}
+
+void push(BoardStack* stack, const Board* board) {
+    if (isFull(stack)) {
+        printf("Stack overflow! Kan ikke gemme flere træk.\n");
+        return;
+    }
+
+    // Frigør først eksisterende board i pladsen, hvis nødvendigt
+    freeBoard(&stack->boards[stack->top]);
+
+    // Kopiér det nye board
+    copyBoard(&stack->boards[stack->top], board);
+    stack->top++;
+}
+
+Board pop(BoardStack* stack) {
+    if (isEmpty(stack)) {
+        printf("Stack underflow! Ingen flere træk at fortryde.\n");
+        Board empty = {0};
+        return empty;
+    }
+
+    stack->top--;
+    Board result = {0};
+    copyBoard(&result, &stack->boards[stack->top]);
+
+    // Frigør board i stack'en, da det nu er ude af stack'en
+    freeBoard(&stack->boards[stack->top]);
+
+    return result;
+}
+
+void initList(LinkedList *list) {
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+}
+
+void copyList(LinkedList *dest, const LinkedList *src) {
+    initList(dest);
+
+    CardNode *current = src->head;
+    while (current != NULL) {
+        Card copy = current->card; // shallow copy af Card er OK
+        addCard(dest, copy);       // vi allokerer nyt node
+        current = current->next;
+    }
+}
+
+void copyBoard(Board *dest, const Board *src) {
+    copyList(&dest->deck, &src->deck);
+    for (int i = 0; i < 7; i++) {
+        copyList(&dest->columns[i], &src->columns[i]);
+    }
+    for (int i = 0; i < 4; i++) {
+        copyList(&dest->foundations[i], &src->foundations[i]);
+    }
+}
+void clearStack(BoardStack* stack) {
+    for (int i = 0; i < stack->top; i++) {
+        freeBoard(&stack->boards[i]);
+    }
+    stack->top = 0;
 }
