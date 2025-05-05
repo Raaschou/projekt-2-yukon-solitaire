@@ -6,6 +6,7 @@
 #include "../Include/Board.h"
 #include "../Include/Card.h"
 #include "../Include/Game.h"
+#include "../Include/Foundations.h"
 
 
 #define NUM_STARTUP_BUTTONS 7
@@ -135,7 +136,8 @@ void drawCard(SDL_Renderer *renderer, int x, int y, Card *card) {
     int rankIndex = card->rank - 1;
     int suitIndex = (card->suit == 'H') ? 0 :
                     (card->suit == 'D') ? 1 :
-                    (card->suit == 'C') ? 2 : 3;
+                    (card->suit == 'C') ? 2 :
+                    (card->suit == 'S') ? 3 : -1;
 
     SDL_Texture *tex = cardTextures[rankIndex][suitIndex];
     if (tex) {
@@ -241,6 +243,8 @@ void gameLoopGUI(Board *board) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
 
+    initBoard(board);
+
     SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600, 0);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     TTF_Font *font = TTF_OpenFont("Kort/Font/ttf/DejaVuSans.ttf", 16);
@@ -261,8 +265,6 @@ void gameLoopGUI(Board *board) {
     const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD", "SR", "SI", "SH", "SO", "SW", "P"};
     const char *playCmds[NUM_PLAY_BUTTONS] = {"", "SR", "SI", "SW", "LD", "U", "R"};
 
-    CardNode *selectedCard = NULL;
-    int selectedCol = -1;
     BoardStack undoStack, redoStack;
     initStack(&undoStack);
     initStack(&redoStack);
@@ -337,15 +339,33 @@ void gameLoopGUI(Board *board) {
                                     selectedCol = col;
                                     snprintf(message, 256, "Valgt kort: %d%c", node->card.rank, node->card.suit);
                                 } else {
-                                    if (col != selectedCol &&
-                                        validMoveC(selectedCard, board->columns[col].tail)) {
-                                        changeBoardStack(&undoStack, &redoStack, board);  // Gemme tilstand før flytning
-                                        moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
-                                        flipLastCardIfAny(&board->columns[selectedCol]);
-                                        snprintf(message, 256, "Flyttede kortet.");
-                                        } else {
-                                            snprintf(message, 256, "Ugyldigt træk.");
-                                        }
+                                    if (col != selectedCol) {
+                                        CardNode *target = board->columns[col].tail;
+
+                                        // Debug-udskrifter
+                                        printf("▶ Forsøger at flytte kort\n");
+                                        printf("  - Valgt kort: %d%c\n", selectedCard->card.rank, selectedCard->card.suit);
+                                        printf("  - Target column: %d\n", col);
+                                        printf("  - Target column size: %d\n", board->columns[col].size);
+                                        printf("  - Target eksisterer? %s\n", target ? "ja" : "nej");
+
+                                        if ((target && validMoveC(selectedCard, target)) ||
+                                            (!target && selectedCard->card.rank == 13)) {
+                                            changeBoardStack(&undoStack, &redoStack, board);
+                                            printf("✅ Trækket er gyldigt – udfører flytning\n");
+
+                                            moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
+                                            flipLastCardIfAny(&board->columns[selectedCol]);
+                                            snprintf(message, 256, "Flyttede kortet.");
+                                            } else {
+                                                printf("❌ Ugyldigt træk\n");
+                                                snprintf(message, 256, "Ugyldigt træk.");
+                                            }
+                                    } else {
+                                        printf("❌ Samme kolonne – ugyldigt træk\n");
+                                        snprintf(message, 256, "Ugyldigt træk.");
+                                    }
+
                                     selectedCard = NULL;
                                     selectedCol = -1;
                                 }
@@ -355,8 +375,56 @@ void gameLoopGUI(Board *board) {
                             node = node->prev;
                             row--;
                         }
+                        // Hvis ingen kort blev valgt og kolonnen er tom, tjek klik i tom slot
+                        if (selectedCard && board->columns[col].size == 0) {
+                            SDL_Rect emptySlot = {20 + col * 100, 20, 80, 120}; // samme som i drawBoardPlayPhase
+                            printf("🟦 Tjekker klik i tom kolonne %d – klik (%d,%d)\n", col, x, y);
+                            printf("Empty slot: x=%d to %d, y=%d to %d\n", emptySlot.x, emptySlot.x + emptySlot.w, emptySlot.y, emptySlot.y + emptySlot.h);
+
+                            if (x >= emptySlot.x && x <= emptySlot.x + emptySlot.w &&
+                                y >= emptySlot.y && y <= emptySlot.y + emptySlot.h) {
+                                printf("✅ Klik indenfor tom kolonne %d registreret!\n", col);
+
+                                if (selectedCard->card.rank == 13) {
+                                    moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
+                                    flipLastCardIfAny(&board->columns[selectedCol]);
+                                    snprintf(message, 256, "Flyttede konge til tom kolonne.");
+                                } else {
+                                    snprintf(message, 256, "Kun en konge må flyttes til en tom kolonne.");
+                                }
+                                selectedCard = NULL;
+                                selectedCol = -1;
+                                }
+                        }
 
                     }
+                    // Tjek klik på foundations
+                    if (selectedCard != NULL) {
+                        for (int f = 0; f < 4; f++) {
+                            SDL_Rect fslot = {800, 20 + 130 * f, 80, 120};
+                            printf("👆 Tjekker klik i foundation %d – klik (%d,%d)\n", f, x, y);
+                            printf("Foundation slot: x=%d to %d, y=%d to %d\n", fslot.x, fslot.x + fslot.w, fslot.y, fslot.y + fslot.h);
+
+                            if (x >= fslot.x && x <= fslot.x + fslot.w &&
+                                y >= fslot.y && y <= fslot.y + fslot.h) {
+                                printf("✅ Klik indenfor foundation %d registreret!\n", f);
+
+                                if (validMoveF(selectedCard, board->foundations[f].tail)) {
+                                    changeBoardStack(&undoStack, &redoStack, board);
+                                    moveToFoundation(selectedCard, &board->columns[selectedCol], &board->foundations[f]);
+                                    flipLastCardIfAny(&board->columns[selectedCol]);
+                                    snprintf(message, 256, "Flyttede kort til foundation.");
+                                } else {
+                                    snprintf(message, 256, "Ugyldigt foundation-træk.");
+                                }
+
+                                selectedCard = NULL;
+                                selectedCol = -1;
+                                break;
+                                }
+                        }
+                    }
+
                 }
             }
         }

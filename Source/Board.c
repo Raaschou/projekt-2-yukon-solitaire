@@ -71,6 +71,15 @@ void printBoardPlayPhase(Board *board, const char *lastCommand, const char *mess
     printf("INPUT >  ");
 }
 
+void initBoard(Board *board) {
+    for (int i = 0; i < 7; i++) {
+        list(&board->columns[i]);
+    }
+    for (int i = 0; i < 4; i++) {
+        list(&board->foundations[i]);
+    }
+    list(&board->deck);
+}
 
 void printBoardStartUpPhase(Board *board, const char *lastCommand, const char *message) {
     printf("\nC1\tC2\tC3\tC4\tC5\tC6\tC7\n\n");
@@ -203,12 +212,12 @@ void changeBoardStack(BoardStack *undo, BoardStack *redo, Board *board) {
     push(undo, board);
     clearStack(redo);
 }
-void initBoard(Board *board) {
-    initList(&board->deck);
-    for (int i = 0; i < 7; i++) {
-        initList(&board->columns[i]);
-    }
-    for (int i = 0; i < 4; i++) {
-        initList(&board->foundations[i]);
-    }
-}
+// void initBoard(Board *board) {
+//     initList(&board->deck);
+//     for (int i = 0; i < 7; i++) {
+//         initList(&board->columns[i]);
+//     }
+//     for (int i = 0; i < 4; i++) {
+//         initList(&board->foundations[i]);
+//     }
+// }

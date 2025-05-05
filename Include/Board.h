@@ -1,6 +1,7 @@
 //
 // Created by August Frandsen on 15/04/2025.
 //
+
 #ifndef BOARD_H
 #define BOARD_H
 
@@ -16,6 +17,7 @@ typedef struct {
     LinkedList foundations[4];
 } Board;
 
+void initBoard(Board *board);
 typedef struct {
     Board boards[MAX_HISTORY];
     int top;
