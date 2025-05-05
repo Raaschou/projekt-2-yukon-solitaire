@@ -357,12 +357,12 @@ void gameLoopGUI(Board *board) {
                         // Hvis ingen kort blev valgt og kolonnen er tom, tjek klik i tom slot
                         if (selectedCard && board->columns[col].size == 0) {
                             SDL_Rect emptySlot = {20 + col * 100, 20, 80, 120}; // samme som i drawBoardPlayPhase
-                            printf("🟦 Tjekker klik i tom kolonne %d – klik (%d,%d)\n", col, x, y);
+                            printf("Tjekker klik i tom kolonne %d – klik (%d,%d)\n", col, x, y);
                             printf("Empty slot: x=%d to %d, y=%d to %d\n", emptySlot.x, emptySlot.x + emptySlot.w, emptySlot.y, emptySlot.y + emptySlot.h);
 
                             if (x >= emptySlot.x && x <= emptySlot.x + emptySlot.w &&
                                 y >= emptySlot.y && y <= emptySlot.y + emptySlot.h) {
-                                printf("✅ Klik indenfor tom kolonne %d registreret!\n", col);
+                                printf("Klik indenfor tom kolonne %d registreret!\n", col);
 
                                 if (selectedCard->card.rank == 13) {
                                     moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
@@ -386,7 +386,7 @@ void gameLoopGUI(Board *board) {
 
                             if (x >= fslot.x && x <= fslot.x + fslot.w &&
                                 y >= fslot.y && y <= fslot.y + fslot.h) {
-                                printf("✅ Klik indenfor foundation %d registreret!\n", f);
+                                printf("Klik indenfor foundation %d registreret!\n", f);
 
                                 if (validMoveF(selectedCard, board->foundations[f].tail)) {
                                     changeBoardStack(&undoStack, &redoStack, board);
@@ -406,7 +406,7 @@ void gameLoopGUI(Board *board) {
 
                 }
             }
-        }
+
 
         if (phase == STARTUP) {
             drawBoardStartUpPhase(renderer, board, font, message);
