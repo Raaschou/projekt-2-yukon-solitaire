@@ -36,11 +36,12 @@ void gameLoopTerminal(Board *board) {
 GamePhase playPhaseTerminal(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
     char input[100];
     fgets(input, sizeof(input), stdin);
-    input[strcspn(input, "\n")] = 0; // Fjern newline
+    input[strcspn(input, "\n")] = 0;  // korrekt fjern newline
 
     if (currentPhase == PLAY) {
         return playPhase(board, currentPhase, input, lastCommand, message);
-    } else if (currentPhase == STARTUP) {
+    }
+    if (currentPhase == STARTUP) {
         return startupPhase(board, currentPhase, input, lastCommand, message);
     }
 
@@ -54,7 +55,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
     char arg[100] = "";
     sscanf(input, "%s%99[^\n]", cmd, arg);
 
-        if (strcmp(input, "LD") == 0) {
+        if (strcasecmp(cmd, "LD") == 0) {
             clearList(&board->deck);
         // Gem sidste kommando
         strcpy(lastCommand, "LD");
@@ -80,7 +81,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
 
 
         // SW,Show deck
-    } else if (strcmp(input, "SW") == 0) {
+    } else if (strcasecmp(cmd, "SW") == 0) {
         CardNode *current = board->deck.head;
         while (current) {
             current->card.faceUp = 1;
@@ -90,7 +91,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, c
         strcpy(message,"Kort er nu vist");
 return STARTUP;
         //SI, Split
-    } else if (strcmp(input, "SI") == 0) {
+    } else if (strcasecmp(cmd, "SI") == 0) {
         char *endptr;
         long cutPoint = strtol(arg, &endptr, 10);
         strcpy(lastCommand, "SI");
@@ -106,14 +107,15 @@ return STARTUP;
 
         return STARTUP;
         // SR, = randomShuffle
-    } else if (strcmp(input, "SR") == 0) {
+    } else if (strcasecmp(input, "SR") == 0) {
         randomShuffle(&board->deck);
         strcpy(lastCommand,"SR");
         strcpy(message,"Shuffle random");
 
         //SD, Save deck
-    } else if (strcmp(input, "SD") == 0) {
+    } else if (strcasecmp(cmd, "SD") == 0) {
         strcpy(lastCommand, "SD");
+        strcpy(message,"Kort burde være gemt");
         char *filename = arg;
         while (*filename == ' ') filename++;
         if (strlen(filename) == 0) filename = "cards.txt";
@@ -121,7 +123,7 @@ return STARTUP;
         writeDeckToFile(&board->deck, filename, message);
         return STARTUP;
 
-    } else if (strcmp(input, "QQ") == 0) {
+    } else if (strcasecmp(input, "QQ") == 0) {
         strcpy(lastCommand,"QQ");
         strcpy(message,"Forlader spil - Tak for i dag!.\n");
         // Bare så det ser pænt ud.
@@ -130,7 +132,7 @@ return STARTUP;
         exit(0);
 
         //P, Start play phase
-    } else if (strcmp(input, "P") == 0) {
+    } else if (strcasecmp(input, "P") == 0) {
         if (board->deck.size == 0) {
             strcpy(message, "Der er ikke loadet et deck!");
             strcpy(lastCommand, input);

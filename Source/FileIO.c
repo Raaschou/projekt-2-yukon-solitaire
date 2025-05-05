@@ -44,18 +44,21 @@ int readDeckFromFile(const char *filename, LinkedList *deck, char *message) {
 }
 
 
-void writeDeckToFile(LinkedList *deck, const char *filename,char *message) {
+void writeDeckToFile(LinkedList *deck, const char *filename, char *message) {
     FILE *file = fopen(filename, "w");
     if (!file) {
-        sprintf(message,"Could not open file");
+        sprintf(message, "Kunne ikke åbne filen: %s", filename);
         return;
     }
 
-    CardNode *current = deck->head;
-    while (current) {
-        fprintf(file, "%c%c\n", current->card.rank, current->card.suit);
-        current = current->next;
+    CardNode *node = deck->head;
+    while (node) {
+        Card card = node->card;
+        char rankChar = getRankChar(card.rank);  // fx 'A', '7', 'K'
+        fprintf(file, "%c%c\n", rankChar, card.suit);  // fx AH, 7D, QC
+        node = node->next;
     }
 
     fclose(file);
+    sprintf(message, "Deck gemt til %s", filename);
 }
