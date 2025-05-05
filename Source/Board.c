@@ -201,3 +201,7 @@ void clearStack(BoardStack* stack) {
     }
     stack->top = 0;
 }
+void changeBoardStack(BoardStack *undo, BoardStack *redo, Board *board) {
+    push(undo, board);
+    clearStack(redo);
+}

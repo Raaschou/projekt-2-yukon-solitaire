@@ -41,7 +41,7 @@ int isFull(BoardStack *stack);
 void push(BoardStack *stack, const Board *board);
 Board pop(BoardStack *stack);
 void clearStack(BoardStack *stack);  // 🆕 Rydder hele stacken
-
+void changeBoardStack(BoardStack *undo, BoardStack *redo, Board *board);
 #endif // BOARD_H
 
-#endif //BOARD_H
+

@@ -3,6 +3,7 @@
 //
 
 #include "../Include/Game.h"
+#include "../Include/Board.h"
 #include "../Include/GUI.h"
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -23,24 +24,31 @@ void gameLoopTerminal(Board *board) {
     char lastCommand[100] = "";
     char message[100] = "";
 
+    BoardStack undoStack, redoStack;
+    initStack(&undoStack);
+    initStack(&redoStack);
+    push(&undoStack, board);
+
     while (1) {
         if (phase == STARTUP) {
             printBoardStartUpPhase(board, lastCommand, message);
-            phase = playPhaseTerminal(board, phase, lastCommand, message);
+            phase = playPhaseTerminal(board, phase, lastCommand, message, &undoStack, &redoStack);
         } else if (phase == PLAY) {
             printBoardPlayPhase(board, lastCommand, message);
-            phase = playPhaseTerminal(board, phase, lastCommand, message);
+            phase = playPhaseTerminal(board, phase, lastCommand, message, &undoStack, &redoStack);
         }
     }
 }
-GamePhase playPhaseTerminal(Board *board, GamePhase currentPhase, char *lastCommand, char *message) {
+GamePhase playPhaseTerminal(Board *board, GamePhase currentPhase, char *lastCommand, char *message,
+                            BoardStack *undoStack, BoardStack *redoStack) {
     char input[100];
     fgets(input, sizeof(input), stdin);
-    input[strcspn(input, "\n")] = 0;  // korrekt fjern newline
+    input[strcspn(input, "\n")] = 0;
 
     if (currentPhase == PLAY) {
-        return playPhase(board, currentPhase, input, lastCommand, message);
+        return playPhase(board, currentPhase, input, lastCommand, message, undoStack, redoStack);
     }
+
     if (currentPhase == STARTUP) {
         return startupPhase(board, currentPhase, input, lastCommand, message);
     }
@@ -175,28 +183,42 @@ return STARTUP;
  * @param message Buffer til status-/fejlmeddelelser efter behandlingen.
  * @return Næste fase – typisk PLAY eller STARTUP.
  */
-GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, char *lastCommand, char *message) {
+GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input,char *lastCommand, char *message,BoardStack *undoStack, BoardStack *redoStack) {
     char localInput[100];
     strncpy(localInput, input, sizeof(localInput) - 1);
     localInput[sizeof(localInput) - 1] = '\0';
 
+
     for (int i = 0; localInput[i]; i++) {
         localInput[i] = toupper((unsigned char)localInput[i]);
+    }
+    if (strcmp(localInput, "undo") == 0) {
+        if (!isEmpty(&undoStack)) {
+            push(&redoStack, board);
+            freeBoard(board);
+            *board = pop(&undoStack);
+        } else {
+            printf("Der er ikke noget at fortryde.\n");
+        }
+        return currentPhase;
+    }
+
+    if (strcmp(localInput, "redo") == 0) {
+        if (!isEmpty(&redoStack)) {
+            push(&undoStack, board);
+            freeBoard(board);
+            *board = pop(&redoStack);
+        } else {
+            printf("Der er ikke noget at gentage.\n");
+        }
+        return currentPhase;
     }
 
     if (strcmp(localInput, "Q") == 0) {
         strcpy(lastCommand, "Q");
         strcpy(message, "Afslutter spilfase...");
         return STARTUP;
-    } else if (strcmp(localInput, "U") == 0) {
-        strcpy(lastCommand, "U");
-        strcpy(message, "Fortryder sidste træk...");
-        return currentPhase;
-    } else if (strcmp(localInput, "R") == 0) {
-        strcpy(lastCommand, "R");
-        strcpy(message, "Gør træk om...");
-        return currentPhase;
-    } else if (strcmp(localInput, "S") == 0) {
+    }  else if (strcmp(localInput, "S") == 0) {
         strcpy(lastCommand, "S");
         strcpy(message, "Gemmer spil...");
         return currentPhase;
@@ -235,6 +257,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
 
         if (!card) strcpy(message, "Kolonnen er tom!");
         else if (validMoveF(card, target->tail)) {
+            changeBoardStack(undoStack, redoStack, board);
             moveToFoundation(card, source, target);
             flipLastCardIfAny(source);
             strcpy(message, "OK");
@@ -280,6 +303,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
         } else if (!node->card.faceUp) {
             strcpy(message, "Kan ikke flytte skjulte kort.");
         } else if (validMoveC(node, dest->tail)) {
+            changeBoardStack(undoStack, redoStack, board);
             moveBetweenColumns(node, source, dest);
             flipLastCardIfAny(source);
             strcpy(message, "OK");
@@ -306,6 +330,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
         if (!node) strcpy(message, "Kolonnen er tom!");
         else if (!node->card.faceUp) strcpy(message, "Kan ikke flytte skjulte kort.");
         else if (validMoveC(node, dest->tail)) {
+            changeBoardStack(undoStack, redoStack, board);
             moveBetweenColumns(node, source, dest);
             flipLastCardIfAny(source);
             strcpy(message, "OK");
@@ -329,6 +354,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
 
         if (!node) strcpy(message, "Foundation er tom!");
         else if (validMoveC(node, dest->tail)) {
+            changeBoardStack(undoStack, redoStack, board);
             moveBetweenColumns(node, source, dest);
             strcpy(message, "OK");
         } else strcpy(message, "Ugyldigt træk!");
@@ -341,18 +367,3 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
 }
 
 
-//
-// #include <stdio.h>
-// #include <string.h>
-// #include "../Include/game.h"
-// #include "../Include/Commands.h"
-//
-
-/*
-
-
-
-// Kommandoer i spilfasen – 'Q' går tilbage til startfasen
-
-
-*/
