@@ -144,7 +144,7 @@ void drawBoardStartUpPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font,
 
     // Tegn foundation slots
     for (int i = 0; i < 4; i++) {
-        SDL_Rect fslot = {600 + i * 90, 20, 80, 120};
+        SDL_Rect fslot = {800 , 20 + i * 130, 80, 120};
         SDL_SetRenderDrawColor(renderer, 230, 230, 230, 255);
         SDL_RenderFillRect(renderer, &fslot);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -182,7 +182,7 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
 
     // Foundation slots + kort
     for (int i = 0; i < 4; i++) {
-        SDL_Rect fslot = {600 + i * 90, 20, 80, 120};
+        SDL_Rect fslot = {800 , 20 + 130 * i, 80, 120};
         SDL_SetRenderDrawColor(renderer, 230, 230, 230, 255);
         SDL_RenderFillRect(renderer, &fslot);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -198,7 +198,7 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
     int spacingX = 100;
     int spacingY = 30;
     for (int col = 0; col < 7; col++) {
-        SDL_Rect slot = {50 + col * spacingX, 100, 80, 120};
+        SDL_Rect slot = {20 + col * spacingX, 20, 80, 120};
         SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
         SDL_RenderFillRect(renderer, &slot);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
