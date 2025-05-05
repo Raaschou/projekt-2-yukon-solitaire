@@ -16,6 +16,11 @@ typedef struct {
     const char *label;
 } Button;
 
+typedef struct {
+    SDL_Rect rect;
+    CardNode *node;
+} CardVisual;
+
 Button startupButtons[NUM_STARTUP_BUTTONS] = {
     {{50, 550, 100, 40}, "Load"},
     {{160, 550, 100, 40}, "Shuffle R"},
@@ -36,6 +41,9 @@ Button playButtons[NUM_PLAY_BUTTONS] = {
 
 SDL_Texture *cardTextures[13][4];
 SDL_Texture *backTexture = NULL;
+
+CardNode *selectedCard = NULL;
+int selectedCol = -1;
 
 SDL_Texture *loadCardTexture(SDL_Renderer *renderer, const char *filename) {
     SDL_Surface *surf = SDL_LoadBMP(filename);
@@ -207,9 +215,14 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
         CardNode *node = board->columns[col].head;
         int i = 0;
         while (node != NULL) {
-            int x = 50 + col * spacingX;
+            int x = 20 + col * spacingX;
             int y = 100 + i * spacingY;
             drawCard(renderer, x, y, &node->card);
+            if (selectedCard == node) {
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // grøn ramme
+                SDL_Rect border = {x, y, 80, 120};
+                SDL_RenderDrawRect(renderer, &border);
+            }
             node = node->next;
             i++;
         }
@@ -248,11 +261,15 @@ void gameLoopGUI(Board *board) {
     const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD", "SR", "SI", "SH", "SO", "SW", "P"};
     const char *playCmds[NUM_PLAY_BUTTONS] = {"", "SR", "SI", "SW", "LD"};
 
-    CardNode *selectedCard = NULL;
-    int selectedCol = -1;
+    CardVisual visibleCards[52];
+    int numVisibleCards = 0;
+    char selectedMessage[100] = "";
+
 
     while (running) {
+
         while (SDL_PollEvent(&e)) {
+
             if (e.type == SDL_QUIT) {
                 running = 0;
             }
@@ -279,9 +296,10 @@ void gameLoopGUI(Board *board) {
                     // Tjek klik på kort
                     for (int col = 0; col < 7; col++) {
                         int cx = 50 + col * 100;
-                        CardNode *node = board->columns[col].head;
-                        int row = 0;
+                        CardNode *node = board->columns[col].tail;
+                        int row = board->columns[col].size - 1;
                         while (node) {
+                            int cx = 50 + col * 100;
                             SDL_Rect cardRect = {cx, 100 + row * 30, 80, 120};
 
                             if (x >= cardRect.x && x <= cardRect.x + cardRect.w &&
@@ -299,17 +317,19 @@ void gameLoopGUI(Board *board) {
                                         moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
                                         flipLastCardIfAny(&board->columns[selectedCol]);
                                         snprintf(message, 256, "Flyttede kortet.");
-                                    } else {
-                                        snprintf(message, 256, "Ugyldigt træk.");
-                                    }
+                                        } else {
+                                            snprintf(message, 256, "Ugyldigt træk.");
+                                        }
                                     selectedCard = NULL;
                                     selectedCol = -1;
                                 }
                                 break;
-                            }
-                            node = node->next;
-                            row++;
+                                }
+
+                            node = node->prev;
+                            row--;
                         }
+
                     }
                 }
             }
