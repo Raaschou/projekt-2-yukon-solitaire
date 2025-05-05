@@ -245,7 +245,7 @@ void gameLoopGUI(Board *board) {
     SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600, 0);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     TTF_Font *font = TTF_OpenFont("../Kort/Font/ttf/DejaVuSans.ttf", 16);
-    printf("TTF_OpenFont error: %s\n", TTF_GetError());
+    
     if (!font) {
         fprintf(stderr, "Font fejl: %s\n", TTF_GetError());
         exit(1);
