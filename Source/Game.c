@@ -163,7 +163,7 @@ return STARTUP;
  *   - "Cx->Fy"  : Flyt topkort fra kolonne til foundation
  *   - "Fx->Cy"  : Flyt topkort fra foundation til kolonne
  *   - "Cx:KH->Cy": Flyt kortstakken fra kolonne til anden kolonne
- *
+ *21
  * Bemærk:
  *   - Kommandoer er case-insensitive.
  *   - Meldinger og sidste kommando opdateres gennem `message` og `lastCommand`.
