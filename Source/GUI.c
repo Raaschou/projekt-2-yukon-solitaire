@@ -9,7 +9,7 @@
 
 
 #define NUM_STARTUP_BUTTONS 7
-#define NUM_PLAY_BUTTONS 5
+#define NUM_PLAY_BUTTONS 7
 
 typedef struct {
     SDL_Rect rect;
@@ -259,8 +259,13 @@ void gameLoopGUI(Board *board) {
     int running = 1;
 
     const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD", "SR", "SI", "SH", "SO", "SW", "P"};
-    const char *playCmds[NUM_PLAY_BUTTONS] = {"", "SR", "SI", "SW", "LD"};
+    const char *playCmds[NUM_PLAY_BUTTONS] = {"", "SR", "SI", "SW", "LD", "U", "R"};
 
+    CardNode *selectedCard = NULL;
+    int selectedCol = -1;
+    BoardStack undoStack, redoStack;
+    initStack(&undoStack);
+    initStack(&redoStack);
     CardVisual visibleCards[52];
     int numVisibleCards = 0;
     char selectedMessage[100] = "";
@@ -285,11 +290,31 @@ void gameLoopGUI(Board *board) {
                         }
                     }
                 } else if (phase == PLAY) {
-                    // Tjek knapper
-                    for (int i = 1; i < NUM_PLAY_BUTTONS; i++) {
+                    // Tjek knapper, herunder Undo og Redo
+                    for (int i = 0; i < NUM_PLAY_BUTTONS; i++) {
                         SDL_Rect r = playButtons[i].rect;
                         if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                            phase = playPhase(board, phase, playCmds[i], lastCommand, message);
+                            if (i == 5) {  // Undo button
+                                if (!isEmpty(&undoStack)) {
+                                    push(&redoStack, board);
+                                    freeBoard(board);
+                                    *board = pop(&undoStack);
+                                    strcpy(message, "Undo succesfuld.");
+                                } else {
+                                    strcpy(message, "Der er ingen handling at fortryde.");
+                                }
+                            } else if (i == 6) {  // Redo button
+                                if (!isEmpty(&redoStack)) {
+                                    push(&undoStack, board);
+                                    freeBoard(board);
+                                    *board = pop(&redoStack);
+                                    strcpy(message, "Redo succesfuld.");
+                                } else {
+                                    strcpy(message, "Der er ingen handling at gentage.");
+                                }
+                            } else {
+                                phase = playPhase(board, phase, playCmds[i], lastCommand, message, &undoStack, &redoStack);
+                            }
                         }
                     }
 
@@ -314,6 +339,7 @@ void gameLoopGUI(Board *board) {
                                 } else {
                                     if (col != selectedCol &&
                                         validMoveC(selectedCard, board->columns[col].tail)) {
+                                        changeBoardStack(&undoStack, &redoStack, board);  // Gemme tilstand før flytning
                                         moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
                                         flipLastCardIfAny(&board->columns[selectedCol]);
                                         snprintf(message, 256, "Flyttede kortet.");
