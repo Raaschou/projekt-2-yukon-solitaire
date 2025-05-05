@@ -21,7 +21,7 @@
 //     gameLoop(&board);
 //     return 0;
 // }
-int main(void) {
+int main(int argc, char *argv[]) {
     Board board = {0};
 
     int mode = 0;
