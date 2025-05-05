@@ -43,6 +43,8 @@ SDL_Texture *backTexture = NULL;
 CardNode *selectedCard = NULL;
 int selectedCol = -1;
 
+// This function is called by loadAllCardTextures and loads the individual bmp files
+// by returning the corresponding SDL_Texture
 SDL_Texture *loadCardTexture(SDL_Renderer *renderer, const char *filename) {
     SDL_Surface *surf = SDL_LoadBMP(filename);
     if (!surf) {
@@ -54,6 +56,7 @@ SDL_Texture *loadCardTexture(SDL_Renderer *renderer, const char *filename) {
     return tex;
 }
 
+// This function loads all the cards th
 void loadAllCardTextures(SDL_Renderer *renderer) {
     const char *suits = "HDCS";
     const char *ranks = "A23456789TJQK";
@@ -77,6 +80,8 @@ void freeCardTextures() {
     if (backTexture) SDL_DestroyTexture(backTexture);
 }
 
+// This function is called by the larger draw functions to draw the respective buttons
+// of the startup and play phases.
 void drawButton(SDL_Renderer *renderer, Button *button, TTF_Font *font) {
     SDL_SetRenderDrawColor(renderer, 0, 100, 200, 255);
     SDL_RenderFillRect(renderer, &button->rect);
@@ -122,6 +127,9 @@ void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font) {
     SDL_DestroyTexture(msgTex);
 }
 
+// This function called by the larger drawing functions.
+// It is always called for drawing foundation
+//
 void drawCard(SDL_Renderer *renderer, int x, int y, Card *card) {
     SDL_Rect dst = {x, y, 80, 120};
 
@@ -235,7 +243,7 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
     drawMessage(renderer, message, font);
 }
 
-
+// This function initialises and maintains the graphical part of the game
 void gameLoopGUI(Board *board) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
@@ -245,7 +253,7 @@ void gameLoopGUI(Board *board) {
     SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600, 0);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     TTF_Font *font = TTF_OpenFont("../Kort/Font/ttf/DejaVuSans.ttf", 16);
-    
+
     if (!font) {
         fprintf(stderr, "Font fejl: %s\n", TTF_GetError());
         exit(1);
@@ -269,7 +277,8 @@ void gameLoopGUI(Board *board) {
     int numVisibleCards = 0;
     char selectedMessage[100] = "";
 
-
+    // This while loop is the main part of the graphical game loop,
+    // where inputs are checked, and the board is drawn.
     while (running) {
 
         while (SDL_PollEvent(&e)) {
@@ -277,6 +286,8 @@ void gameLoopGUI(Board *board) {
             if (e.type == SDL_QUIT) {
                 running = 0;
             }
+            // Checks if mouse click is within the bounds of a button or a card,
+            // if it's during the play phase.
             if (e.type == SDL_MOUSEBUTTONDOWN) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
@@ -417,7 +428,7 @@ void gameLoopGUI(Board *board) {
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
     }
-
+    // Cleanup after sending exit signal
     freeCardTextures();
     TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
