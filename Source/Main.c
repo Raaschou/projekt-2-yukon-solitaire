@@ -13,7 +13,7 @@
  *
  * @return int 0 ved succesfuld afslutning.
  */
-int main(void) {
+int main(int argc, char *argv[]) {
     Board board = {0};
 
     int mode = 0;
