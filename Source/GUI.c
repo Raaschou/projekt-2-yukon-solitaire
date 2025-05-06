@@ -103,7 +103,7 @@ void drawButton(SDL_Renderer *renderer, Button *button, TTF_Font *font) {
     SDL_DestroyTexture(textTexture);
 }
 
-void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font) {
+void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font, int windowHeight, int buttonHeight) {
     if (!message || strlen(message) == 0) return;
 
     SDL_Color color = {0, 0, 0};
@@ -116,7 +116,9 @@ void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font) {
         return;
     }
 
-    SDL_Rect msgRect = {10, 570, msgSurf->w, msgSurf->h};
+    int msgY = windowHeight - 20 - buttonHeight - 10 - msgSurf->h;
+    SDL_Rect msgRect = {10, msgY, msgSurf->w, msgSurf->h};
+
     SDL_RenderCopy(renderer, msgTex, NULL, &msgRect);
     SDL_FreeSurface(msgSurf);
     SDL_DestroyTexture(msgTex);
@@ -154,7 +156,7 @@ void drawCard(SDL_Renderer *renderer, int x, int y, Card *card) {
     SDL_RenderDrawRect(renderer, &dst);
 }
 
-void drawBoardStartUpPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, const char *message) {
+void drawBoardStartUpPhase(SDL_Renderer *renderer,SDL_Window *window, Board *board, TTF_Font *font, const char *message) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
@@ -184,15 +186,21 @@ void drawBoardStartUpPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font,
         if (i % 7 == 0) row++;
     }
 
+    int winW, winH;
+    SDL_GetWindowSize(window, &winW, &winH);
+    int buttonHeight = 40; // hvis det er fast
+    int buttonY = winH - 20 - buttonHeight;
+
     // Tegn knapper
     for (int i = 0; i < NUM_STARTUP_BUTTONS; i++) {
+        startupButtons[i].rect.y = buttonY;
         drawButton(renderer, &startupButtons[i], font);
     }
 
-    drawMessage(renderer, message, font);
+    drawMessage(renderer, message, font, winH, buttonHeight);
 }
 
-void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, const char *message) {
+void drawBoardPlayPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board, TTF_Font *font, const char *message) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
@@ -235,13 +243,17 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
             i++;
         }
     }
+    int winW, winH;
+    SDL_GetWindowSize(window, &winW, &winH);
+    int buttonHeight = 40; // hvis det er fast
+    int buttonY = winH - 20 - buttonHeight;
 
-    // Knapper
-    for (int i = 0; i < NUM_PLAY_BUTTONS; i++) {
-        drawButton(renderer, &playButtons[i], font);
+    for (int i = 0; i < NUM_STARTUP_BUTTONS; i++) {
+        startupButtons[i].rect.y = buttonY;
+        drawButton(renderer, &startupButtons[i], font);
     }
 
-    drawMessage(renderer, message, font);
+    drawMessage(renderer, message, font, winH, buttonHeight);
 }
 
 
@@ -251,8 +263,10 @@ void gameLoopGUI(Board *board) {
 
     initBoard(board);
 
-    SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600,
-                                          0);
+    SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 750,SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+
+    SDL_SetWindowMinimumSize(window, 900, 750);  // bredde, højde
+    SDL_SetWindowMaximumSize(window, 900, 1000);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     TTF_Font *font = TTF_OpenFont("Kort/Font/ttf/DejaVuSans.ttf", 16);
 
@@ -308,7 +322,7 @@ void gameLoopGUI(Board *board) {
                 }
                 int spacingX = 100;
                 int spacingY = 30;
-
+                int clickedOnSomething = 0;
                 for (int col = 0; col < 7; col++) {
                     int cx = 20 + col * spacingX;
                     CardNode *node = board->columns[col].tail;
@@ -327,6 +341,7 @@ void gameLoopGUI(Board *board) {
                                 selectedCard = node;
                                 selectedCol = col;
                                 snprintf(message, 256, "Valgt kort: %d%c", node->card.rank, node->card.suit);
+                                clickedOnSomething = 1;
                             } else {
                                 if (col != selectedCol) {
                                     CardNode *target = board->columns[col].tail;
@@ -337,6 +352,7 @@ void gameLoopGUI(Board *board) {
                                         moveBetweenColumns(selectedCard, &board->columns[selectedCol],
                                                            &board->columns[col]);
                                         flipLastCardIfAny(&board->columns[selectedCol]);
+                                        clickedOnSomething = 1;
                                         snprintf(message, 256, "Flyttede kortet.");
                                     } else {
                                         snprintf(message, 256, "Ugyldigt træk.");
@@ -365,6 +381,7 @@ void gameLoopGUI(Board *board) {
                                 moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
                                 flipLastCardIfAny(&board->columns[selectedCol]);
                                 snprintf(message, 256, "Flyttede konge til tom kolonne.");
+                                clickedOnSomething = 1;
                             } else {
                                 snprintf(message, 256, "Kun en konge må flyttes til en tom kolonne.");
                             }
@@ -385,6 +402,7 @@ void gameLoopGUI(Board *board) {
                                 moveToFoundation(selectedCard, &board->columns[selectedCol], &board->foundations[f]);
                                 flipLastCardIfAny(&board->columns[selectedCol]);
                                 snprintf(message, 256, "Flyttede kort til foundation.");
+                                clickedOnSomething = 1;
                             } else {
                                 snprintf(message, 256, "Ugyldigt foundation-træk.");
                             }
@@ -395,14 +413,19 @@ void gameLoopGUI(Board *board) {
                         }
                     }
                 }
+                if (!clickedOnSomething && selectedCard != NULL) {
+                    selectedCard = NULL;
+                    selectedCol = -1;
+                    snprintf(message, 256, "Valg annulleret.");
+                }
             }
         }
 
 
         if (phase == STARTUP) {
-            drawBoardStartUpPhase(renderer, board, font, message);
+            drawBoardStartUpPhase(renderer, window, board, font, message);
         } else if (phase == PLAY) {
-            drawBoardPlayPhase(renderer, board, font, message);
+            drawBoardPlayPhase(renderer, window, board, font, message);
         }
 
         SDL_RenderPresent(renderer);

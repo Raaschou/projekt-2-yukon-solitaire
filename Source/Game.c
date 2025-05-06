@@ -125,9 +125,9 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
         strcpy(lastCommand, "SI");
 
         if (arg == NULL || strlen(arg) == 0) {
-            // Ingen argument – vælg tilfældigt splitpunkt
+
             if (board->deck.size != 52) {
-                strcpy(message, "Kan ikke shuffle – kortbunken er ugyldig.");
+                strcpy(message, "Kan ikke shuffle, kortbunken er ugyldig.");
                 return STARTUP;
             }
 

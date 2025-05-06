@@ -99,7 +99,7 @@ void splitShuffle(LinkedList *deck, int cutSize) {
         addCard(deck, cards[rightIndex--]);
     }
 
-    while (leftIndex > 0) {
+    while (leftIndex >= 0) {
         addCard(deck, cards[leftIndex--]);
     }
     while (rightIndex >= cutSize ) {
