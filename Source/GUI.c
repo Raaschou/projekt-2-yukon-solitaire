@@ -76,11 +76,11 @@ void loadAllCardTextures(SDL_Renderer *renderer) {
     for (int r = 0; r < 13; r++) {
         for (int s = 0; s < 4; s++) {
             char filename[64];
-            snprintf(filename, sizeof(filename), "Kort/bmp/%c%c.bmp", ranks[r], suits[s]);
+            snprintf(filename, sizeof(filename), "../Kort/bmp/%c%c.bmp", ranks[r], suits[s]);
             cardTextures[r][s] = loadCardTexture(renderer, filename);
         }
     }
-    backTexture = loadCardTexture(renderer, "Kort/bmp/back.bmp");
+    backTexture = loadCardTexture(renderer, "../Kort/bmp/back.bmp");
 }
 
 void freeCardTextures() {
@@ -311,7 +311,7 @@ void gameLoopGUI(Board *board) {
     SDL_SetWindowMinimumSize(window, 900, 750); // bredde, højde
     SDL_SetWindowMaximumSize(window, 900, 1000);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    TTF_Font *font = TTF_OpenFont("Kort/Font/ttf/DejaVuSans.ttf", 16);
+    TTF_Font *font = TTF_OpenFont("../Kort/Font/ttf/DejaVuSans.ttf", 16);
 
     if (!font) {
         fprintf(stderr, "Font fejl: %s\n", TTF_GetError());
