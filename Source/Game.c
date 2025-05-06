@@ -221,9 +221,9 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
 
     if (strcmp(localInput, "U") == 0) {
         if (!isEmpty(undoStack)) {
-            push(redoStack, board); // Først push nuværende board til redoStack
-            freeBoard(board); // Ryd det gamle board
-            *board = pop(undoStack); // Hent det forrige board fra undoStack
+            push(redoStack, board);    // Først push nuværende board til redoStack
+            freeBoard(board);          // Ryd det gamle board
+            *board = pop(undoStack);   // Hent det forrige board fra undoStack
             strcpy(message, "Træk fortrudt.");
         } else {
             strcpy(message, "Der er ikke noget at fortryde.");
@@ -246,6 +246,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
     if (strcmp(localInput, "Q") == 0) {
         strcpy(lastCommand, "Q");
         strcpy(message, "Afslutter spilfase...");
+        freeBoard(board);
         return STARTUP;
     }
 
