@@ -11,7 +11,7 @@
 
 /**
  * Opretter et standard deck med 52 kort (C, D, H, S i suit og rank 1-13)
- * og tilføjer dem til den angivne linked list.
+ * og tilføjer dem til den angivne linked list, alle face down.
  *
  * @param deck Pointer til den liste hvor kortene gemmes.
  */
