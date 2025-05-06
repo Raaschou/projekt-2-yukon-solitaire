@@ -6,21 +6,13 @@
 #include <stdbool.h>
 #include "../Include/Main.h"
 
-
-
-
-
-// int main(void) {
-//     // Initialiser spillebrættet
-//
-//     runGUI(); // Starter SDL GUI
-//     return 0;
-//
-//     Board board = {0};
-//     srand((unsigned int)time(NULL));
-//     gameLoop(&board);
-//     return 0;
-// }
+/**
+* Starter spillet og spørger brugeren om, hvordan spillet skal spilles:
+ * enten terminalbaseret eller i GUI. Brugerinputtet valideres, og det relevante game loop
+ * startes afhængigt af brugerens valg.
+ *
+ * @return int 0 ved succesfuld afslutning.
+ */
 int main(void) {
     Board board = {0};
 
@@ -42,14 +34,12 @@ int main(void) {
         if (mode == 1) {
             gameLoopTerminal(&board);
             break;
-        } else if (mode == 2) {
+        }
+        if (mode == 2) {
             gameLoopGUI(&board);
             break;
-        } else {
-            printf("Ugyldigt valg. Du skal skrive 1 eller 2.\n\n");
         }
     }
-
     return 0;
 }
 

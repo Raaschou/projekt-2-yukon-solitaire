@@ -8,7 +8,12 @@
 #include <stdio.h>
 #include <string.h>
 
-// laver første deck 1-52
+/**
+ * Opretter et standard deck med 52 kort (C, D, H, S i suit og rank 1-13)
+ * og tilføjer dem til den angivne linked list.
+ *
+ * @param deck Pointer til den liste hvor kortene gemmes.
+ */
 void startDeck(LinkedList *deck) {
     initList(deck);
     char suits[] = {'C', 'D', 'H', 'S'};
@@ -26,7 +31,13 @@ void startDeck(LinkedList *deck) {
     }
 }
 
-//hjælpe funktion der kopiere alle kort fra linkedlist til et array, bruges i de to shuffels.
+/**
+ * Kopierer alle kort fra en linked list over i et array.
+ * Bruges senere af shuffle-funktioner.
+ *
+ * @param deck Pointer til linked list med kort.
+ * @param card Array hvor kortene kopieres hen.
+ */
 void copyCardsFromList(LinkedList *deck, Card card[]) {
     CardNode *current = deck->head;
     int i = 0;
@@ -34,10 +45,13 @@ void copyCardsFromList(LinkedList *deck, Card card[]) {
         card[i++] = current->card;
         current = current->next;
     }
-
 }
 
-// rydder vores hjælpe array, så vi ikke bruger unødig plads
+/**
+ * Rydder hele linked list og frigiver hukommelsen.
+ *
+ * @param deck Pointer til listen der skal tømmes.
+ */
 void clearList(LinkedList *deck) {
     CardNode *current = deck->head;
     while (current) {
@@ -50,7 +64,13 @@ void clearList(LinkedList *deck) {
     deck->size = 0;
 }
 
-// den shufler random ved hjælp af yates shuffel
+/**
+ * Blander kortene i et deck tilfældigt med Fisher-Yates algoritmen,
+ * som vi har valgt da den understøtter formålet.
+ * Virker kun hvis decket indeholder præcis 52 kort.
+ *
+ * @param deck Pointer til det deck der skal blandes.
+ */
 void randomShuffle(LinkedList *deck) {
     srand(time(NULL));
     if (deck->size != 52) return;
@@ -58,7 +78,6 @@ void randomShuffle(LinkedList *deck) {
     Card cards[52];
     copyCardsFromList(deck, cards);
 
-// yates shuffle
     for (int i = 51; i > 0; i--) {
         int j = rand() % (i + 1);
         Card temp = cards[i];
@@ -73,8 +92,14 @@ void randomShuffle(LinkedList *deck) {
     }
 }
 
-// shuffler baseret på hvor man cutter decket.
-// hvis der ikke bliver givet en cutsize, skal den tage et random tal mellem 1-51 // opgave kriterie starter fra venstre
+/**
+ * Blander kortene ved at splitte decket og blande fra venstre og højre.
+ * Hvis cutSize er ugyldig, sker der ingenting.
+ *
+ * @param deck Pointer til det deck der skal blandes.
+ * @param cutSize Antal kort fra venstre side af decket.
+ * Skal være 0<cutSize<52. Hvis ikke, oprettes en tilfældigt cutSize.
+ */
 void splitShuffle(LinkedList *deck, int cutSize) {
     if (cutSize <= 0 || cutSize >= deck->size) return;
 
@@ -97,8 +122,20 @@ void splitShuffle(LinkedList *deck, int cutSize) {
         addCard(deck, cards[rightIndex--]);
     }
 }
-int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52],char *message) {
-    if (strlen(line) <2 ) {
+
+/**
+ * Validerer en tekstlinje som et kort.
+ * Tjekker for ugyldige ranks, kulører og eventuelt for ens kort.
+ *
+ * @param line Linjen der indeholder kortet (f.eks. "AS" for spar es).
+ * @param outCard Pointer til hvor det validerede kort gemmes.
+ * @param lineNum Linjenummer til fejlbeskeder.
+ * @param seen Array til at holde styr på ens kort.
+ * @param message Evt fejlbesked
+ * @return 1 hvis gyldigt kort, 0 hvis ikke.
+ */
+int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52], char *message) {
+    if (strlen(line) < 2 ) {
        sprintf(message,"ERROR: Tom eller kort linje på linje %d.\n", lineNum);
         return 0;
     }
@@ -114,7 +151,7 @@ int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52],cha
         case 'J': r = 11; break;
         case 'Q': r = 12; break;
         case 'K': r = 13; break;
-        case '2'...'9': r = rank - '0'; break;  // '5' → 5
+        case '2'...'9': r = rank - '0'; break;
         default:
             sprintf(message,"ERROR: Ugyldig rank '%c' på linje %d.\n", rank, lineNum);
         return 0;
