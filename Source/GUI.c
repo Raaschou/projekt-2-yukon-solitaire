@@ -9,7 +9,7 @@
 #include "../Include/Foundations.h"
 
 
-#define NUM_STARTUP_BUTTONS 5 // ændre til 6 når load current game virker
+#define NUM_STARTUP_BUTTONS 6 // ændre til 6 når load current game virker
 #define NUM_PLAY_BUTTONS 3 //- ændre til 4 når save current phase virker
 
 typedef struct {
@@ -22,18 +22,22 @@ typedef struct {
     CardNode *node;
 } CardVisual;
 
+char commandArg[64] = "";
+int typing = 0;
+
 Button startupButtons[NUM_STARTUP_BUTTONS] = {
-    {{50, 550, 100, 40}, "Load"},
-    {{160, 550, 100, 40}, "Shuffle R"},
-    {{270, 550, 100, 40}, "Shuffle I"},
-    {{380, 550, 100, 40}, "Show"}, // man skal kunne give parameter for at den virker
-    {{490, 550, 100, 40}, "Play"}
+    {{20, 550, 100, 40}, "Load"},
+    {{130, 550, 100, 40}, "Save"},
+    {{240, 550, 100, 40}, "Shuffle I"},
+    {{350, 550, 100, 40}, "Shuffle R"},
+    {{460, 550, 100, 40}, "Show"},
+    {{570,550,100,40},"Play"}
 };
 
 Button playButtons[NUM_PLAY_BUTTONS] = {
-    {{50, 550, 100, 40}, "Quit"},
-    {{160, 550, 100, 40}, "Undo"},
-    {{270, 550, 100, 40}, "Redo"},
+    {{20, 550, 100, 40}, "Quit"},
+    {{130, 550, 100, 40}, "Undo"},
+    {{240, 550, 100, 40}, "Redo"},
 
 };
 
@@ -53,7 +57,18 @@ SDL_Texture *loadCardTexture(SDL_Renderer *renderer, const char *filename) {
     SDL_FreeSurface(surf);
     return tex;
 }
+void drawText(SDL_Renderer *renderer, TTF_Font *font, const char *text, int x, int y) {
+    SDL_Color color = {0, 0, 0, 255};  // sort tekst
+    SDL_Surface *surface = TTF_RenderText_Solid(font, text, color);
+    if (!surface) return;
 
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Rect dst = {x, y, surface->w, surface->h};
+
+    SDL_FreeSurface(surface);
+    SDL_RenderCopy(renderer, texture, NULL, &dst);
+    SDL_DestroyTexture(texture);
+}
 void loadAllCardTextures(SDL_Renderer *renderer) {
     const char *suits = "HDCS";
     const char *ranks = "A23456789TJQK";
@@ -103,7 +118,7 @@ void drawButton(SDL_Renderer *renderer, Button *button, TTF_Font *font) {
     SDL_DestroyTexture(textTexture);
 }
 
-void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font) {
+void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font, int windowHeight, int buttonHeight) {
     if (!message || strlen(message) == 0) return;
 
     SDL_Color color = {0, 0, 0};
@@ -116,7 +131,9 @@ void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font) {
         return;
     }
 
-    SDL_Rect msgRect = {10, 570, msgSurf->w, msgSurf->h};
+    int msgY = windowHeight - 20 - buttonHeight - 10 - msgSurf->h;
+    SDL_Rect msgRect = {10, msgY, msgSurf->w, msgSurf->h};
+
     SDL_RenderCopy(renderer, msgTex, NULL, &msgRect);
     SDL_FreeSurface(msgSurf);
     SDL_DestroyTexture(msgTex);
@@ -154,7 +171,8 @@ void drawCard(SDL_Renderer *renderer, int x, int y, Card *card) {
     SDL_RenderDrawRect(renderer, &dst);
 }
 
-void drawBoardStartUpPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, const char *message) {
+void drawBoardStartUpPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board, TTF_Font *font,
+                           const char *message) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
@@ -184,15 +202,34 @@ void drawBoardStartUpPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font,
         if (i % 7 == 0) row++;
     }
 
+    int winW, winH;
+    SDL_GetWindowSize(window, &winW, &winH);
+    int buttonHeight = 40; // hvis det er fast
+    int buttonY = winH - 20 - buttonHeight;
+
     // Tegn knapper
     for (int i = 0; i < NUM_STARTUP_BUTTONS; i++) {
+        startupButtons[i].rect.y = buttonY;
         drawButton(renderer, &startupButtons[i], font);
     }
 
-    drawMessage(renderer, message, font);
+    drawMessage(renderer, message, font, winH, buttonHeight);
+
+    //input
+    int inputX = NUM_STARTUP_BUTTONS * (startupButtons[0].rect.w +15);
+    SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 150, 30};
+    if (typing) {
+        SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);  // rød
+    } else {
+        SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);  // grå
+    }
+    SDL_RenderFillRect(renderer, &inputBox);
+    SDL_RenderDrawRect(renderer, &inputBox);
+    drawText(renderer, font, commandArg, inputBox.x + 5, inputBox.y + 5);
+
 }
 
-void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, const char *message) {
+void drawBoardPlayPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board, TTF_Font *font, const char *message) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
@@ -235,13 +272,29 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
             i++;
         }
     }
+    int winW, winH;
+    SDL_GetWindowSize(window, &winW, &winH);
+    int buttonHeight = 40; // hvis det er fast
+    int buttonY = winH - 20 - buttonHeight;
 
-    // Knapper
     for (int i = 0; i < NUM_PLAY_BUTTONS; i++) {
+        playButtons[i].rect.y = buttonY;
         drawButton(renderer, &playButtons[i], font);
     }
 
-    drawMessage(renderer, message, font);
+    drawMessage(renderer, message, font, winH, buttonHeight);
+
+
+    int inputX = 20 + NUM_PLAY_BUTTONS * (playButtons[0].rect.w + 20);
+    SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 200, 30};
+    if (typing) {
+        SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);  // rød
+    } else {
+        SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);  // grå
+    }
+    SDL_RenderFillRect(renderer, &inputBox);
+    SDL_RenderDrawRect(renderer, &inputBox);
+    drawText(renderer, font, commandArg, inputBox.x + 5, inputBox.y + 5);
 }
 
 
@@ -250,9 +303,13 @@ void gameLoopGUI(Board *board) {
     TTF_Init();
 
     initBoard(board);
+    SDL_StartTextInput();
 
-    SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 600,
-                                          0);
+    SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 750,
+                                          SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+
+    SDL_SetWindowMinimumSize(window, 900, 750); // bredde, højde
+    SDL_SetWindowMaximumSize(window, 900, 1000);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     TTF_Font *font = TTF_OpenFont("Kort/Font/ttf/DejaVuSans.ttf", 16);
 
@@ -269,7 +326,7 @@ void gameLoopGUI(Board *board) {
     SDL_Event e;
     int running = 1;
 
-    const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD", "SR", "SI", "SW", "P"};
+    const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD","SD","SI","SR", "SW", "P"};
     const char *playCmds[NUM_PLAY_BUTTONS] = {"Q", "U", "R"};
 
     BoardStack undoStack, redoStack;
@@ -282,6 +339,21 @@ void gameLoopGUI(Board *board) {
 
     while (running) {
         while (SDL_PollEvent(&e)) {
+
+            if (e.type == SDL_TEXTINPUT && typing) {
+                if (strlen(commandArg) + strlen(e.text.text) < sizeof(commandArg) - 1) {
+                    strcat(commandArg, e.text.text);
+                }
+            }
+
+            if (e.type == SDL_KEYDOWN && typing) {
+                if (e.key.keysym.sym == SDLK_BACKSPACE && strlen(commandArg) > 0) {
+                    commandArg[strlen(commandArg) - 1] = '\0';
+                } else if (e.key.keysym.sym == SDLK_RETURN) {
+                    typing = 0;
+                    SDL_StopTextInput();
+                }
+            }
             if (e.type == SDL_QUIT) {
                 running = 0;
             }
@@ -289,34 +361,64 @@ void gameLoopGUI(Board *board) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
 
+                int winW, winH;
+                SDL_GetWindowSize(window, &winW, &winH);
+                int buttonHeight = 40;
+                int buttonY = winH - 20 - buttonHeight;
+                int buttonCount = (phase == STARTUP) ? NUM_STARTUP_BUTTONS : NUM_PLAY_BUTTONS;
+                Button *btnArray = (phase == STARTUP) ? startupButtons : playButtons;
+                int inputX = 20 + buttonCount * (btnArray[0].rect.w + 20);
+                SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 200, 30};
+
+                // Først: check input-boksen (uanset fase)
+                if (x >= inputBox.x && x <= inputBox.x + inputBox.w &&
+                    y >= inputBox.y && y <= inputBox.y + inputBox.h) {
+                    typing = 1;
+                    SDL_StartTextInput();
+                    } else {
+                        typing = 0;
+                        SDL_StopTextInput();
+                    }
+
+                // Derefter: knap-klik
                 if (phase == STARTUP) {
                     for (int i = 0; i < NUM_STARTUP_BUTTONS; i++) {
                         SDL_Rect r = startupButtons[i].rect;
                         if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                            phase = startupPhase(board, phase, startupCmds[i], lastCommand, message);
+                            char combinedInput[128];
+                            if (strlen(commandArg) > 0) {
+                                snprintf(combinedInput, sizeof(combinedInput), "%s %s", startupCmds[i], commandArg);
+                            } else {
+                                snprintf(combinedInput, sizeof(combinedInput), "%s", startupCmds[i]);
+                            }
+                            phase = startupPhase(board, phase, combinedInput, commandArg, message);
+                            commandArg[0] = '\0';  // ryd input efter brug
                         }
                     }
                 } else if (phase == PLAY) {
-                    // Tjek knapper, herunder Undo og Redo
                     for (int i = 0; i < NUM_PLAY_BUTTONS; i++) {
                         SDL_Rect r = playButtons[i].rect;
-
                         if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                            phase = playPhase(board, phase, playCmds[i], lastCommand, message, &undoStack, &redoStack);
+                            phase = playPhase(board, phase, playCmds[i], commandArg, message, &undoStack, &redoStack);
+                            commandArg[0] = '\0';  // ryd input efter brug
                         }
                     }
                 }
+
                 int spacingX = 100;
                 int spacingY = 30;
-
+                int clickedOnSomething = 0;
                 for (int col = 0; col < 7; col++) {
                     int cx = 20 + col * spacingX;
                     CardNode *node = board->columns[col].tail;
                     int row = board->columns[col].size - 1;
 
                     while (node) {
-                        int cardHeight = (node == board->columns[col].tail || (node->prev == NULL && node->next == NULL)) ? 120 : spacingY;
-                        SDL_Rect cardRect = {cx,  20+row * spacingY, 80, cardHeight};
+                        int cardHeight = (node == board->columns[col].tail || (
+                                              node->prev == NULL && node->next == NULL))
+                                             ? 120
+                                             : spacingY;
+                        SDL_Rect cardRect = {cx, 20 + row * spacingY, 80, cardHeight};
 
                         // Klik-tjek
                         if (x >= cardRect.x && x <= cardRect.x + cardRect.w &&
@@ -327,92 +429,137 @@ void gameLoopGUI(Board *board) {
                                 selectedCard = node;
                                 selectedCol = col;
                                 snprintf(message, 256, "Valgt kort: %d%c", node->card.rank, node->card.suit);
+                                clickedOnSomething = 1;
                             } else {
-                                if (col != selectedCol) {
-                                    CardNode *target = board->columns[col].tail;
+                                CardNode *target = board->columns[col].tail;
 
+                                if ((col != selectedCol) || selectedCol == -1) {
                                     if ((target && validMoveC(selectedCard, target)) ||
                                         (!target && selectedCard->card.rank == 13)) {
                                         changeBoardStack(&undoStack, &redoStack, board);
-                                        moveBetweenColumns(selectedCard, &board->columns[selectedCol],
-                                                           &board->columns[col]);
-                                        flipLastCardIfAny(&board->columns[selectedCol]);
+                                        if (selectedCol != -1) {
+                                            // Flyt fra kolonne
+                                            moveBetweenColumns(selectedCard, &board->columns[selectedCol],
+                                                               &board->columns[col]);
+                                            flipLastCardIfAny(&board->columns[selectedCol]);
+                                        } else {
+                                            // Flyt fra foundation
+                                            for (int f = 0; f < 4; f++) {
+                                                if (board->foundations[f].tail == selectedCard) {
+                                                    moveBetweenColumns(selectedCard, &board->foundations[f],
+                                                                       &board->columns[col]);
+                                                    flipLastCardIfAny(&board->foundations[f]);
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        clickedOnSomething = 1;
                                         snprintf(message, 256, "Flyttede kortet.");
-                                    } else {
-                                        snprintf(message, 256, "Ugyldigt træk.");
-                                    }
+                                        } else {
+                                            snprintf(message, 256, "Ugyldigt træk.");
+                                        }
                                 } else {
                                     snprintf(message, 256, "Ugyldigt træk.");
                                 }
                                 selectedCard = NULL;
                                 selectedCol = -1;
                             }
-
-                            break;
                         }
 
-                        node = node->prev;
-                        row--;
-                    }
+                            node = node->prev;
+                            row--;
+                        }
 
-                    // Klik på tom slot, hvis kolonnen er tom
-                    if (selectedCard && board->columns[col].size == 0) {
-                        SDL_Rect emptySlot = {20 + col * spacingX, 20, 80, 120};
+                        // Klik på tom slot, hvis kolonnen er tom
+                        if (selectedCard && board->columns[col].size == 0) {
+                            SDL_Rect emptySlot = {20 + col * spacingX, 20, 80, 120};
 
-                        if (x >= emptySlot.x && x <= emptySlot.x + emptySlot.w &&
-                            y >= emptySlot.y && y <= emptySlot.y + emptySlot.h) {
-                            if (selectedCard->card.rank == 13) {
-                                moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
-                                flipLastCardIfAny(&board->columns[selectedCol]);
-                                snprintf(message, 256, "Flyttede konge til tom kolonne.");
-                            } else {
-                                snprintf(message, 256, "Kun en konge må flyttes til en tom kolonne.");
+                            if (x >= emptySlot.x && x <= emptySlot.x + emptySlot.w &&
+                                y >= emptySlot.y && y <= emptySlot.y + emptySlot.h) {
+                                if (selectedCard->card.rank == 13) {
+                                    moveBetweenColumns(selectedCard, &board->columns[selectedCol],
+                                                       &board->columns[col]);
+                                    flipLastCardIfAny(&board->columns[selectedCol]);
+                                    snprintf(message, 256, "Flyttede konge til tom kolonne.");
+                                    clickedOnSomething = 1;
+                                } else {
+                                    snprintf(message, 256, "Kun en konge må flyttes til en tom kolonne.");
+                                }
+
+                                selectedCard = NULL;
+                                selectedCol = -1;
                             }
-
-                            selectedCard = NULL;
-                            selectedCol = -1;
                         }
                     }
-                }
-                // Tjek klik på foundations
-                if (selectedCard != NULL) {
+                    // Tjek klik på foundations
+
                     for (int f = 0; f < 4; f++) {
                         SDL_Rect fslot = {800, 20 + 130 * f, 80, 120};
+                        CardNode *fCard = board->foundations[f].tail;
+
                         if (x >= fslot.x && x <= fslot.x + fslot.w &&
                             y >= fslot.y && y <= fslot.y + fslot.h) {
-                            if (validMoveF(selectedCard, board->foundations[f].tail)) {
-                                changeBoardStack(&undoStack, &redoStack, board);
-                                moveToFoundation(selectedCard, &board->columns[selectedCol], &board->foundations[f]);
-                                flipLastCardIfAny(&board->columns[selectedCol]);
-                                snprintf(message, 256, "Flyttede kort til foundation.");
-                            } else {
-                                snprintf(message, 256, "Ugyldigt foundation-træk.");
+                            if (selectedCard != NULL) {
+                                if (validMoveF(selectedCard, fCard)) {
+                                    changeBoardStack(&undoStack, &redoStack, board);
+
+                                    if (selectedCol != -1) {
+                                        moveToFoundation(selectedCard, &board->columns[selectedCol],
+                                                         &board->foundations[f]);
+                                        flipLastCardIfAny(&board->columns[selectedCol]);
+                                    } else {
+                                        // Find hvilken foundation kortet kommer fra
+                                        for (int i = 0; i < 4; i++) {
+                                            if (board->foundations[i].tail == selectedCard) {
+                                                moveToFoundation(selectedCard, &board->foundations[i],
+                                                                 &board->foundations[f]);
+                                                flipLastCardIfAny(&board->foundations[i]);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    snprintf(message, 256, "Flyttede kort til foundation.");
+                                    clickedOnSomething = 1;
+                                } else {
+                                    snprintf(message, 256, "Ugyldigt foundation-træk.");
+                                }
+
+                                selectedCard = NULL;
+                                selectedCol = -1;
+                            } else if (fCard && fCard->card.faceUp) {
+                                selectedCard = fCard;
+                                selectedCol = -1;
+                                clickedOnSomething = 1;
+                                snprintf(message, 256, "Valgt kort fra foundation.");
                             }
 
-                            selectedCard = NULL;
-                            selectedCol = -1;
                             break;
                         }
+                    }
+                    if (!clickedOnSomething && selectedCard != NULL) {
+                        selectedCard = NULL;
+                        selectedCol = -1;
+                        snprintf(message, 256, "Valg annulleret.");
                     }
                 }
             }
+
+
+            if (phase == STARTUP) {
+                drawBoardStartUpPhase(renderer, window, board, font, message);
+            } else if (phase == PLAY) {
+                drawBoardPlayPhase(renderer, window, board, font, message);
+            }
+
+            SDL_RenderPresent(renderer);
+            SDL_Delay(16);
         }
 
-
-        if (phase == STARTUP) {
-            drawBoardStartUpPhase(renderer, board, font, message);
-        } else if (phase == PLAY) {
-            drawBoardPlayPhase(renderer, board, font, message);
-        }
-
-        SDL_RenderPresent(renderer);
-        SDL_Delay(16);
+        freeCardTextures();
+        TTF_CloseFont(font);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        TTF_Quit();
+        SDL_Quit();
     }
-
-    freeCardTextures();
-    TTF_CloseFont(font);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    TTF_Quit();
-    SDL_Quit();
-}

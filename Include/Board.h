@@ -37,7 +37,7 @@ int isEmpty(BoardStack *stack);
 int isFull(BoardStack *stack);
 void push(BoardStack *stack, const Board *board);
 Board pop(BoardStack *stack);
-void clearStack(BoardStack *stack);  // 🆕 Rydder hele stacken
+void clearStack(BoardStack *stack);
 void changeBoardStack(BoardStack *undo, BoardStack *redo, Board *board);
 
 
