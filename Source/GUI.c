@@ -218,7 +218,7 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
             int y = 100 + i * spacingY;
             drawCard(renderer, x, y, &node->card);
             if (selectedCard == node) {
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // grøn ramme
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // grøn ramme
                 SDL_Rect border = {x, y, 80, 120};
                 SDL_RenderDrawRect(renderer, &border);
             }
@@ -321,27 +321,24 @@ void gameLoopGUI(Board *board) {
                                     if (col != selectedCol) {
                                         CardNode *target = board->columns[col].tail;
 
-                                        // Debug-udskrifter
-                                        printf("▶ Forsøger at flytte kort\n");
-                                        printf("  - Valgt kort: %d%c\n", selectedCard->card.rank, selectedCard->card.suit);
-                                        printf("  - Target column: %d\n", col);
-                                        printf("  - Target column size: %d\n", board->columns[col].size);
-                                        printf("  - Target eksisterer? %s\n", target ? "ja" : "nej");
-
                                         if ((target && validMoveC(selectedCard, target)) ||
                                             (!target && selectedCard->card.rank == 13)) {
                                             changeBoardStack(&undoStack, &redoStack, board);
-                                            printf("✅ Trækket er gyldigt – udfører flytning\n");
-
                                             moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
                                             flipLastCardIfAny(&board->columns[selectedCol]);
                                             snprintf(message, 256, "Flyttede kortet.");
                                             } else {
+<<<<<<< Updated upstream
                                                 printf("Ugyldigt træk\n");
                                                 snprintf(message, 256, "Ugyldigt træk.");
                                             }
                                     } else {
                                         printf("Samme kolonne – ugyldigt træk\n");
+=======
+                                                snprintf(message, 256, "Ugyldigt træk.");
+                                            }
+                                    } else {
+>>>>>>> Stashed changes
                                         snprintf(message, 256, "Ugyldigt træk.");
                                     }
 
@@ -357,6 +354,7 @@ void gameLoopGUI(Board *board) {
                         // Hvis ingen kort blev valgt og kolonnen er tom, tjek klik i tom slot
                         if (selectedCard && board->columns[col].size == 0) {
                             SDL_Rect emptySlot = {20 + col * 100, 20, 80, 120}; // samme som i drawBoardPlayPhase
+<<<<<<< Updated upstream
                             printf("Tjekker klik i tom kolonne %d – klik (%d,%d)\n", col, x, y);
                             printf("Empty slot: x=%d to %d, y=%d to %d\n", emptySlot.x, emptySlot.x + emptySlot.w, emptySlot.y, emptySlot.y + emptySlot.h);
 
@@ -364,6 +362,10 @@ void gameLoopGUI(Board *board) {
                                 y >= emptySlot.y && y <= emptySlot.y + emptySlot.h) {
                                 printf("Klik indenfor tom kolonne %d registreret!\n", col);
 
+=======
+                            if (x >= emptySlot.x && x <= emptySlot.x + emptySlot.w &&
+                                y >= emptySlot.y && y <= emptySlot.y + emptySlot.h) {
+>>>>>>> Stashed changes
                                 if (selectedCard->card.rank == 13) {
                                     moveBetweenColumns(selectedCard, &board->columns[selectedCol], &board->columns[col]);
                                     flipLastCardIfAny(&board->columns[selectedCol]);
@@ -381,13 +383,13 @@ void gameLoopGUI(Board *board) {
                     if (selectedCard != NULL) {
                         for (int f = 0; f < 4; f++) {
                             SDL_Rect fslot = {800, 20 + 130 * f, 80, 120};
-                            printf("👆 Tjekker klik i foundation %d – klik (%d,%d)\n", f, x, y);
-                            printf("Foundation slot: x=%d to %d, y=%d to %d\n", fslot.x, fslot.x + fslot.w, fslot.y, fslot.y + fslot.h);
-
                             if (x >= fslot.x && x <= fslot.x + fslot.w &&
                                 y >= fslot.y && y <= fslot.y + fslot.h) {
+<<<<<<< Updated upstream
                                 printf("Klik indenfor foundation %d registreret!\n", f);
 
+=======
+>>>>>>> Stashed changes
                                 if (validMoveF(selectedCard, board->foundations[f].tail)) {
                                     changeBoardStack(&undoStack, &redoStack, board);
                                     moveToFoundation(selectedCard, &board->columns[selectedCol], &board->foundations[f]);
