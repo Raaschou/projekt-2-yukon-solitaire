@@ -23,15 +23,12 @@ int main(int argc, char *argv[]) {
         printf("1 - Terminal\n");
         printf("2 - GUI\n");
         printf("Tryk 1 eller 2 for at fortsætte: ");
-        if (scanf("%d", &mode) != 1) {
-            // Ryd stdin hvis brugeren skriver noget forkert
-            int c;
-            while ((c = getchar()) != '\n' && c != EOF);
-            printf("Ugyldigt input. Du skal skrive 1 eller 2.\n\n");
+        if (scanf("%d", &mode) != 1|| (mode != 1 && mode != 2)) {
+            clearStdin();
+            printf("\nUgyldigt input. Du skal skrive 1 eller 2.\n\n");
             continue;
         }
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
+        clearStdin();
 
         if (mode == 1) {
             gameLoopTerminal(&board);
@@ -43,5 +40,13 @@ int main(int argc, char *argv[]) {
         }
     }
     return 0;
+}
+/**
+ * Rydder standard input (stdin) frem til og med næste newline ('\n').
+ * Bruges efter scanf for at undgå uønsket input i buffer.
+ */
+void clearStdin() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 

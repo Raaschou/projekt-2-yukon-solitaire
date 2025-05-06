@@ -13,6 +13,6 @@
 #include "../Include/LinkedLists.h"
 #include "../Include/Utils.h"
 #include "../Include/GUI.h"
-
+void clearStdin();
 #endif //MAIN_H
 //
