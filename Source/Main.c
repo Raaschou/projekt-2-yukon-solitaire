@@ -30,6 +30,8 @@ int main(int argc, char *argv[]) {
             printf("Ugyldigt input. Du skal skrive 1 eller 2.\n\n");
             continue;
         }
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
 
         if (mode == 1) {
             gameLoopTerminal(&board);
