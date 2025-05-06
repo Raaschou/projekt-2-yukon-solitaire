@@ -7,11 +7,63 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-// linked list// vi har en size som kan hjælpe os. bruges fx. i Board.C
-void list(LinkedList *list) {
+/**
+ * Initialiserer en tom linked list ved at nulstille head, tail og size.
+ *
+ * @param list Pointer til listen der skal initialiseres.
+ */
+void initList(LinkedList *list) {
     list->head = NULL;
     list->tail = NULL;
     list->size = 0;
+}
+
+/**
+ * Frigiver hukommelse brugt af en linkedlist.
+ *
+ * @param list Pointer til den liste der skal nulstilles.
+ */
+void freeList(LinkedList *list) {
+    CardNode *current = list->head;
+    while (current != NULL) {
+        CardNode *next = current->next;
+        free(current);
+        current = next;
+    }
+    initList(list);
+}
+/**
+ * Rydder hele linked list og frigiver hukommelsen.
+ *
+ * @param deck Pointer til listen der skal tømmes.
+ */
+void clearList(LinkedList *deck) {
+    CardNode *current = deck->head;
+    while (current) {
+        CardNode *next = current->next;
+        free(current);
+        current = next;
+    }
+    deck->head = NULL;
+    deck->tail = NULL;
+    deck->size = 0;
+}
+/**
+ * Kopierer alle kort fra en linked list til en ny liste.
+ * Der oprettes nye noder, men kortene kopieres direkte (shallow copy).
+ *
+ * @param dest Pointer til destinationen.
+ * @param src Pointer til den liste der kopieres fra.
+ */
+void copyList(LinkedList *dest, const LinkedList *src) {
+    initList(dest);
+
+    CardNode *current = src->head;
+    while (current != NULL) {
+        Card copy = current->card; // shallow copy af Card er OK
+        addCard(dest, copy); // vi allokerer nyt node
+        current = current->next;
+    }
 }
 
 // tilføjer et kort til en Linkedlist
@@ -150,3 +202,6 @@ void flipLastCardIfAny(LinkedList *list) {
         list->tail->card.faceUp = 1;
     }
 }
+
+
+

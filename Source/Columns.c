@@ -10,7 +10,7 @@
 
 void columns(LinkedList columns[7]) {
     for (int i = 0; i < 7; i++) {
-        list(&columns[i]);
+        initList(&columns[i]);
     }
 }
 

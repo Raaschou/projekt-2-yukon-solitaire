@@ -20,7 +20,10 @@ typedef struct {
 } LinkedList;
 
 
-void list(LinkedList *list);
+void initList(LinkedList *list);
+void freeList(LinkedList *list);
+void clearList(LinkedList *list);
+void copyList(LinkedList *dest, const LinkedList *src);
 void addCard(LinkedList *list, Card card);
 bool nodeInList(CardNode *node, LinkedList *list);
 void moveStack(CardNode *startNode, LinkedList *from, LinkedList *to);

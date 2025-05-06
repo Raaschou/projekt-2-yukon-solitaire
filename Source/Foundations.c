@@ -8,7 +8,7 @@
 // laver 4 foundations som 4 linked lists
 void foundations(LinkedList columns[4]) {
     for (int i = 0; i < 4; i++) {
-        list(&columns[i]);
+        initList(&columns[i]);
     }
 }
 

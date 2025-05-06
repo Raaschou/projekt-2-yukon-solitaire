@@ -49,23 +49,6 @@ void copyCardsFromList(LinkedList *deck, Card card[]) {
 }
 
 /**
- * Rydder hele linked list og frigiver hukommelsen.
- *
- * @param deck Pointer til listen der skal tømmes.
- */
-void clearList(LinkedList *deck) {
-    CardNode *current = deck->head;
-    while (current) {
-        CardNode *next = current->next;
-        free(current);
-        current = next;
-    }
-    deck->head = NULL;
-    deck->tail = NULL;
-    deck->size = 0;
-}
-
-/**
  * Blander kortene i et deck tilfældigt med Fisher-Yates algoritmen,
  * som vi har valgt da den understøtter formålet.
  * Virker kun hvis decket indeholder præcis 52 kort.
