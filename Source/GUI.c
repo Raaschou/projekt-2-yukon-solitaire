@@ -29,7 +29,7 @@ Button startupButtons[NUM_STARTUP_BUTTONS] = {
     {{20, 550, 100, 40}, "Load"},
     {{130, 550, 100, 40}, "Save"},
     {{240, 550, 100, 40}, "Shuffle I"},
-    {{350, 550, 100, 40}, "Shuffle R"}, // man skal kunne give parameter for at den virker
+    {{350, 550, 100, 40}, "Shuffle R"},
     {{460, 550, 100, 40}, "Show"},
     {{570,550,100,40},"Play"}
 };
