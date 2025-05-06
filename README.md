@@ -6,9 +6,9 @@ kan få det til at fungere.
 
 1. [x] Source/Main.c
 2. [x] Include/Main.h 
-3. [ ] Source/Deck.c
-4. [ ] Include/Deck.h
-5. [ ] Source/Game.c
+3. [x] Source/Deck.c
+4. [x] Include/Deck.h
+5. [] Source/Game.c
 6. [ ] Include/Game.h
 7. [ ] Source/Card.c
 8. [ ] Include/Card.h

@@ -5,7 +5,9 @@
 #include "../Include/Board.h"
 
 #include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 /**
  * Opretter et standard deck med 52 kort (C, D, H, S i suit og rank 1-13)
