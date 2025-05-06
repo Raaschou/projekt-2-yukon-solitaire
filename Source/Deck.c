@@ -5,7 +5,6 @@
 #include "../Include/Board.h"
 
 #include <ctype.h>
-#include <stdio.h>
 #include <string.h>
 
 /**
@@ -98,7 +97,7 @@ void randomShuffle(LinkedList *deck) {
  *
  * @param deck Pointer til det deck der skal blandes.
  * @param cutSize Antal kort fra venstre side af decket.
- * Skal være 0<cutSize<52. Hvis ikke, oprettes en tilfældigt cutSize.
+ * Skal være 0<cutSize<52. Hvis cutSize ikke er angivet, oprettes en tilfældigt (Kan ses i Game.c).
  */
 void splitShuffle(LinkedList *deck, int cutSize) {
     if (cutSize <= 0 || cutSize >= deck->size) return;
@@ -130,7 +129,7 @@ void splitShuffle(LinkedList *deck, int cutSize) {
  * @param line Linjen der indeholder kortet (f.eks. "AS" for spar es).
  * @param outCard Pointer til hvor det validerede kort gemmes.
  * @param lineNum Linjenummer til fejlbeskeder.
- * @param seen Array til at holde styr på ens kort.
+ * @param seen Array til at holde styr på kort set indtil videre.
  * @param message Evt fejlbesked
  * @return 1 hvis gyldigt kort, 0 hvis ikke.
  */
