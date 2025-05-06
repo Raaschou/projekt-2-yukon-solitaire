@@ -7,8 +7,6 @@
 #include "../Include/Card.h"
 #include "../Include/LinkedLists.h"
 #include "../Include/Deck.h"
-#include "stdlib.h"
-#include "time.h"
 
 void startDeck(LinkedList *deck);
 void copyCardsFromList(LinkedList *deck, Card card[]);
