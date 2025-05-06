@@ -236,6 +236,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
             if (strcmp(localInput, "Q") == 0) {
                 strcpy(lastCommand, "Q");
                 strcpy(message, "Afslutter spilfase...");
+                freeBoard(board);
                 return STARTUP;
             } else if (strcmp(localInput, "S") == 0) {
                 strcpy(lastCommand, "S");

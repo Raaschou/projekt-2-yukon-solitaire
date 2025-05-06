@@ -143,6 +143,8 @@ void drawCard(SDL_Renderer *renderer, int x, int y, Card *card) {
         SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
         SDL_RenderFillRect(renderer, &dst);
     }
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderDrawRect(renderer, &dst);
 }
 
 void drawBoardStartUpPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, const char *message) {
@@ -167,8 +169,8 @@ void drawBoardStartUpPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font,
     CardNode *current = board->deck.head;
     int i = 0, row = 0;
     while (current) {
-        int x = (i % 7) * 100 + 50;
-        int y = row * 30 + 150;
+        int x = (i % 7) * 100 + 20;
+        int y = row * 30 + 20;
         drawCard(renderer, x, y, &current->card);
         i++;
         current = current->next;
@@ -203,7 +205,7 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
 
     // Kolonner med kort
     int spacingX = 100;
-    int spacingY = 30;
+    int spacingY = 20;
     for (int col = 0; col < 7; col++) {
         SDL_Rect slot = {20 + col * spacingX, 20, 80, 120};
         SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
@@ -215,7 +217,7 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, Board *board, TTF_Font *font, co
         int i = 0;
         while (node != NULL) {
             int x = 20 + col * spacingX;
-            int y = 100 + i * spacingY;
+            int y = 20 + i * spacingY;
             drawCard(renderer, x, y, &node->card);
             if (selectedCard == node) {
                 SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // grøn ramme
