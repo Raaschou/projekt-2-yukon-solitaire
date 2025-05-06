@@ -9,7 +9,7 @@
 #include "../Include/Foundations.h"
 
 
-#define NUM_STARTUP_BUTTONS 5 // ændre til 6 når load current game virker
+#define NUM_STARTUP_BUTTONS 6 // ændre til 6 når load current game virker
 #define NUM_PLAY_BUTTONS 3 //- ændre til 4 når save current phase virker
 
 typedef struct {
@@ -22,18 +22,22 @@ typedef struct {
     CardNode *node;
 } CardVisual;
 
+char commandArg[64] = "";
+int typing = 0;
+
 Button startupButtons[NUM_STARTUP_BUTTONS] = {
-    {{50, 550, 100, 40}, "Load"},
-    {{160, 550, 100, 40}, "Shuffle R"},
-    {{270, 550, 100, 40}, "Shuffle I"},
-    {{380, 550, 100, 40}, "Show"}, // man skal kunne give parameter for at den virker
-    {{490, 550, 100, 40}, "Play"}
+    {{20, 550, 100, 40}, "Load"},
+    {{130, 550, 100, 40}, "Save"},
+    {{240, 550, 100, 40}, "Shuffle I"},
+    {{350, 550, 100, 40}, "Shuffle R"}, // man skal kunne give parameter for at den virker
+    {{460, 550, 100, 40}, "Show"},
+    {{570,550,100,40},"Play"}
 };
 
 Button playButtons[NUM_PLAY_BUTTONS] = {
-    {{50, 550, 100, 40}, "Quit"},
-    {{160, 550, 100, 40}, "Undo"},
-    {{270, 550, 100, 40}, "Redo"},
+    {{20, 550, 100, 40}, "Quit"},
+    {{130, 550, 100, 40}, "Undo"},
+    {{240, 550, 100, 40}, "Redo"},
 
 };
 
@@ -53,7 +57,18 @@ SDL_Texture *loadCardTexture(SDL_Renderer *renderer, const char *filename) {
     SDL_FreeSurface(surf);
     return tex;
 }
+void drawText(SDL_Renderer *renderer, TTF_Font *font, const char *text, int x, int y) {
+    SDL_Color color = {0, 0, 0, 255};  // sort tekst
+    SDL_Surface *surface = TTF_RenderText_Solid(font, text, color);
+    if (!surface) return;
 
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Rect dst = {x, y, surface->w, surface->h};
+
+    SDL_FreeSurface(surface);
+    SDL_RenderCopy(renderer, texture, NULL, &dst);
+    SDL_DestroyTexture(texture);
+}
 void loadAllCardTextures(SDL_Renderer *renderer) {
     const char *suits = "HDCS";
     const char *ranks = "A23456789TJQK";
@@ -199,6 +214,19 @@ void drawBoardStartUpPhase(SDL_Renderer *renderer, SDL_Window *window, Board *bo
     }
 
     drawMessage(renderer, message, font, winH, buttonHeight);
+
+    //input
+    int inputX = NUM_STARTUP_BUTTONS * (startupButtons[0].rect.w +15);
+    SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 150, 30};
+    if (typing) {
+        SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);  // rød
+    } else {
+        SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);  // grå
+    }
+    SDL_RenderFillRect(renderer, &inputBox);
+    SDL_RenderDrawRect(renderer, &inputBox);
+    drawText(renderer, font, commandArg, inputBox.x + 5, inputBox.y + 5);
+
 }
 
 void drawBoardPlayPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board, TTF_Font *font, const char *message) {
@@ -255,6 +283,18 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board
     }
 
     drawMessage(renderer, message, font, winH, buttonHeight);
+
+
+    int inputX = 20 + NUM_PLAY_BUTTONS * (playButtons[0].rect.w + 20);
+    SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 200, 30};
+    if (typing) {
+        SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);  // rød
+    } else {
+        SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);  // grå
+    }
+    SDL_RenderFillRect(renderer, &inputBox);
+    SDL_RenderDrawRect(renderer, &inputBox);
+    drawText(renderer, font, commandArg, inputBox.x + 5, inputBox.y + 5);
 }
 
 
@@ -263,6 +303,7 @@ void gameLoopGUI(Board *board) {
     TTF_Init();
 
     initBoard(board);
+    SDL_StartTextInput();
 
     SDL_Window *window = SDL_CreateWindow("Yukon Solitaire", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 900, 750,
                                           SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -285,7 +326,7 @@ void gameLoopGUI(Board *board) {
     SDL_Event e;
     int running = 1;
 
-    const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD", "SR", "SI", "SW", "P"};
+    const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD","SD","SI","SR", "SW", "P"};
     const char *playCmds[NUM_PLAY_BUTTONS] = {"Q", "U", "R"};
 
     BoardStack undoStack, redoStack;
@@ -298,6 +339,21 @@ void gameLoopGUI(Board *board) {
 
     while (running) {
         while (SDL_PollEvent(&e)) {
+
+            if (e.type == SDL_TEXTINPUT && typing) {
+                if (strlen(commandArg) + strlen(e.text.text) < sizeof(commandArg) - 1) {
+                    strcat(commandArg, e.text.text);
+                }
+            }
+
+            if (e.type == SDL_KEYDOWN && typing) {
+                if (e.key.keysym.sym == SDLK_BACKSPACE && strlen(commandArg) > 0) {
+                    commandArg[strlen(commandArg) - 1] = '\0';
+                } else if (e.key.keysym.sym == SDLK_RETURN) {
+                    typing = 0;
+                    SDL_StopTextInput();
+                }
+            }
             if (e.type == SDL_QUIT) {
                 running = 0;
             }
@@ -305,23 +361,50 @@ void gameLoopGUI(Board *board) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
 
+                int winW, winH;
+                SDL_GetWindowSize(window, &winW, &winH);
+                int buttonHeight = 40;
+                int buttonY = winH - 20 - buttonHeight;
+                int buttonCount = (phase == STARTUP) ? NUM_STARTUP_BUTTONS : NUM_PLAY_BUTTONS;
+                Button *btnArray = (phase == STARTUP) ? startupButtons : playButtons;
+                int inputX = 20 + buttonCount * (btnArray[0].rect.w + 20);
+                SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 200, 30};
+
+                // Først: check input-boksen (uanset fase)
+                if (x >= inputBox.x && x <= inputBox.x + inputBox.w &&
+                    y >= inputBox.y && y <= inputBox.y + inputBox.h) {
+                    typing = 1;
+                    SDL_StartTextInput();
+                    } else {
+                        typing = 0;
+                        SDL_StopTextInput();
+                    }
+
+                // Derefter: knap-klik
                 if (phase == STARTUP) {
                     for (int i = 0; i < NUM_STARTUP_BUTTONS; i++) {
                         SDL_Rect r = startupButtons[i].rect;
                         if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                            phase = startupPhase(board, phase, startupCmds[i], lastCommand, message);
+                            char combinedInput[128];
+                            if (strlen(commandArg) > 0) {
+                                snprintf(combinedInput, sizeof(combinedInput), "%s %s", startupCmds[i], commandArg);
+                            } else {
+                                snprintf(combinedInput, sizeof(combinedInput), "%s", startupCmds[i]);
+                            }
+                            phase = startupPhase(board, phase, combinedInput, commandArg, message);
+                            commandArg[0] = '\0';  // ryd input efter brug
                         }
                     }
                 } else if (phase == PLAY) {
-                    // Tjek knapper, herunder Undo og Redo
                     for (int i = 0; i < NUM_PLAY_BUTTONS; i++) {
                         SDL_Rect r = playButtons[i].rect;
-
                         if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                            phase = playPhase(board, phase, playCmds[i], lastCommand, message, &undoStack, &redoStack);
+                            phase = playPhase(board, phase, playCmds[i], commandArg, message, &undoStack, &redoStack);
+                            commandArg[0] = '\0';  // ryd input efter brug
                         }
                     }
                 }
+
                 int spacingX = 100;
                 int spacingY = 30;
                 int clickedOnSomething = 0;
