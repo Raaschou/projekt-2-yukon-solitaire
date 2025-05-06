@@ -95,21 +95,37 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
         //SI, Split
     } else if (strcasecmp(cmd, "SI") == 0) {
         char *endptr;
-        long cutPoint = strtol(arg, &endptr, 10);
+        long cutSize;
+
         strcpy(lastCommand, "SI");
 
-        if (endptr == arg || *endptr != '\0') {
-            strcpy(message, "Ugyldigt input – skriv et tal.");
-        } else if (cutPoint <= 0 || cutPoint >= board->deck.size) {
-            strcpy(message, "Ugyldigt splitpunkt.");
+        if (arg == NULL || strlen(arg) == 0) {
+            // Ingen argument – vælg tilfældigt splitpunkt
+            if (board->deck.size != 52) {
+                strcpy(message, "Kan ikke shuffle – kortbunken er ugyldig.");
+                return STARTUP;
+            }
+
+            cutSize = rand() % (board->deck.size - 1) + 1; // mellem 1 og size-1
+            splitShuffle(&board->deck, (int) cutSize);
+            sprintf(message, "Deck splittet og blandet ved punkt %ld.", cutSize);
         } else {
-            splitShuffle(&board->deck, (int) cutPoint);
-            strcpy(message, "Deck splittet og blandet.");
+            // Argument angivet
+            cutSize = strtol(arg, &endptr, 10);
+            if (endptr == arg || *endptr != '\0') {
+                strcpy(message, "Ugyldigt input – skriv et tal.");
+            } else if (cutSize <= 0 || cutSize >= board->deck.size) {
+                strcpy(message, "Ugyldigt splitpunkt.");
+            } else {
+                splitShuffle(&board->deck, (int) cutSize);
+                strcpy(message, "Deck splittet og blandet.");
+            }
         }
 
         return STARTUP;
+    }
         // SR, = randomShuffle
-    } else if (strcasecmp(input, "SR") == 0) {
+    else if (strcasecmp(input, "SR") == 0) {
         randomShuffle(&board->deck);
         strcpy(lastCommand, "SR");
         strcpy(message, "Shuffle random");
