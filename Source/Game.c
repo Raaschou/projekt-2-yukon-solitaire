@@ -94,43 +94,45 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
         char *filename = arg;
         while (*filename == ' ') filename++;
 
-        int success;
+
         if (strlen(filename) > 0) {
-            success = readDeckFromFile(filename, &board->deck, message);
+            readDeckFromFile(filename, &board->deck, message);
         } else {
             // Lav standarddeck
             startDeck(&board->deck);
             strcpy(message, "OK");
-            success = 1;
-        }
-        if (success) {
-            return STARTUP;
+
         }
 
+            return STARTUP;
+
+
         // SW,Show deck
-    } else if (strcasecmp(cmd, "SW") == 0) {
+    } if (strcasecmp(cmd, "SW") == 0) {
+        strcpy(lastCommand, "SW");
+        if (board->deck.size != 52) {
+            strcpy(message, "Der er ikke nogen kort at vise");
+            return STARTUP;
+        }
         CardNode *current = board->deck.head;
         while (current) {
             current->card.faceUp = 1;
             current = current->next;
         }
-        strcpy(lastCommand, "SW");
         strcpy(message, "Kort er nu vist");
         return STARTUP;
         //SI, Split
-    } else if (strcasecmp(cmd, "SI") == 0) {
+    } if (strcasecmp(cmd, "SI") == 0) {
         char *endptr;
         long cutSize;
-
         strcpy(lastCommand, "SI");
 
+        if (board->deck.size != 52) {
+            strcpy(message, "Kan ikke shuffle, kortbunken er ugyldig.");
+            return STARTUP;
+        }
+
         if (arg == NULL || strlen(arg) == 0) {
-
-            if (board->deck.size != 52) {
-                strcpy(message, "Kan ikke shuffle, kortbunken er ugyldig.");
-                return STARTUP;
-            }
-
             cutSize = rand() % (board->deck.size - 1) + 1; // mellem 1 og size-1
             splitShuffle(&board->deck, (int) cutSize);
             sprintf(message, "Deck splittet og blandet ved punkt %ld.", cutSize);
@@ -146,26 +148,34 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
                 strcpy(message, "Deck splittet og blandet.");
             }
         }
-
         return STARTUP;
     }
     // SR, = randomShuffle
-    else if (strcasecmp(input, "SR") == 0) {
-        randomShuffle(&board->deck);
+    if (strcasecmp(input, "SR") == 0) {
         strcpy(lastCommand, "SR");
+        if (board->deck.size != 52) {
+            strcpy(message, "Kan ikke shuffle, kortbunken er ugyldig.");
+            return STARTUP;
+        }
+        randomShuffle(&board->deck);
         strcpy(message, "Shuffle random");
-
-        //SD, Save deck
-    } else if (strcasecmp(cmd, "SD") == 0) {
+        return STARTUP;
+    }
+    //SD, Save deck
+    if (strcasecmp(cmd, "SD") == 0) {
         strcpy(lastCommand, "SD");
-        strcpy(message, "Kort burde være gemt");
+        if (board->deck.size != 52) {
+            strcpy(message, "Kan ikke shuffle, kortbunken er ugyldig.");
+            return STARTUP;
+        }
+        strcpy(message, "Kort er nu gemt");
         char *filename = arg;
         while (*filename == ' ') filename++;
         if (strlen(filename) == 0) filename = "cards.txt";
 
         writeDeckToFile(&board->deck, filename, message);
         return STARTUP;
-    } else if (strcasecmp(input, "QQ") == 0) {
+    } if (strcasecmp(input, "QQ") == 0) {
         strcpy(lastCommand, "QQ");
         strcpy(message, "Forlader spil - Tak for i dag!.\n");
         // Bare så det ser pænt ud.
@@ -173,8 +183,8 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
 
         exit(0);
 
-        //P, Start PLAY phase
-    } else if (strcasecmp(input, "P") == 0) {
+    } if (strcasecmp(input, "P") == 0) {
+        strcpy(lastCommand, "P");
         if (board->deck.size == 0) {
             strcpy(message, "Der er ikke loadet et deck!");
             strcpy(lastCommand, input);
@@ -186,13 +196,11 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
 
         dealToColumns(&board->deck, board->columns);
         clearList(&board->deck);
-        strcpy(lastCommand, "P");
         strcpy(message, "Vi spiller!");
         return PLAY;
-    } else {
+    }
         strcpy(lastCommand, "Invalid");
         strcpy(message, "Ugyldig kommando i startup-phase.\n");
-    }
     return currentPhase;
 }
 
