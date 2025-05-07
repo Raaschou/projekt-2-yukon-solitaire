@@ -228,6 +228,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
     }
 
     if (strcmp(localInput, "U") == 0) {
+        strcpy(lastCommand, "U");
         if (!isEmpty(undoStack)) {
             push(redoStack, board);    // Først push nuværende board til redoStack
             freeBoard(board);          // Ryd det gamle board
@@ -240,6 +241,7 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
     }
 
     if (strcmp(localInput, "R") == 0) {
+        strcpy(lastCommand, "R");
         if (!isEmpty(redoStack)) {
             push(undoStack, board); // Først push nuværende board til undoStack
             freeBoard(board); // Ryd det gamle board
