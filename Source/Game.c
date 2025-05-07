@@ -78,7 +78,7 @@ GamePhase playInTerminal(Board *board, GamePhase currentPhase, char *lastCommand
  * @param board Pointer til spilbrættet.
  * @param currentPhase Den aktuelle spilfase.
  * @param input Brugerens indtastning som tekst.
- * @param lastCommand Sidste gyldige kommando.
+ * @param lastCommand Sidste kommando.
  * @param message Status eller fejlbesked.
  * @return Den eventuelt opdaterede spilfase.
  */
