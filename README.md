@@ -27,7 +27,7 @@ Ellers kan man ikke loade fil.
 13. [] Source/Utils.c
 14. [ ] Include/Utils.h
 15. [x] Source/Board.c
-16. [v] Source/LinkedLists.c
+16. [x] Source/LinkedLists.c
 17. [ ] Include/LinkedLists.h
 18. [x] Source/Columns.c
 19. [ ] Include/Columns.h

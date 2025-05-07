@@ -254,4 +254,12 @@ void changeBoardStack(BoardStack *undo, BoardStack *redo, Board *board) {
     push(undo, board);
     clearStack(redo);
 }
+int isWinState(Board *board) {
+    for (int i = 0; i < 4; i++) {
+        if (board->foundations[i].size != 13) {
+            return 0;
+        }
+    }
+    return 1;
+}
 

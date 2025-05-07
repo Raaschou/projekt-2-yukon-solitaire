@@ -41,8 +41,6 @@ add_executable(projekt_2_yukon_solitaire
         Include/Foundations.h
         Source/FileIO.c
         Include/FileIO.h
-        Source/Utils.c
-        Include/Utils.h
         Source/Board.c
         Source/LinkedLists.c
         Include/LinkedLists.h

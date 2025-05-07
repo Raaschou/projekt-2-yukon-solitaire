@@ -39,6 +39,7 @@ void push(BoardStack *stack, const Board *board);
 Board pop(BoardStack *stack);
 void clearStack(BoardStack *stack);
 void changeBoardStack(BoardStack *undo, BoardStack *redo, Board *board);
+int isWinState(Board *board);
 
 
 // // Linked list håndtering

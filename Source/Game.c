@@ -34,6 +34,13 @@ void gameLoopTerminal(Board *board) {
             printBoardStartUpPhase(board, lastCommand, message);
             phase = playInTerminal(board, phase, lastCommand, message, &undoStack, &redoStack);
         } else if (phase == PLAY) {
+            if (isWinState(board)) {
+                strcpy(message, "Du har vundet,flot, du har spildt noget af dit liv - Tak for i dag!.");
+                // Bare så det ser pænt ud.
+                printBoardStartUpPhase(board, lastCommand, message);
+
+                exit(0);
+            }
             printBoardPlayPhase(board, lastCommand, message);
             phase = playInTerminal(board, phase, lastCommand, message, &undoStack, &redoStack);
         }
@@ -63,7 +70,7 @@ GamePhase playInTerminal(Board *board, GamePhase currentPhase, char *lastCommand
     }
 
     if (currentPhase == STARTUP) {
-        return startupPhase(board, currentPhase, input, lastCommand, message);
+        return startupPhase(board, currentPhase, input, lastCommand, message, undoStack, redoStack);
     }
 
     strcpy(lastCommand, input);
@@ -82,7 +89,8 @@ GamePhase playInTerminal(Board *board, GamePhase currentPhase, char *lastCommand
  * @param message Status eller fejlbesked.
  * @return Den eventuelt opdaterede spilfase.
  */
-GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, char *lastCommand, char *message) {
+GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, char *lastCommand, char *message,
+                    BoardStack *undoStack, BoardStack *redoStack) {
     char cmd[100] = "";
     char arg[100] = "";
     sscanf(input, "%s%99[^\n]", cmd, arg);
@@ -103,12 +111,26 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
             strcpy(message, "OK");
 
         }
-
             return STARTUP;
+    }
+    // LOADGAME
+    if (strcasecmp(input, "L") == 0 || strncasecmp(input, "L ", 2) == 0) {
+        strcpy(lastCommand, "L");
 
+        char *filename = input + 1;
+        while (*filename == ' ') filename++;
 
-        // SW,Show deck
-    } if (strcasecmp(cmd, "SW") == 0) {
+        if (strlen(filename) == 0) {
+            strcpy(message, "FEJL: Angiv filnavn efter L.");
+            return currentPhase;
+        }
+
+        loadGame(filename, board, undoStack, redoStack,message);
+        strcpy(message, "Spil indlæst.");
+        return PLAY;
+    }
+    // SW,Show deck
+    if (strcasecmp(cmd, "SW") == 0) {
         strcpy(lastCommand, "SW");
         if (board->deck.size != 52) {
             strcpy(message, "Der er ikke nogen kort at vise");
@@ -217,8 +239,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
  * @param redoStack Pointer til redo-stak.
  * @return Eventuelt opdaterede spilfase.
  */
-GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, char *lastCommand, char *message,
-                    BoardStack *undoStack, BoardStack *redoStack) {
+GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, char *lastCommand, char *message,BoardStack *undoStack, BoardStack *redoStack) {
     char localInput[100];
     strncpy(localInput, input, sizeof(localInput) - 1);
     localInput[sizeof(localInput) - 1] = '\0';
@@ -262,17 +283,25 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
         return STARTUP;
     }
 
-    // if (strcmp(localInput, "S") == 0) {
-    //     strcpy(lastCommand, "S");
-    //     strcpy(message, "Gemmer spil...");
-    //     return currentPhase;
-    // }
-    //
-    // if (strcmp(localInput, "L") == 0) {
-    //     strcpy(lastCommand, "L");
-    //     strcpy(message, "Indlæser spil...");
-    //     return currentPhase;
-    // }
+    if (strcasecmp(localInput, "S") == 0 || strncasecmp(localInput, "S ", 2) == 0) {
+        strcpy(lastCommand, "S");
+
+        char *filename = localInput + 1;
+        while (*filename == ' ') filename++;
+
+        if (strlen(filename) == 0) {
+            // Brug default
+            saveGame(NULL, board, undoStack, redoStack,message);
+            strcpy(message, "Spil gemt til defaultSave.bin");
+        } else {
+            saveGame(filename, board, undoStack, redoStack,message);
+            strcpy(message, "Spil gemt.");
+        }
+
+        return currentPhase;
+    }
+
+
 
     if (!strstr(localInput, "->")) {
         strcpy(lastCommand, localInput);

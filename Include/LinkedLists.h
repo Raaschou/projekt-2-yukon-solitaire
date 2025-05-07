@@ -5,7 +5,7 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 #include "Card.h"
-#include <stdbool.h>
+
 
 typedef struct CardNode {
     Card card;

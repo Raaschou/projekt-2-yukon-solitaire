@@ -7,20 +7,10 @@
 #include "../Include/Card.h"
 #include "../Include/Game.h"
 #include "../Include/Foundations.h"
+#include "../Include/GUI.h"
 
 
-#define NUM_STARTUP_BUTTONS 6 // ændre til 6 når load current game virker
-#define NUM_PLAY_BUTTONS 3 //- ændre til 4 når save current phase virker
 
-typedef struct {
-    SDL_Rect rect;
-    const char *label;
-} Button;
-
-typedef struct {
-    SDL_Rect rect;
-    CardNode *node;
-} CardVisual;
 
 char commandArg[64] = "";
 int typing = 0;
@@ -31,22 +21,31 @@ Button startupButtons[NUM_STARTUP_BUTTONS] = {
     {{240, 550, 100, 40}, "Shuffle I"},
     {{350, 550, 100, 40}, "Shuffle R"},
     {{460, 550, 100, 40}, "Show"},
-    {{570,550,100,40},"Play"}
+    {{570,550,100,40},"Play"},
+{{680,550,100,40},"Load game"}
+
+
 };
 
 Button playButtons[NUM_PLAY_BUTTONS] = {
     {{20, 550, 100, 40}, "Quit"},
     {{130, 550, 100, 40}, "Undo"},
     {{240, 550, 100, 40}, "Redo"},
+    {{350,550,100,40},"Save game"}
 
 };
-
 SDL_Texture *cardTextures[13][4];
 SDL_Texture *backTexture = NULL;
-
 CardNode *selectedCard = NULL;
 int selectedCol = -1;
 
+/**
+ * Loader en BMP-billedfil og konverterer den til en SDL_Texture.
+ *
+ * @param renderer SDL renderer der bruges til at oprette teksturen.
+ * @param filename Filsti til BMP-billedet.
+ * @return Pointer til oprettet SDL_Texture, ellers NULL ved fejl.
+ */
 SDL_Texture *loadCardTexture(SDL_Renderer *renderer, const char *filename) {
     SDL_Surface *surf = SDL_LoadBMP(filename);
     if (!surf) {
@@ -57,6 +56,16 @@ SDL_Texture *loadCardTexture(SDL_Renderer *renderer, const char *filename) {
     SDL_FreeSurface(surf);
     return tex;
 }
+
+/**
+ * Tegner tekst på skærmen ved angivne koordinater.
+ *
+ * @param renderer SDL renderer.
+ * @param font Font til teksttegning.
+ * @param text Teksten der skal tegnes.
+ * @param x X-koordinat for placering.
+ * @param y Y-koordinat for placering.
+ */
 void drawText(SDL_Renderer *renderer, TTF_Font *font, const char *text, int x, int y) {
     SDL_Color color = {0, 0, 0, 255};  // sort tekst
     SDL_Surface *surface = TTF_RenderText_Solid(font, text, color);
@@ -69,6 +78,12 @@ void drawText(SDL_Renderer *renderer, TTF_Font *font, const char *text, int x, i
     SDL_RenderCopy(renderer, texture, NULL, &dst);
     SDL_DestroyTexture(texture);
 }
+
+/**
+ * Loader alle kortbilleder og bagside til kort fra disk.
+ *
+ * @param renderer SDL renderer der bruges til at oprette teksturerne.
+ */
 void loadAllCardTextures(SDL_Renderer *renderer) {
     const char *suits = "HDCS";
     const char *ranks = "A23456789TJQK";
@@ -83,6 +98,9 @@ void loadAllCardTextures(SDL_Renderer *renderer) {
     backTexture = loadCardTexture(renderer, "../Kort/bmp/back.bmp");
 }
 
+/**
+ * Frigiver hukommelse for alle kortteksturer, inkl. bagside.
+ */
 void freeCardTextures() {
     for (int r = 0; r < 13; r++) {
         for (int s = 0; s < 4; s++) {
@@ -92,6 +110,13 @@ void freeCardTextures() {
     if (backTexture) SDL_DestroyTexture(backTexture);
 }
 
+/**
+ * Tegner en enkelt knap med label.
+ *
+ * @param renderer SDL renderer.
+ * @param button Pointer til knapstruktur med position og tekst.
+ * @param font TTF-font til teksttegning.
+ */
 void drawButton(SDL_Renderer *renderer, Button *button, TTF_Font *font) {
     SDL_SetRenderDrawColor(renderer, 0, 100, 200, 255);
     SDL_RenderFillRect(renderer, &button->rect);
@@ -118,6 +143,15 @@ void drawButton(SDL_Renderer *renderer, Button *button, TTF_Font *font) {
     SDL_DestroyTexture(textTexture);
 }
 
+/**
+ * Tegner en statusbesked nederst i vinduet.
+ *
+ * @param renderer SDL renderer.
+ * @param message Teksten der skal vises.
+ * @param font Font der bruges til tekst.
+ * @param windowHeight Højden på vinduet, bruges til placering.
+ * @param buttonHeight Højden på knapperne, bruges til at undgå overlap.
+ */
 void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font, int windowHeight, int buttonHeight) {
     if (!message || strlen(message) == 0) return;
 
@@ -138,7 +172,14 @@ void drawMessage(SDL_Renderer *renderer, const char *message, TTF_Font *font, in
     SDL_FreeSurface(msgSurf);
     SDL_DestroyTexture(msgTex);
 }
-
+/**
+ * Tegner et enkelt kort (face up eller down) på en position.
+ *
+ * @param renderer SDL renderer.
+ * @param x X-koordinat.
+ * @param y Y-koordinat.
+ * @param card Pointer til kortstruktur der skal tegnes.
+ */
 void drawCard(SDL_Renderer *renderer, int x, int y, Card *card) {
     SDL_Rect dst = {x, y, 80, 120};
 
@@ -170,7 +211,15 @@ void drawCard(SDL_Renderer *renderer, int x, int y, Card *card) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderDrawRect(renderer, &dst);
 }
-
+/**
+ * Tegner GUI'en i STARTUP-fasen, før spillet starter.
+ *
+ * @param renderer SDL renderer.
+ * @param window SDL vinduet, bruges til layout.
+ * @param board Spillets aktuelle tilstand.
+ * @param font Font til tekst.
+ * @param message Statusbesked der vises nederst.
+ */
 void drawBoardStartUpPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board, TTF_Font *font,
                            const char *message) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -215,9 +264,10 @@ void drawBoardStartUpPhase(SDL_Renderer *renderer, SDL_Window *window, Board *bo
 
     drawMessage(renderer, message, font, winH, buttonHeight);
 
-    //input
-    int inputX = NUM_STARTUP_BUTTONS * (startupButtons[0].rect.w +15);
-    SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 150, 30};
+
+    int inputX = winW  - 220;
+    int inputY = winH - buttonHeight - 60;
+    SDL_Rect inputBox = {inputX, inputY, 200, 30};
     if (typing) {
         SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);  // rød
     } else {
@@ -229,6 +279,15 @@ void drawBoardStartUpPhase(SDL_Renderer *renderer, SDL_Window *window, Board *bo
 
 }
 
+/**
+ * Tegner spilbrættet i PLAY-fasen, inkl. kort og knapper.
+ *
+ * @param renderer SDL renderer.
+ * @param window SDL vinduet, bruges til layout.
+ * @param board Spillets aktuelle tilstand.
+ * @param font Font der bruges til knaptekst m.m.
+ * @param message Status- eller fejlbesked der vises nederst.
+ */
 void drawBoardPlayPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board, TTF_Font *font, const char *message) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
@@ -285,8 +344,9 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board
     drawMessage(renderer, message, font, winH, buttonHeight);
 
 
-    int inputX = 20 + NUM_PLAY_BUTTONS * (playButtons[0].rect.w + 20);
-    SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 200, 30};
+    int inputX = winW  - 220;
+    int inputY = winH - buttonHeight - 60;
+    SDL_Rect inputBox = {inputX, inputY, 200, 30};
     if (typing) {
         SDL_SetRenderDrawColor(renderer, 200, 0, 0, 255);  // rød
     } else {
@@ -297,7 +357,11 @@ void drawBoardPlayPhase(SDL_Renderer *renderer, SDL_Window *window, Board *board
     drawText(renderer, font, commandArg, inputBox.x + 5, inputBox.y + 5);
 }
 
-
+/**
+ * Kører GUI-versionen af spillet.
+ *
+ * @param board Pointer til den aktuelle spiltilstand.
+ */
 void gameLoopGUI(Board *board) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
@@ -326,8 +390,8 @@ void gameLoopGUI(Board *board) {
     SDL_Event e;
     int running = 1;
 
-    const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD","SD","SI","SR", "SW", "P"};
-    const char *playCmds[NUM_PLAY_BUTTONS] = {"Q", "U", "R"};
+    const char *startupCmds[NUM_STARTUP_BUTTONS] = {"LD","SD","SI","SR", "SW", "P","L"};
+    const char *playCmds[NUM_PLAY_BUTTONS] = {"Q", "U", "R","S"};
 
     BoardStack undoStack, redoStack;
     initStack(&undoStack);
@@ -367,8 +431,10 @@ void gameLoopGUI(Board *board) {
                 int buttonY = winH - 20 - buttonHeight;
                 int buttonCount = (phase == STARTUP) ? NUM_STARTUP_BUTTONS : NUM_PLAY_BUTTONS;
                 Button *btnArray = (phase == STARTUP) ? startupButtons : playButtons;
-                int inputX = 20 + buttonCount * (btnArray[0].rect.w + 20);
-                SDL_Rect inputBox = {inputX, buttonY + (buttonHeight - 30) / 2, 200, 30};
+                SDL_Rect *lastBtn = &playButtons[NUM_PLAY_BUTTONS - 1].rect;
+                int inputX = winW  - 220;
+                int inputY = winH - buttonHeight - 60;
+                SDL_Rect inputBox = {inputX, inputY, 200, 30};
 
                 // Først: check input-boksen (uanset fase)
                 if (x >= inputBox.x && x <= inputBox.x + inputBox.w &&
@@ -391,7 +457,7 @@ void gameLoopGUI(Board *board) {
                             } else {
                                 snprintf(combinedInput, sizeof(combinedInput), "%s", startupCmds[i]);
                             }
-                            phase = startupPhase(board, phase, combinedInput, commandArg, message);
+                            phase = startupPhase(board, phase, combinedInput, commandArg, message,&undoStack, &redoStack);
                             commandArg[0] = '\0';  // ryd input efter brug
                         }
                     }
@@ -399,7 +465,14 @@ void gameLoopGUI(Board *board) {
                     for (int i = 0; i < NUM_PLAY_BUTTONS; i++) {
                         SDL_Rect r = playButtons[i].rect;
                         if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-                            phase = playPhase(board, phase, playCmds[i], commandArg, message, &undoStack, &redoStack);
+                            char combinedInput[128];
+                            if (strlen(commandArg) > 0) {
+                                snprintf(combinedInput, sizeof(combinedInput), "%s %s", playCmds[i], commandArg);
+                            } else {
+                                snprintf(combinedInput, sizeof(combinedInput), "%s", playCmds[i]);
+                            }
+                            phase = playPhase(board, phase, combinedInput, commandArg, message, &undoStack, &redoStack);
+                            commandArg[0] = '\0';
                             commandArg[0] = '\0';  // ryd input efter brug
                         }
                     }
@@ -549,6 +622,10 @@ void gameLoopGUI(Board *board) {
             if (phase == STARTUP) {
                 drawBoardStartUpPhase(renderer, window, board, font, message);
             } else if (phase == PLAY) {
+                if (isWinState(board)) {
+                    strcpy(message, "Du har vundet,flot, du har spildt noget af dit liv - Tak for i dag!.");
+                   drawBoardPlayPhase(renderer, window, board, font, message);
+                }
                 drawBoardPlayPhase(renderer, window, board, font, message);
             }
 

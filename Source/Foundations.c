@@ -5,7 +5,11 @@
 #include "../Include/Foundations.h"
 #include <stdbool.h>
 
-// laver 4 foundations som 4 linked lists
+/**
+ * Initialiserer 4 foundation-lister.
+ *
+ * @param columns Array med 4 LinkedList-strukturer til foundations.
+ */
 void foundations(LinkedList columns[4]) {
     for (int i = 0; i < 4; i++) {
         initList(&columns[i]);
@@ -13,17 +17,28 @@ void foundations(LinkedList columns[4]) {
 }
 
 
-// rykker fra colums til foundations Bool ValidMove tjekker om det er ok.
+/**
+ * Flytter et kort fra en kolonne til en foundation, hvis det er et gyldigt træk.
+ *
+ * @param node Kortet der forsøges flyttet.
+ * @param from Listen kortet kommer fra.
+ * @param to Foundation-listen kortet skal til.
+ */
 void moveToFoundation(CardNode *node,LinkedList *from, LinkedList *to) {
     if (validMoveF(node, to->tail)) {
         moveStack(node, from, to);
-    } else {
-        //message ="Cant Move this card to foundation";
     }
 }
 
 
-// Bool tjekker om der er et gyldigt move
+/**
+ * Tjekker om et kort må flyttes til en foundation.
+ * Et es må ligge først, derefter samme kulør og stigende rank.
+ *
+ * @param source Kortet der skal flyttes.
+ * @param target Sidste kort i foundation.
+ * @return true hvis trækket er gyldigt, ellers false.
+ */
 bool validMoveF(CardNode *source, CardNode *target) {
     if (!source) return false;
 

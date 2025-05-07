@@ -12,11 +12,10 @@
 #include "../Include/LinkedLists.h"
 #include "../Include/Board.h"
 #include "../Include/Main.h"
-#include "../Include/Utils.h"
 
 
-#include <stdio.h>
-#include <string.h>
+
+
 
 void testCreateCard();
 

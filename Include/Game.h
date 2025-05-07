@@ -19,7 +19,7 @@ typedef enum {
 GamePhase playInTerminal(Board *board, GamePhase currentPhase, char *lastCommand, char *message,
                             BoardStack *undoStack, BoardStack *redoStack) ;
 void gameLoopTerminal(Board *board) ;
-GamePhase startupPhase(Board *board, GamePhase currentPhase,const char *input, char *lastCommand, char *message);
+GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, char *lastCommand, char *message,BoardStack *undoStack, BoardStack *redoStack);
 GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input,char *lastCommand, char *message,BoardStack *undoStack, BoardStack *redoStack);
 
 #endif
