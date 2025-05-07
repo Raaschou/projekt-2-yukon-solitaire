@@ -9,6 +9,9 @@ mingw-w64-ucrt-x86_64-SDL2_ttf & mingw-w64-ucrt-x86_64-SDL2
 Hvis man kører "pacman -S mingw-w64-ucrt-x86_64-SDL2_ttf" burde begge
 blive installeret, plus andre SDL2_ttf dependencies.
 
+$ProjectFileDir$ tryk på run edit configurations tilføj til woriking directory
+Ellers kan man ikke loade fil.
+
 1. [x] Source/Main.c
 2. [x] Include/Main.h 
 3. [x] Source/Deck.c
