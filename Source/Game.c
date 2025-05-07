@@ -255,6 +255,8 @@ GamePhase playPhase(Board *board, GamePhase currentPhase, const char *input, cha
         strcpy(lastCommand, "Q");
         strcpy(message, "Afslutter spilfase...");
         freeBoard(board);
+        clearStack(undoStack);
+        clearStack(redoStack);
         return STARTUP;
     }
 
