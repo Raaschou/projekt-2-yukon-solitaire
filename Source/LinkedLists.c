@@ -66,7 +66,12 @@ void copyList(LinkedList *dest, const LinkedList *src) {
     }
 }
 
-// tilføjer et kort til en Linkedlist
+/**
+ * Tilføjer et kort til slutningen af en linked list.
+ *
+ * @param list Listen kortet tilføjes til.
+ * @param card Kortet der skal tilføjes.
+ */
 void addCard(LinkedList *list, Card card) {
     CardNode *newNode = malloc(sizeof(CardNode));
     if (!newNode) return;
@@ -87,7 +92,13 @@ void addCard(LinkedList *list, Card card) {
     list->size++;
 }
 
-//tjekke om det kort vi giver faktisk er i den liste.
+/**
+ * Tjekker om et givet CardNode findes i en linked list.
+ *
+ * @param node Kortet der søges efter.
+ * @param list Listen der gennemsøges.
+ * @return true hvis node findes i listen, ellers false.
+ */
 bool nodeInList(CardNode *node, LinkedList *list) {
     if (!node || !list || !list->head) return false;
 
@@ -99,7 +110,14 @@ bool nodeInList(CardNode *node, LinkedList *list) {
     return false;
 }
 
-// rykker stacken 1 til mange kort.
+/**
+ * Flytter en stak kort fra startNode til slutningen af newList.
+ * Opdaterer links og størrelser i begge lister.
+ *
+ * @param startNode Første kort i stakken, der skal flyttes.
+ * @param oldList Listen stakken fjernes fra.
+ * @param newList Listen stakken flyttes til.
+ */
 void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
     if (!startNode || !oldList || !newList) return;
     if (!nodeInList(startNode, oldList)) return;
@@ -133,7 +151,15 @@ void moveStack(CardNode *startNode, LinkedList *oldList, LinkedList *newList) {
     newList->size += moved;
 }
 
-// printer et kort fra en liste
+
+/**
+ * Printer et kort, hvis det findes og er i listen.
+ * Viser "[ ]" hvis face down, ellers fx "9H".
+ * Viser tomt felt hvis ugyldigt node.
+ *
+ * @param node Pointer til det kort, der skal udskrives.
+ * @param list Listen kortet forventes at tilhøre.
+ */
 void printCard(CardNode *node, LinkedList *list) {
     if (!node || !list || !nodeInList(node, list)) {
         printf("  \t");
@@ -197,6 +223,14 @@ void moveSingleCard(LinkedList *from, LinkedList *to) {
     to->size++;
 }
 
+/**
+ * Finder et kort i listen baseret på rank og suit.
+ *
+ * @param list Listen der gennemsøges.
+ * @param rank Kortets rang (1–13).
+ * @param suit Kortets kulør ('H', 'D', 'C', 'S').
+ * @return Pointer til det fundne CardNode, ellers NULL.
+ */
 CardNode* findCardNode(LinkedList *list, int rank, char suit) {
     CardNode *current = list->head;
     while (current != NULL) {
@@ -208,6 +242,11 @@ CardNode* findCardNode(LinkedList *list, int rank, char suit) {
     return NULL;
 }
 
+/**
+ * Vender det sidste kort i listen, hvis det er face down.
+ *
+ * @param list Listen der kontrolleres.
+ */
 void flipLastCardIfAny(LinkedList *list) {
     if (list->tail && !list->tail->card.faceUp) {
         list->tail->card.faceUp = 1;
