@@ -73,7 +73,7 @@ GamePhase playInTerminal(Board *board, GamePhase currentPhase, char *lastCommand
 
 /**
  * Behandler brugerens kommandoer i startup-fasen.
- * Understøtter load, diverse bland, visning af kort og start af spillet (Skift af fase).
+ * Understøtter load deck,save deck, diverse bland, visning af kort og start af spillet (Skift af fase).
  *
  * @param board Pointer til spilbrættet.
  * @param currentPhase Den aktuelle spilfase.
