@@ -25,6 +25,7 @@ int readDeckFromFile(const char *filename, LinkedList *deck, char *message) {
         lineNumber++;
         Card card;
         if (!validateDeck(line, &card, lineNumber, seen, message)) {
+            clearList(deck);
             fclose(file);
             return 0;
         }
@@ -36,6 +37,7 @@ int readDeckFromFile(const char *filename, LinkedList *deck, char *message) {
 
     if (deck->size != 52) {
         sprintf(message, "ERROR: Forventede 52 kort, fandt %d.", deck->size);
+        clearList(deck);
         return 0;
     }
 

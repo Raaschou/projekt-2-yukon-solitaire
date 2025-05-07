@@ -120,6 +120,7 @@ void splitShuffle(LinkedList *deck, int cutSize) {
  */
 int validateDeck(const char *line, Card *outCard, int lineNum, char seen[52], char *message) {
     if (strlen(line) < 2 ) {
+
        sprintf(message,"ERROR: Tom eller kort linje på linje %d.\n", lineNum);
         return 0;
     }
