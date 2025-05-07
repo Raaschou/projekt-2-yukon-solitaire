@@ -159,28 +159,39 @@ void printCard(CardNode *node, LinkedList *list) {
     }
 }
 
+/**
+ * Flytter ét kort fra starten af 'from'-listen til slutningen af 'to'-listen.
+ * Antager at begge lister er dobbeltkædede og korrekt initialiseret.
+ *
+ * @param from Pointer til den liste, kortet fjernes fra.
+ * @param to Pointer til den liste, kortet tilføjes til.
+ */
 void moveSingleCard(LinkedList *from, LinkedList *to) {
-    if (!from || !from->head||!to) return;
+    if (!from || !from->head || !to) {
+        return;
+    }
 
     CardNode *card = from->head;
 
-    // Fjern fra 'from'
-    if (card->next)
+    // Fjern fra 'from'-listen
+    if (card->next) {
         card->next->prev = NULL;
-    else
+    } else {
         from->tail = NULL;
+    }
 
     from->head = card->next;
     from->size--;
 
-    // Tilføj til 'to' i slutningen
+    // Tilføj til 'to'-listen i slutningen
     card->prev = to->tail;
     card->next = NULL;
 
-    if (to->tail)
+    if (to->tail) {
         to->tail->next = card;
-    else
+    } else {
         to->head = card;
+    }
 
     to->tail = card;
     to->size++;
