@@ -7,15 +7,21 @@ set(CMAKE_C_STANDARD 23)
 if(APPLE)
     message(STATUS "Building on macOS")
 
+    # Brug SDL2 installeret via Homebrew
     include_directories(/opt/homebrew/include/SDL2)
     link_directories(/opt/homebrew/lib)
+
     set(SDL2_LIBS SDL2 SDL2_ttf)
 
 elseif(WIN32)
     message(STATUS "Building on Windows")
 
-    #SDL2.dll og SDL2_ttf.dll leveres med .exe
-    set(SDL2_LIBS SDL2 SDL2_ttf)
+    find_package(SDL2 REQUIRED)
+
+    include_directories(${SDL2_INCLUDE_DIRS} )
+    link_directories(${SDL2_LIBRARY_DIRS})
+
+    set(SDL2_LIBS ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARY})
 
 else()
     message(FATAL_ERROR "Unsupported platform")
@@ -43,4 +49,6 @@ add_executable(projekt_2_yukon_solitaire
         Source/GUI.c
         Include/GUI.h
 )
+
+# ---- Link SDL2 og TTF ----
 target_link_libraries(projekt_2_yukon_solitaire ${SDL2_LIBS})
