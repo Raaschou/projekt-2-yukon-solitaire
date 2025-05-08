@@ -1,5 +1,9 @@
 Som udgangspunkt skriver vi GUI'en i SDL. Hvis vi altså 
 kan få det til at fungere.
+
+### For Windows setup 
+Tjek mappen WindowsBuild, hvor der er en unik readme.
+
 For at køre programmet på windows er løsningen blevet,
 at installere SDL2 og SDL2_ttf igennem MSYS2, specifikt pakkerne:
 mingw-w64-ucrt-x86_64-SDL2_ttf & mingw-w64-ucrt-x86_64-SDL2
@@ -7,6 +11,7 @@ mingw-w64-ucrt-x86_64-SDL2_ttf & mingw-w64-ucrt-x86_64-SDL2
 Hvis man kører "pacman -S mingw-w64-ucrt-x86_64-SDL2_ttf" burde begge
 blive installeret, plus andre SDL2_ttf dependencies.
 
+### Tilføj
 $ProjectFileDir$ tryk på run edit configurations tilføj til woriking directory
 Ellers kan man ikke loade fil.
 
@@ -20,14 +25,14 @@ Placering: `asset/DejaVuSans.ttf`
 DejaVu Sans er open source og distribueres under følgende licens:
 [Bitstream Vera Fonts Copyright](https://dejavu-fonts.github.io/License.html)
 
-> "Permission is hereby granted, free of charge, to any person obtaining a copy of the fonts..."
+>"Permission is hereby granted, free of charge, to any person obtaining a copy of the fonts..."
 
 ### Kilde
 
 Fonten er hentet fra det officielle DejaVu Fonts-projekt:  
-👉 https://dejavu-fonts.github.io/
+ https://dejavu-fonts.github.io/
 
-For 
+### Spillet
 
 Terminal er case unsensitve. udover det følger den meget godt opgaven.
 Funktioner :
