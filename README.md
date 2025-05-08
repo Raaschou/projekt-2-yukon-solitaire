@@ -1,5 +1,3 @@
-Lige nu er der 5 mellemrum i mellem kolonner
-
 Som udgangspunkt skriver vi GUI'en i SDL. Hvis vi altså 
 kan få det til at fungere.
 For at køre programmet på windows er løsningen blevet,
@@ -28,3 +26,31 @@ DejaVu Sans er open source og distribueres under følgende licens:
 
 Fonten er hentet fra det officielle DejaVu Fonts-projekt:  
 👉 https://dejavu-fonts.github.io/
+
+For 
+
+Terminal er case unsensitve. udover det følger den meget godt opgaven.
+Funktioner :
+StartUpPhase-
+Load deck : LD
+Sace deck : SD
+Load Game : L
+Play      : P
+Split Shuffle : SI
+Random Shuffle : SR
+Quit : QQ
+Show deck : SW
+
+PlayPhase -
+Redo : R
+Undo : U
+Quit : Q
+Save game : S
+Moves : fx x->y, x:kort->y
+
+I Gui er det hele enten en knap eller trykke på et kort.
+Det hvide fungere som et anuller tryk, hvis man har valgt et kort
+
+For at kunne give input (fil navn) i GUI skal man trykke på den grå boks, 
+når den er aktiveret forstår GUI at der kommer en command og et argument boksen bliver i øvrigt rød,
+fx til load deck, save deck, load game og save game
