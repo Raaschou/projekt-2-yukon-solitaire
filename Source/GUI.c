@@ -573,7 +573,7 @@ void gameLoopGUI(Board *board) {
 
                         if (x >= fslot.x && x <= fslot.x + fslot.w &&
                             y >= fslot.y && y <= fslot.y + fslot.h) {
-                            if (selectedCard != NULL) {
+                            if (selectedCard != NULL && selectedCard->next == NULL ) {
                                 if (validMoveF(selectedCard, fCard)) {
                                     changeBoardStack(&undoStack, &redoStack, board);
 
