@@ -25,6 +25,7 @@ void gameLoopTerminal(Board *board) {
     GamePhase phase = STARTUP;
     char lastCommand[100] = "";
     char message[100] = "";
+    char input[100];
     BoardStack undoStack, redoStack;
     initStack(&undoStack);
     initStack(&redoStack);
@@ -32,50 +33,26 @@ void gameLoopTerminal(Board *board) {
     while (1) {
         if (phase == STARTUP) {
             printBoardStartUpPhase(board, lastCommand, message);
-            phase = playInTerminal(board, phase, lastCommand, message, &undoStack, &redoStack);
         } else if (phase == PLAY) {
             if (isWinState(board)) {
-                strcpy(message, "Du har vundet,flot, du har spildt noget af dit liv - Tak for i dag!.");
-                // Bare så det ser pænt ud.
+                strcpy(message, "Du har vundet, flot, du har spildt noget af dit liv – tak for i dag!");
                 printBoardStartUpPhase(board, lastCommand, message);
-
                 exit(0);
             }
             printBoardPlayPhase(board, lastCommand, message);
-            phase = playInTerminal(board, phase, lastCommand, message, &undoStack, &redoStack);
+        }
+
+        // LÆS INPUT HVER GANG
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\n")] = 0;
+
+        // Kør kommando afhængig af fase
+        if (phase == STARTUP) {
+            phase = startupPhase(board, phase, input, lastCommand, message, &undoStack, &redoStack);
+        } else if (phase == PLAY) {
+            phase = playPhase(board, phase, input, lastCommand, message, &undoStack, &redoStack);
         }
     }
-}
-
-/**
- * Læser brugerens input i terminalen og udfører den givne fasehandling.
- * Kalder enten startupPhase eller playPhase afhængigt af spillets tilstand.
- *
- * @param board Pointer til spilbrættet.
- * @param currentPhase Den aktuelle spilfase.
- * @param lastCommand Sidste kommando.
- * @param message Fejl- eller statusbesked.
- * @param undoStack Pointer til undo-stak.
- * @param redoStack Pointer til redo-stak.
- * @return Den opdaterede spilfase (PLAY eller STARTUP).
- */
-GamePhase playInTerminal(Board *board, GamePhase currentPhase, char *lastCommand, char *message,
-                         BoardStack *undoStack, BoardStack *redoStack) {
-    char input[100];
-    fgets(input, sizeof(input), stdin);
-    input[strcspn(input, "\n")] = 0;
-
-    if (currentPhase == PLAY) {
-        return playPhase(board, currentPhase, input, lastCommand, message, undoStack, redoStack);
-    }
-
-    if (currentPhase == STARTUP) {
-        return startupPhase(board, currentPhase, input, lastCommand, message, undoStack, redoStack);
-    }
-
-    strcpy(lastCommand, input);
-    strcpy(message, "Ukendt fase");
-    return currentPhase;
 }
 
 /**
@@ -117,7 +94,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
     if (strcasecmp(input, "L") == 0 || strncasecmp(input, "L ", 2) == 0) {
         strcpy(lastCommand, "L");
 
-        char *filename = input + 1;
+        const char *filename = input + 1;
         while (*filename == ' ') filename++;
 
         if (strlen(filename) == 0) {
@@ -126,7 +103,7 @@ GamePhase startupPhase(Board *board, GamePhase currentPhase, const char *input, 
         }
 
         loadGame(filename, board, undoStack, redoStack,message);
-        strcpy(message, "Spil indlæst.");
+        strcpy(message, "Dit spil er indlæst og du kan nu spille");
         return PLAY;
     }
     // SW,Show deck
