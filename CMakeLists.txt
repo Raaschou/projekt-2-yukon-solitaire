@@ -13,9 +13,16 @@ if(APPLE)
 
 elseif(WIN32)
     message(STATUS "Building on Windows")
+    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+    set(SDL2_PATH "SDL2/x86_64-w64-mingw32")
+    set(SDL2_TTF_PATH "SDL2/x86_64-w64-mingw32")
 
-    #SDL2.dll og SDL2_ttf.dll leveres med .exe
-    set(SDL2_LIBS SDL2 SDL2_ttf)
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_ttf REQUIRED)
+    include_directories(${SDL2_INCLUDE_DIR} ${SDL2_TFF_INCLUDE_DIRS})
+
+    set(SDL2_LIBS ${SDL2_LIBRARY} ${SDL2_TTF_LIBRARIES})
+
 
 else()
     message(FATAL_ERROR "Unsupported platform")
