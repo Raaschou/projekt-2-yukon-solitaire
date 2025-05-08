@@ -48,8 +48,6 @@ add_executable(projekt_2_yukon_solitaire
         Include/Columns.h
         Source/GUI.c
         Include/GUI.h
-        Test/Test.c
-        Test/Test.h
 )
 
 # ---- Link SDL2 og TTF ----
